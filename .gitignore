@@ -1,0 +1,47 @@
+# Ignore temporary and log files
+*.log
+error_log
+debug.log
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
+
+# Ignore Composer vendor directory (if using Composer)
+vendor/
+
+# Ignore Node.js modules (if using Node.js for front-end)
+node_modules/
+package-lock.json
+
+# Ignore build tools and assets
+/dist/
+/build/
+*.min.js.map
+*.min.css.map
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore environment-specific files
+.env
+.env.local
+.env.*.local
+
+# Ignore testing and CI files
+/phpunit.xml
+/tests/bootstrap.php
+/coverage/
+.phpunit.result.cache
+
+# Ignore plugin-specific temporary or cache files
+cache/
+logs/
+tmp/

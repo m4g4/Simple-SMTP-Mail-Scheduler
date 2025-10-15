@@ -1,0 +1,338 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple SMTP Mail Scheduler\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-07 15:52+0200\n"
+"PO-Revision-Date: 2025-10-10 23:28+0200\n"
+"Last-Translator: m4g4\n"
+"Language-Team: \n"
+"Language: sk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.7\n"
+
+#: admin/scheduler_settings.php:51
+msgid "Email Scheduler Settings"
+msgstr "Nastavenia plánovača emailov"
+
+#: admin/scheduler_settings.php:58
+msgid "Emails per unit"
+msgstr "Emailov za jednotku"
+
+#: admin/scheduler_settings.php:83
+msgid "Configure the email sending limits and scheduler settings below."
+msgstr "Nastavte limity odosielania emailov a nastavenia plánovača nižšie."
+
+#: admin/scheduler_settings.php:97
+msgid "per Minute"
+msgstr "za minútu"
+
+#: admin/scheduler_settings.php:98
+msgid "per Hour"
+msgstr "za hodinu"
+
+#: admin/scheduler_settings.php:99
+msgid "per Day"
+msgstr "za deň"
+
+#: admin/scheduler_settings.php:112
+msgid "Maximum number of emails that can be sent per time unit."
+msgstr "Maximálny počet emailov, ktoré je možné odoslať za jednotku času."
+
+#: admin/scheduler_settings.php:125
+msgid "Emails per unit must be a positive number."
+msgstr "Počet emailov za jednotku musí byť kladné číslo."
+
+#: admin/scheduler_settings.php:142
+msgid "Invalid time unit selected."
+msgstr "Vybraná jednotka času je neplatná."
+
+#: admin/settings.php:17 admin/settings.php:18 admin/settings.php:40
+msgid "Simple SMTP Mail Scheduler"
+msgstr "Jednoduchý SMTP Mail Plánovač"
+
+#: admin/settings.php:26 admin/profile_page.php:45
+msgid "Edit SMTP Profile"
+msgstr "Upraviť SMTP profil"
+
+#: admin/settings.php:27
+msgid "Edit SMTP"
+msgstr "Upraviť SMTP"
+
+#: admin/settings.php:45 admin/settings.php:102
+msgid "General Settings"
+msgstr "Všeobecné nastavenia"
+
+#: admin/settings.php:49
+msgid "Email Log"
+msgstr "Záznamy emailov"
+
+#: admin/settings.php:53 admin/log_table.php:28
+msgid "Testing"
+msgstr "Testovanie"
+
+#: admin/settings.php:109
+msgid "Testing Mode"
+msgstr "Testovací režim"
+
+#: admin/settings.php:117
+msgid "Configure general settings for the SMTP Mail Scheduler."
+msgstr "Nastavte všeobecné nastavenia pre SMTP Mail Plánovač."
+
+#: admin/settings.php:134
+msgid "Enable testing mode (emails will not be sent)"
+msgstr "Povoliť testovací režim (emaily nebudú odoslané)"
+
+#: admin/settings.php:137
+msgid "When enabled, emails are logged but not sent to recipients."
+msgstr "Keď je zapnuté, emaily sú zaznamenané, ale neodoslané príjemcom."
+
+#: admin/settings.php:147
+msgid "SMTP Profiles"
+msgstr "SMTP profily"
+
+#: admin/settings.php:151 admin/profile_page.php:56
+msgid "Label"
+msgstr "Názov"
+
+#: admin/settings.php:152
+msgid "Host"
+msgstr "Hostiteľ"
+
+#: admin/settings.php:153 admin/profile_page.php:59
+msgid "From Email"
+msgstr "Od Email"
+
+#: admin/settings.php:154 admin/settings.php:166
+msgid "Active"
+msgstr "Aktívny"
+
+#: admin/settings.php:155 admin/log_table.php:31
+msgid "Actions"
+msgstr "Akcie"
+
+#: admin/settings.php:178
+msgid "Set Active"
+msgstr "Nastaviť ako aktívny"
+
+#: admin/settings.php:179
+msgid "Are you sure you want to delete this profile?"
+msgstr "Naozaj chcete odstrániť tento profil?"
+
+#: admin/settings.php:179
+msgid "Delete"
+msgstr "Odstrániť"
+
+#: admin/settings.php:187
+msgid "Edit"
+msgstr "Upraviť"
+
+#: admin/settings.php:195
+msgid "No SMTP profiles found."
+msgstr "Nenašiel sa žiadny SMTP profil."
+
+#: admin/settings.php:203
+msgid "Add new profile"
+msgstr "Pridať nový profil"
+
+#: admin/log_table.php:16
+msgid "Email"
+msgstr "Email"
+
+#: admin/log_table.php:17
+msgid "Emails"
+msgstr "Emailov"
+
+#: admin/log_table.php:24
+msgid "Recipient"
+msgstr "Príjemca"
+
+#: admin/log_table.php:25 admin/test_settings.php:68
+msgid "Subject"
+msgstr "Predmet"
+
+#: admin/log_table.php:26
+msgid "Profile"
+msgstr "Profil"
+
+#: admin/log_table.php:27
+msgid "Status"
+msgstr "Stav"
+
+#: admin/log_table.php:29
+msgid "Scheduled At"
+msgstr "Naplánované na"
+
+#: admin/log_table.php:30
+msgid "Priority"
+msgstr "Priorita"
+
+#: admin/log_table.php:100
+msgid "Unknown Profile"
+msgstr "Neznámy profil"
+
+#: admin/log_table.php:115
+msgid "Yes"
+msgstr "Áno"
+
+#: admin/log_table.php:115
+msgid "No"
+msgstr "Nie"
+
+#: admin/log_table.php:135
+msgid "Retry"
+msgstr "Opakovať"
+
+#: admin/log_table.php:147
+msgid "Remove"
+msgstr "Odstrániť"
+
+#: admin/log_table.php:159
+msgid "Put to Front"
+msgstr "Presunúť dopredu"
+
+#: admin/test_settings.php:27
+msgid "Email sent (or queued) successfully!"
+msgstr "Email bol úspešne odoslaný (alebo zaradený do fronty)!"
+
+#: admin/test_settings.php:28
+msgid "Failed to send email."
+msgstr "Nepodarilo sa odoslať email."
+
+#: admin/test_settings.php:31
+msgid "Invalid email address."
+msgstr "Neplatná emailová adresa."
+
+#: admin/test_settings.php:44
+msgid "Send Test Email (via wp_mail)"
+msgstr "Odoslať testovací email (cez wp_mail)"
+
+#: admin/test_settings.php:59
+msgid "To"
+msgstr "Komu"
+
+#: admin/test_settings.php:77
+msgid "Message"
+msgstr "Správa"
+
+#: admin/test_settings.php:84
+msgid "Send Test Email"
+msgstr "Odoslať testovací email"
+
+#: admin/log_settings.php:26
+msgid "Security check failed."
+msgstr "Kontrola bezpečnosti zlyhala."
+
+#: admin/log_settings.php:66
+msgid "Mail Log"
+msgstr "Záznamy emailov"
+
+#: admin/utils.php:122
+msgid "Up and running"
+msgstr "Beží"
+
+#: admin/utils.php:124
+#, php-format
+msgid "Next run: %s"
+msgstr "Ďalšie spustenie: %s"
+
+#: admin/utils.php:128
+msgid "Not running"
+msgstr "Neaktívne"
+
+#: admin/utils.php:129
+msgid "No cron event is scheduled. Try deactivating and reactivating the plugin."
+msgstr "Žiadna cron udalosť nie je naplánovaná. Skúste deaktivovať a znovu aktivovať plugin."
+
+#: admin/profile_page.php:45
+msgid "Add SMTP Profile"
+msgstr "Pridať SMTP profil"
+
+#: admin/profile_page.php:62
+msgid "From Name"
+msgstr "Od Mena"
+
+#: admin/profile_page.php:65
+msgid "SMTP Host"
+msgstr "SMTP Hostiteľ"
+
+#: admin/profile_page.php:68
+msgid "Port"
+msgstr "Port"
+
+#: admin/profile_page.php:71
+msgid "Encryption"
+msgstr "Šifrovanie"
+
+#: admin/profile_page.php:78
+msgid "Auto TLS"
+msgstr "Automatické TLS"
+
+#: admin/profile_page.php:82
+msgid "Enable Auto TLS (automatically upgrade to TLS if available)"
+msgstr "Povoliť Auto TLS (automaticky upgradovať na TLS, ak je dostupné)"
+
+#: admin/profile_page.php:86
+msgid "Username"
+msgstr "Používateľské meno"
+
+#: admin/profile_page.php:89
+msgid "Password"
+msgstr "Heslo"
+
+#: admin/profile_page.php:92
+msgid "Password is set"
+msgstr "Heslo je nastavené"
+
+#: admin/profile_page.php:93
+msgid "No password set"
+msgstr "Heslo nie je nastavené"
+
+#: admin/profile_page.php:94
+msgid "Enter a new password to change it, or leave blank to keep the current password."
+msgstr "Zadajte nové heslo pre zmenu, alebo nechajte prázdne pre zachovanie aktuálneho hesla."
+
+#: admin/profile_page.php:101
+msgid "Add Profile"
+msgstr "Pridať profil"
+
+#: admin/profile_page.php:101
+msgid "Save Profile"
+msgstr "Uložiť profil"
+
+#: admin/profile_page.php:104
+msgid "Back"
+msgstr "Späť"
+
+#: admin/profile_page.php:163
+msgid "Label is required."
+msgstr "Názov je povinný."
+
+#: admin/profile_page.php:166
+msgid "From Email must be a valid email address."
+msgstr "Email od musí byť platná emailová adresa."
+
+#: admin/profile_page.php:169
+msgid "SMTP Host is required."
+msgstr "SMTP hostiteľ je povinný."
+
+#: admin/profile_page.php:172
+msgid "Port must be a positive number."
+msgstr "Port musí byť kladné číslo."
+
+#: admin/profile_page.php:175
+msgid "Username is required."
+msgstr "Používateľské meno je povinné."
+
+#: admin/profile_page.php:178
+msgid "Password is required."
+msgstr "Heslo je povinné."
+
+#: admin/profile_page.php:221
+msgid "SMTP connection test <strong>failed</strong>. Check credentials or server settings."
+msgstr "Test pripojenia SMTP <strong>zlyhal</strong>. Skontrolujte prihlasovacie údaje alebo nastavenia servera."
+
+#: simple-smtp-mail-scheduler.php:46
+msgid "Every Minute"
+msgstr "Každú minútu"
