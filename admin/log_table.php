@@ -20,16 +20,21 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
     }
 
     public function get_columns(): array {
-        return [
+        $columns = [
             'recipient_email' => __('Recipient', Simple_SMTP_Constants::DOMAIN),
             'subject'         => __('Subject', Simple_SMTP_Constants::DOMAIN),
             'profile'         => __('Profile', Simple_SMTP_Constants::DOMAIN),
             'status'          => __('Status', Simple_SMTP_Constants::DOMAIN),
-            'testing'         => __('Testing', Simple_SMTP_Constants::DOMAIN),
             'scheduled_at'    => __('Scheduled At', Simple_SMTP_Constants::DOMAIN),
             'priority'        => __('Priority', Simple_SMTP_Constants::DOMAIN),
             'actions'         => __('Actions', Simple_SMTP_Constants::DOMAIN),
         ];
+
+        if (defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
+            $columns['testing'] = __('Testing', Simple_SMTP_Constants::DOMAIN);
+        }
+
+        return $columns;
     }
 
     public function get_sortable_columns(): array {
@@ -60,19 +65,23 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
         // Status filter
         $status_filter = isset($_GET['status_filter']) ? sanitize_text_field($_GET['status_filter']) : '';
-        $statuses = ['queued', 'processing', 'sent', 'failed'];
+        $statuses = [
+            'queued' => __('Queued', Simple_SMTP_Constants::DOMAIN),
+            'processing' => __('Processing', Simple_SMTP_Constants::DOMAIN),
+            'sent' => __('Sent', Simple_SMTP_Constants::DOMAIN),
+            'failed' => __('Failed', Simple_SMTP_Constants::DOMAIN),
+        ];
 
         echo '<div class="alignleft actions">';
         echo '<select name="status_filter" id="status_filter">';
         echo '<option value="">' . esc_html__('All Statuses', Simple_SMTP_Constants::DOMAIN) . '</option>';
-        foreach ($statuses as $status) {
-            echo '<option value="' . esc_attr($status) . '"' . selected($status_filter, $status, false) . '>' . esc_html(ucfirst($status)) . '</option>';
+        foreach ($statuses as $value => $label) {
+            echo '<option value="' . esc_attr($value) . '"' . selected($status_filter, $value, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select>';
 
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
-        // Get unique profile labels from the database
         $profile_labels = $wpdb->get_col(
             "SELECT DISTINCT JSON_UNQUOTE(JSON_EXTRACT(profile_settings, '$.label')) AS label FROM $table WHERE profile_settings IS NOT NULL ORDER BY label"
         );

@@ -48,10 +48,12 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                        class="nav-tab <?php echo $active_tab === 'log' ? 'nav-tab-active' : ''; ?>">
                         <?php echo esc_html__('Email Log', Simple_SMTP_Constants::DOMAIN); ?>
                     </a>
-                    <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=test"
-                       class="nav-tab <?php echo $active_tab === 'test' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Testing', Simple_SMTP_Constants::DOMAIN); ?>
-                    </a>
+                    <?php if (defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) : ?>
+                        <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=test"
+                           class="nav-tab <?php echo $active_tab === 'test' ? 'nav-tab-active' : ''; ?>">
+                            <?php echo esc_html__('Testing', Simple_SMTP_Constants::DOMAIN); ?>
+                        </a>
+                    <?php endif; ?>
                 </h2>
 
                 <?php
@@ -59,7 +61,7 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                     $this->render_general_settings_tab();
                 } elseif ($active_tab === 'log' && isset($simple_smtp_mail_log_settings)) {
                     $simple_smtp_mail_log_settings->render_tab();
-                } elseif ($active_tab === 'test' && isset($simple_smtp_mail_test_settings)) {
+                } elseif ($active_tab === 'test' && isset($simple_smtp_mail_test_settings) && defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
                     $simple_smtp_mail_test_settings->render_tab();
                 }
                 ?>
@@ -99,22 +101,25 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 
             add_settings_section(
                 'main_section',
-                __('General Settings', Simple_SMTP_Constants::DOMAIN),
+                '',//__('General Settings', Simple_SMTP_Constants::DOMAIN),
                 [$this, 'main_section_text'],
                 Simple_SMTP_Constants::SETTINGS_PAGE
             );
 
-            add_settings_field(
-                'testing',
-                __('Testing Mode', Simple_SMTP_Constants::DOMAIN),
-                [$this, 'testing_callback'],
-                Simple_SMTP_Constants::SETTINGS_PAGE,
-                'main_section'
-            );
+            // Conditionally register testing field if SIMPLE_SMTP_TESTING_MODE is 1
+            if (defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
+                add_settings_field(
+                    'testing',
+                    __('Testing Mode', Simple_SMTP_Constants::DOMAIN),
+                    [$this, 'testing_callback'],
+                    Simple_SMTP_Constants::SETTINGS_PAGE,
+                    'main_section'
+                );
+            }
         }
 
         public function main_section_text() {
-            echo '<p>' . esc_html__('Configure general settings for the SMTP Mail Scheduler.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+            //echo '<p>' . esc_html__('Configure general settings for the SMTP Mail Scheduler.', Simple_SMTP_Constants::DOMAIN) . '</p>';
         }
 
         public function edit_profiles() {
@@ -212,3 +217,4 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 }
 
 new Simple_SMTP_Mail_Settings();
+?>

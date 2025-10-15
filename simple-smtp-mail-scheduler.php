@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+define('SIMPLE_SMTP_TESTING_MODE', 0);
+
 require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
 require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
 require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
