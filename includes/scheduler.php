@@ -41,7 +41,8 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
                 ($this->callback)($toSend);
             }
 
-            error_log("Sending new batch of emails: " + $toSend);
+            // TODO for debugging purposes only
+            error_log("Sending new batch of emails: " . $toSend);
 
             update_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, $new_carry );
 
