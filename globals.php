@@ -24,6 +24,8 @@ final class Simple_SMTP_Constants {
     public const EMAILS_PER_UNIT  = 'simple_smtp_mail_scheduler_emails_per_unit';
     public const EMAILS_UNIT      = 'simple_smtp_mail_scheduler_emails_unit';
     public const EMAILS_TESTING   = 'simple_smtp_mail_scheduler_testing';
+    
+    public const EMAILS_SCHEDULER_LAST_TICK = 'simple_smtp_mail_scheduler_last_tick';
     public const EMAILS_SCHEDULER_CARRY = 'simple_smtp_mail_scheduler_carry';
 
     // Limits

@@ -32,22 +32,43 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
         }
 
         public function tick(): void {
-            $carry = (int) get_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, 0 );
+            $now       = current_time('timestamp');
 
-            $toSend = floor($this->rate + $carry);
-            $new_carry = ($this->rate + $carry) - $toSend;
-
+            $lastTime  = (int) get_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
+            $carry = (int) get_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, 0.0 );
+                
+            // How many seconds since last run
+            $elapsed   = max(1, $now - $lastTime);
+                
+            // Convert your rate (emails per minute) into per-second rate
+            $emailsPerSecond = $this->rate / 60.0;
+                
+            // Total "ideal" emails to send since last tick
+            $emailsExact = ($emailsPerSecond * $elapsed) + $carry;
+                
+            // Integer number of emails to send this tick
+            $toSend = (int) floor($emailsExact);
+                
+            // Save leftover fraction for next tick
+            $new_carry = $emailsExact - $toSend;
+                
             if ($toSend > 0 && is_callable($this->callback)) {
                 ($this->callback)($toSend);
             }
 
+
             // TODO for debugging purposes only
             error_log("Sending new batch of emails: " . $toSend);
-
+        
+            // Persist for next run
+            update_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
             update_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, $new_carry );
-
+        
+            // Clean up if queue is empty
             if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 simple_stmp_unschedule_cron_event();
+                delete_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK);
+                delete_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY);
             }
         }
     }
