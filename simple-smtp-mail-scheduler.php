@@ -15,30 +15,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-define('SIMPLE_SMTP_TESTING_MODE', 0);
+// TESTING MODE
+define('SIMPLE_SMTP_TESTING_MODE', 1);
 
 require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
 require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
 require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
 
 require_once __DIR__ . '/globals.php';
-require_once __DIR__ . '/utils.php';
 require_once __DIR__ . '/db/index.php';
 require_once __DIR__ . '/install.php';
 require_once __DIR__ . '/includes/index.php';
 require_once __DIR__ . '/admin/index.php';
 
 register_activation_hook(__FILE__, 'simple_smtp_mail_scheduler_activation');
-register_deactivation_hook( __FILE__, 'simple_smtp_mail_scheduler_deactivation' );
 
 add_action('plugins_loaded', 'simple_smtp_mail_scheduler_textdomain');
 function simple_smtp_mail_scheduler_textdomain() {
     load_plugin_textdomain(Simple_SMTP_Constants::DOMAIN, false, basename(dirname(__FILE__)) . '/languages/' );
-}
-
-function simple_smtp_mail_scheduler_deactivation() {
-    wp_clear_scheduled_hook( 'smtp_mail_send_emails_event' ); // The former one. Not used anymore
-	wp_clear_scheduled_hook( 'simple_smtp_mail_send_emails_event' );
 }
 
 add_filter('cron_schedules', 'simple_smtp_mail_add_cron_interval');

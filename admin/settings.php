@@ -35,7 +35,10 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
             ?>
             <div class="wrap">
-                <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN); ?></h1>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN); ?></h1>
+                    <?php simple_stmp_scheduler_status_callback(); ?>
+                </div>
 
                 <h2 class="nav-tab-wrapper">
                     <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=general"
@@ -72,7 +75,6 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             <div class="wrap">
                 <form method="post" action="options.php">
                     <?php
-                    simple_stmp_scheduler_status_callback();
                     $this->show_profiles();
                     settings_fields('simple_smtp_mail_settings_group');
                     do_settings_sections(Simple_SMTP_Constants::SETTINGS_PAGE);

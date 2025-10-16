@@ -1,9 +1,14 @@
-
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Simple SMTP Mail Scheduler\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-07 15:52+0200\n"
+"POT-Creation-Date: 2025-10-16 17:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,47 +17,47 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin/scheduler_settings.php:51
+#: admin/scheduler_settings.php:60
 msgid "Email Scheduler Settings"
 msgstr ""
 
-#: admin/scheduler_settings.php:58
+#: admin/scheduler_settings.php:67
 msgid "Emails per unit"
 msgstr ""
 
-#: admin/scheduler_settings.php:83
+#: admin/scheduler_settings.php:92
 msgid "Configure the email sending limits and scheduler settings below."
 msgstr ""
 
-#: admin/scheduler_settings.php:97
+#: admin/scheduler_settings.php:106
 msgid "per Minute"
 msgstr ""
 
-#: admin/scheduler_settings.php:98
+#: admin/scheduler_settings.php:107
 msgid "per Hour"
 msgstr ""
 
-#: admin/scheduler_settings.php:99
+#: admin/scheduler_settings.php:108
 msgid "per Day"
 msgstr ""
 
-#: admin/scheduler_settings.php:112
+#: admin/scheduler_settings.php:121
 msgid "Maximum number of emails that can be sent per time unit."
 msgstr ""
 
-#: admin/scheduler_settings.php:125
+#: admin/scheduler_settings.php:134
 msgid "Emails per unit must be a positive number."
 msgstr ""
 
-#: admin/scheduler_settings.php:142
+#: admin/scheduler_settings.php:151
 msgid "Invalid time unit selected."
 msgstr ""
 
-#: admin/settings.php:17 admin/settings.php:18 admin/settings.php:40
+#: admin/settings.php:17 admin/settings.php:18 admin/settings.php:39
 msgid "Simple SMTP Mail Scheduler"
 msgstr ""
 
-#: admin/settings.php:26 admin/profile_page.php:45
+#: admin/settings.php:26 admin/profile_page.php:53
 msgid "Edit SMTP Profile"
 msgstr ""
 
@@ -60,103 +65,99 @@ msgstr ""
 msgid "Edit SMTP"
 msgstr ""
 
-#: admin/settings.php:45 admin/settings.php:102
+#: admin/settings.php:46
 msgid "General Settings"
 msgstr ""
 
-#: admin/settings.php:49
+#: admin/settings.php:50
 msgid "Email Log"
 msgstr ""
 
-#: admin/settings.php:53 admin/log_table.php:28
+#: admin/settings.php:55 admin/log_table.php:35
 msgid "Testing"
 msgstr ""
 
-#: admin/settings.php:109
+#: admin/settings.php:113
 msgid "Testing Mode"
 msgstr ""
 
-#: admin/settings.php:117
-msgid "Configure general settings for the SMTP Mail Scheduler."
-msgstr ""
-
-#: admin/settings.php:134
+#: admin/settings.php:136
 msgid "Enable testing mode (emails will not be sent)"
 msgstr ""
 
-#: admin/settings.php:137
+#: admin/settings.php:139
 msgid "When enabled, emails are logged but not sent to recipients."
 msgstr ""
 
-#: admin/settings.php:147
+#: admin/settings.php:149
 msgid "SMTP Profiles"
 msgstr ""
 
-#: admin/settings.php:151 admin/profile_page.php:56
+#: admin/settings.php:153 admin/profile_page.php:64
 msgid "Label"
 msgstr ""
 
-#: admin/settings.php:152
+#: admin/settings.php:154
 msgid "Host"
 msgstr ""
 
-#: admin/settings.php:153 admin/profile_page.php:59
+#: admin/settings.php:155 admin/profile_page.php:67
 msgid "From Email"
 msgstr ""
 
-#: admin/settings.php:154 admin/settings.php:166
+#: admin/settings.php:156 admin/settings.php:168
 msgid "Active"
 msgstr ""
 
-#: admin/settings.php:155 admin/log_table.php:31
+#: admin/settings.php:157 admin/log_table.php:31
 msgid "Actions"
 msgstr ""
 
-#: admin/settings.php:178
+#: admin/settings.php:180
 msgid "Set Active"
 msgstr ""
 
-#: admin/settings.php:179
+#: admin/settings.php:181
 msgid "Are you sure you want to delete this profile?"
 msgstr ""
 
-#: admin/settings.php:179
+#: admin/settings.php:181
 msgid "Delete"
 msgstr ""
 
-#: admin/settings.php:187
+#: admin/settings.php:189
 msgid "Edit"
 msgstr ""
 
-#: admin/settings.php:195
+#: admin/settings.php:197
 msgid "No SMTP profiles found."
 msgstr ""
 
-#: admin/settings.php:203
+#: admin/settings.php:205
 msgid "Add new profile"
 msgstr ""
 
-#: admin/log_table.php:16
+#: admin/log_table.php:17
 msgid "Email"
 msgstr ""
 
-#: admin/log_table.php:17
+#: admin/log_table.php:18
 msgid "Emails"
 msgstr ""
 
-#: admin/log_table.php:24
+#: admin/log_table.php:25
 msgid "Recipient"
 msgstr ""
 
-#: admin/log_table.php:25 admin/test_settings.php:68
+#: admin/log_table.php:26 admin/test_settings.php:75
 msgid "Subject"
 msgstr ""
 
-#: admin/log_table.php:26
+#: admin/log_table.php:27
 msgid "Profile"
 msgstr ""
 
-#: admin/log_table.php:27
+#: admin/log_table.php:28
 msgid "Status"
 msgstr ""
 
@@ -168,176 +169,212 @@ msgstr ""
 msgid "Priority"
 msgstr ""
 
-#: admin/log_table.php:100
+#: admin/log_table.php:67 admin/log_table.php:143
+msgid "Queued"
+msgstr ""
+
+#: admin/log_table.php:68 admin/log_table.php:144
+msgid "Processing"
+msgstr ""
+
+#: admin/log_table.php:69 admin/log_table.php:145
+msgid "Sent"
+msgstr ""
+
+#: admin/log_table.php:70 admin/log_table.php:146
+msgid "Failed"
+msgstr ""
+
+#: admin/log_table.php:75
+msgid "All Statuses"
+msgstr ""
+
+#: admin/log_table.php:87
+msgid "All Profiles"
+msgstr ""
+
+#: admin/log_table.php:93
+msgid "Filter"
+msgstr ""
+
+#: admin/log_table.php:136
 msgid "Unknown Profile"
 msgstr ""
 
-#: admin/log_table.php:115
+#: admin/log_table.php:158
 msgid "Yes"
 msgstr ""
 
-#: admin/log_table.php:115
+#: admin/log_table.php:158
 msgid "No"
 msgstr ""
 
-#: admin/log_table.php:135
+#: admin/log_table.php:178
 msgid "Retry"
 msgstr ""
 
-#: admin/log_table.php:147
+#: admin/log_table.php:190
 msgid "Remove"
 msgstr ""
 
-#: admin/log_table.php:159
+#: admin/log_table.php:202
 msgid "Put to Front"
 msgstr ""
 
-#: admin/test_settings.php:27
+#: admin/test_settings.php:36
 msgid "Email sent (or queued) successfully!"
 msgstr ""
 
-#: admin/test_settings.php:28
+#: admin/test_settings.php:37
 msgid "Failed to send email."
 msgstr ""
 
-#: admin/test_settings.php:31
+#: admin/test_settings.php:40
 msgid "Invalid email address."
 msgstr ""
 
-#: admin/test_settings.php:44
+#: admin/test_settings.php:53
 msgid "Send Test Email (via wp_mail)"
 msgstr ""
 
-#: admin/test_settings.php:59
+#: admin/test_settings.php:66
 msgid "To"
 msgstr ""
 
-#: admin/test_settings.php:77
+#: admin/test_settings.php:84
 msgid "Message"
 msgstr ""
 
-#: admin/test_settings.php:84
+#: admin/test_settings.php:91
 msgid "Send Test Email"
 msgstr ""
 
-#: admin/log_settings.php:26
+#: admin/log_settings.php:28
 msgid "Security check failed."
 msgstr ""
 
-#: admin/log_settings.php:66
+#: admin/log_settings.php:57
 msgid "Mail Log"
 msgstr ""
 
-#: admin/utils.php:122
-msgid "Up and running"
+#: admin/utils.php:125
+msgid "Email sending in progress"
 msgstr ""
 
-#: admin/utils.php:124
+#: admin/utils.php:127
 #, php-format
 msgid "Next run: %s"
 msgstr ""
 
-#: admin/utils.php:128
-msgid "Not running"
+#: admin/utils.php:131
+msgid "Not running!"
 msgstr ""
 
-#: admin/utils.php:129
+#: admin/utils.php:132
 msgid ""
-"No cron event is scheduled. Try deactivating and reactivating the plugin."
+"There was an error activating the scheduler. Try reactivating the plugin."
 msgstr ""
 
-#: admin/profile_page.php:45
+#: admin/utils.php:135
+msgid "Idle"
+msgstr ""
+
+#: admin/utils.php:136
+msgid "No emails scheduled for sending."
+msgstr ""
+
+#: admin/profile_page.php:53
 msgid "Add SMTP Profile"
 msgstr ""
 
-#: admin/profile_page.php:62
+#: admin/profile_page.php:70
 msgid "From Name"
 msgstr ""
 
-#: admin/profile_page.php:65
+#: admin/profile_page.php:73
 msgid "SMTP Host"
 msgstr ""
 
-#: admin/profile_page.php:68
+#: admin/profile_page.php:76
 msgid "Port"
 msgstr ""
 
-#: admin/profile_page.php:71
+#: admin/profile_page.php:79
 msgid "Encryption"
 msgstr ""
 
-#: admin/profile_page.php:78
+#: admin/profile_page.php:86
 msgid "Auto TLS"
 msgstr ""
 
-#: admin/profile_page.php:82
+#: admin/profile_page.php:90
 msgid "Enable Auto TLS (automatically upgrade to TLS if available)"
 msgstr ""
 
-#: admin/profile_page.php:86
+#: admin/profile_page.php:94
 msgid "Username"
 msgstr ""
 
-#: admin/profile_page.php:89
+#: admin/profile_page.php:97
 msgid "Password"
 msgstr ""
 
-#: admin/profile_page.php:92
+#: admin/profile_page.php:100
 msgid "Password is set"
 msgstr ""
 
-#: admin/profile_page.php:93
+#: admin/profile_page.php:101
 msgid "No password set"
 msgstr ""
 
-#: admin/profile_page.php:94
+#: admin/profile_page.php:102
 msgid ""
 "Enter a new password to change it, or leave blank to keep the current "
 "password."
 msgstr ""
 
-#: admin/profile_page.php:101
+#: admin/profile_page.php:109
 msgid "Add Profile"
 msgstr ""
 
-#: admin/profile_page.php:101
+#: admin/profile_page.php:109
 msgid "Save Profile"
 msgstr ""
 
-#: admin/profile_page.php:104
+#: admin/profile_page.php:112
 msgid "Back"
 msgstr ""
 
-#: admin/profile_page.php:163
+#: admin/profile_page.php:171
 msgid "Label is required."
 msgstr ""
 
-#: admin/profile_page.php:166
+#: admin/profile_page.php:174
 msgid "From Email must be a valid email address."
 msgstr ""
 
-#: admin/profile_page.php:169
+#: admin/profile_page.php:177
 msgid "SMTP Host is required."
 msgstr ""
 
-#: admin/profile_page.php:172
+#: admin/profile_page.php:180
 msgid "Port must be a positive number."
 msgstr ""
 
-#: admin/profile_page.php:175
+#: admin/profile_page.php:183
 msgid "Username is required."
 msgstr ""
 
-#: admin/profile_page.php:178
+#: admin/profile_page.php:186
 msgid "Password is required."
 msgstr ""
 
-#: admin/profile_page.php:221
+#: admin/profile_page.php:229
 msgid ""
 "SMTP connection test <strong>failed</strong>. Check credentials or server "
 "settings."
 msgstr ""
 
-#: simple-smtp-mail-scheduler.php:46
+#: simple-smtp-mail-scheduler.php:42
 msgid "Every Minute"
 msgstr ""

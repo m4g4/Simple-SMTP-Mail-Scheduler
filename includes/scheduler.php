@@ -71,6 +71,23 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
             update_option( Simple_SMTP_Constants::EMAILS_ITERATION, $iteration );
             update_option( Simple_SMTP_Constants::EMAILS_TOTAL_SENT, $totalSent );
             update_option( Simple_SMTP_Constants::EMAILS_RESET_TIME, $resetTime );
+
+            if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+                simple_stmp_unschedule_cron_event();
+            }
         }
+    }
+}
+
+function simple_stmp_schedule_cron_event() {
+    if (!wp_next_scheduled('simple_smtp_mail_send_emails_event')) {
+        wp_schedule_event(time(), 'minute', 'simple_smtp_mail_send_emails_event');
+    }
+}
+
+function simple_stmp_unschedule_cron_event() {
+    $timestamp = wp_next_scheduled('simple_smtp_mail_send_emails_event');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'simple_smtp_mail_send_emails_event');
     }
 }

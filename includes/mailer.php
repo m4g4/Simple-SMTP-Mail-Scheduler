@@ -281,6 +281,10 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             // Queue
             $queued = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, $testing_flag);
 
+            if ($queued && Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+                simple_stmp_schedule_cron_event();
+            }
+
             // If enqueue succeeded, short-circuit wp_mail (return true)
             return $queued ? true : null;
         }
@@ -310,8 +314,6 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 $this->remove_exceeding_emails();
                 return true;
             }
-
-            // TODO run server if not running
 
             return false;
         }

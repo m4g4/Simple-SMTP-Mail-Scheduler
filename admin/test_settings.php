@@ -52,8 +52,6 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
             <div class="wrap">
                 <h1><?php echo esc_html__( 'Send Test Email (via wp_mail)', Simple_SMTP_Constants::DOMAIN ); ?></h1>
 
-                <?php simple_stmp_scheduler_status_callback(); ?>
-
                 <?php if ( $test_sent ) : ?>
                     <div class="<?php echo esc_attr( $class ); ?>">
                         <?php echo esc_html( $message ); ?>

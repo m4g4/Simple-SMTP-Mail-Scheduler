@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-10-10 23:28+0200\n"
+"PO-Revision-Date: 2025-10-16 18:09+0200\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -168,6 +168,34 @@ msgstr "Naplánované na"
 msgid "Priority"
 msgstr "Priorita"
 
+#: admin/log_table.php:67 admin/log_table.php:143
+msgid "Queued"
+msgstr "Zaradený do fronty"
+
+#: admin/log_table.php:68 admin/log_table.php:144
+msgid "Processing"
+msgstr "Práve sa odosiela"
+
+#: admin/log_table.php:69 admin/log_table.php:145
+msgid "Sent"
+msgstr "Odoslaný"
+
+#: admin/log_table.php:70 admin/log_table.php:146
+msgid "Failed"
+msgstr "Zlyhal"
+
+#: admin/log_table.php:75
+msgid "All Statuses"
+msgstr "Všetky stavy"
+
+#: admin/log_table.php:87
+msgid "All Profiles"
+msgstr "Všetky profily"
+
+#: admin/log_table.php:93
+msgid "Filter"
+msgstr "Filtrovať"
+
 #: admin/log_table.php:100
 msgid "Unknown Profile"
 msgstr "Neznámy profil"
@@ -228,9 +256,21 @@ msgstr "Kontrola bezpečnosti zlyhala."
 msgid "Mail Log"
 msgstr "Záznamy emailov"
 
-#: admin/utils.php:122
-msgid "Up and running"
-msgstr "Beží"
+#: admin/utils.php:125
+msgid "Email sending in progress"
+msgstr "Prebieha odosielanie e-mailu"
+
+#: admin/utils.php:132
+msgid "There was an error activating the scheduler. Try reactivating the plugin."
+msgstr "Pri aktivácii plánovača nastala chyba. Skúste znova plugin aktivovať."
+
+#: admin/utils.php:135
+msgid "Idle"
+msgstr "Bez úloh"
+
+#: admin/utils.php:136
+msgid "No emails scheduled for sending."
+msgstr "Nie sú naplánované žiadne e-maily na odoslanie."
 
 #: admin/utils.php:124
 #, php-format
@@ -240,10 +280,6 @@ msgstr "Ďalšie spustenie: %s"
 #: admin/utils.php:128
 msgid "Not running"
 msgstr "Neaktívne"
-
-#: admin/utils.php:129
-msgid "No cron event is scheduled. Try deactivating and reactivating the plugin."
-msgstr "Žiadna cron udalosť nie je naplánovaná. Skúste deaktivovať a znovu aktivovať plugin."
 
 #: admin/profile_page.php:45
 msgid "Add SMTP Profile"

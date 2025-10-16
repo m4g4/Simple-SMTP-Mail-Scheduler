@@ -55,7 +55,6 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
 
             echo '<div class="wrap">';
             echo '<h2>' . esc_html__('Mail Log', Simple_SMTP_Constants::DOMAIN) . '</h2>';
-            simple_stmp_scheduler_status_callback();
             echo '<form method="get">';
             echo '<input type="hidden" name="page" value="' . Simple_SMTP_Constants::SETTINGS_PAGE . '" />';
             echo '<input type="hidden" name="tab" value="log" />';

@@ -117,28 +117,24 @@ function simple_smtp_get_active_profile(): ?array {
 
 function simple_stmp_scheduler_status_callback() {
     $next = wp_next_scheduled('simple_smtp_mail_send_emails_event');
+    $should_be_running = Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending();
 
-     if ($next) {
-        echo '<span style="color:green;font-weight:bold;">✅ ' . esc_html__('Up and running', Simple_SMTP_Constants::DOMAIN) . '</span>';
-        echo '<p class="description">' . sprintf(
-            esc_html__('Next run: %s', Simple_SMTP_Constants::DOMAIN),
-            esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $next))
-        ) . '</p>';
+    echo "<div style='padding: 16px; background: #fff;'>";
+    if ($should_be_running) {
+        if ($next) {
+            echo '<span style="color:green;font-weight:bold;">✅ ' . esc_html__('Email sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<p class="description">' . sprintf(
+                esc_html__('Next run: %s', Simple_SMTP_Constants::DOMAIN),
+                esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $next))
+            ) . '</p>';
+        } else {
+            echo '<span style="color:red;font-weight:bold;">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+        }
     } else {
-        echo '<span style="color:red;font-weight:bold;">' . esc_html__('Not running', Simple_SMTP_Constants::DOMAIN) . '</span>';
-        echo '<p class="description">' . esc_html__('No cron event is scheduled. Try deactivating and reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+        echo '<span style="color:#999;font-weight:bold;">⏸ ' . esc_html__('Idle', Simple_SMTP_Constants::DOMAIN) . '</span>';
+        echo '<p class="description">' . esc_html__('No emails scheduled for sending.', Simple_SMTP_Constants::DOMAIN) . '</p>';
     }
-}
 
-function simple_stmp_schedule_cron_event() {
-    if (!wp_next_scheduled('simple_smtp_mail_send_emails_event')) {
-        wp_schedule_event(time(), 'minute', 'simple_smtp_mail_send_emails_event');
-    }
-}
-
-function simple_stmp_unschedule_cron_event() {
-    $timestamp = wp_next_scheduled('simple_smtp_mail_send_emails_event');
-    if ($timestamp) {
-        wp_unschedule_event($timestamp, 'simple_smtp_mail_send_emails_event');
-    }
+    echo "</div>";
 }
