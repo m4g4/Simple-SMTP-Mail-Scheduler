@@ -129,3 +129,16 @@ function simple_stmp_scheduler_status_callback() {
         echo '<p class="description">' . esc_html__('No cron event is scheduled. Try deactivating and reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
     }
 }
+
+function simple_stmp_schedule_cron_event() {
+    if (!wp_next_scheduled('simple_smtp_mail_send_emails_event')) {
+        wp_schedule_event(time(), 'minute', 'simple_smtp_mail_send_emails_event');
+    }
+}
+
+function simple_stmp_unschedule_cron_event() {
+    $timestamp = wp_next_scheduled('simple_smtp_mail_send_emails_event');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'simple_smtp_mail_send_emails_event');
+    }
+}

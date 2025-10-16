@@ -11,7 +11,7 @@ final class Simple_SMTP_Constants {
     public const VERSION     = '1.2';
 
     // Database
-    public const DB_NAME     = 'simple_smtp_mail_scheduler_queue';
+    public const QUEUE_DB_NAME     = 'simple_smtp_mail_scheduler_queue';
 
     // Plugin
     public const DOMAIN      = 'simple-smtp-mail-scheduler';
@@ -31,7 +31,11 @@ final class Simple_SMTP_Constants {
     // Limits
     public const EMAILS_LOG_MAX_ROWS = 100000;
 
+    public const MAX_EMAIL_RETRIES = 3;
+
     // Admin pages
     public const SETTINGS_PAGE = 'simple_smtp_mail_scheduler_settings';
     public const PROFILE_EDIT_PAGE = 'simple_smtp_mail_profile_edit';
+
+    public const ALL_STATUSES = ['queued', 'processing', 'sent', 'failed'];
 }

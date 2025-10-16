@@ -4,32 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function simple_smtp_mail_scheduler_activation() {
-    global $wpdb;
-
-    $table_name      = simple_smtp_prepare_db_name();
-    $charset_collate = $wpdb->get_charset_collate();
-
-    $sql = "CREATE TABLE $table_name (
-        email_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-        recipient_email VARCHAR(255) NOT NULL,
-        subject TEXT NOT NULL,
-        message LONGTEXT NOT NULL,
-        headers LONGTEXT DEFAULT NULL,
-        attachments LONGTEXT DEFAULT NULL,
-        scheduled_at DATETIME NOT NULL,
-        profile_settings LONGTEXT DEFAULT NULL,
-        priority INT DEFAULT 0,
-        status ENUM('queued', 'processing', 'sent', 'failed') DEFAULT 'queued',
-        retries INT UNSIGNED DEFAULT 0,
-        last_attempt_at DATETIME DEFAULT NULL,
-        error_message TEXT DEFAULT NULL,
-        testing TINYINT(1) DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY  (email_id)
-    ) $charset_collate;";
-
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    dbDelta($sql);
+    global $simple_smtp_email_queue;
+    
+    $simple_smtp_email_queue->create_table();
 
     // bump version
     update_option( Simple_SMTP_Constants::DB_VERSION, Simple_SMTP_Constants::VERSION );

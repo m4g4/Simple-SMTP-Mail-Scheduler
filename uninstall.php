@@ -6,11 +6,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 require_once plugin_dir_path( __FILE__ ) . 'utils.php';
 require_once plugin_dir_path( __FILE__ ) . 'globals.php';
 
-$table_name = simple_smtp_prepare_db_name();
-
-global $wpdb;
-
-$wpdb->query("DROP TABLE IF EXISTS $table_name");
+$simple_smtp_email_queue->drop_table();
 
 delete_option(Simple_SMTP_Constants::DB_VERSION);
 delete_option(Simple_SMTP_Constants::PROFILES);

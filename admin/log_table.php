@@ -10,6 +10,7 @@ if (!class_exists('WP_List_Table')) {
 class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
     private $emails;
     private $total_items;
+    private $per_page = 50;
 
     public function __construct() {
         parent::__construct([
@@ -60,8 +61,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             return;
         }
 
-        global $wpdb;
-        $table = simple_smtp_prepare_db_name();
+        global $simple_smtp_email_queue;
 
         // Status filter
         $status_filter = isset($_GET['status_filter']) ? sanitize_text_field($_GET['status_filter']) : '';
@@ -82,9 +82,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
-        $profile_labels = $wpdb->get_col(
-            "SELECT DISTINCT JSON_UNQUOTE(JSON_EXTRACT(profile_settings, '$.label')) AS label FROM $table WHERE profile_settings IS NOT NULL ORDER BY label"
-        );
+        $profile_labels = $simple_smtp_email_queue->get_profile_labels();
         $profile_labels = array_unique(array_filter($profile_labels));
 
         echo '<select name="profile_filter" id="profile_filter">';
@@ -99,68 +97,33 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
     }
 
     public function prepare_items(): void {
-        global $wpdb;
-
-        $table = simple_smtp_prepare_db_name();
+        global $simple_smtp_email_queue;
 
         $this->prepare_column_headers();
 
-        $per_page     = 10;
         $current_page = $this->get_pagenum();
-        $offset       = ($current_page - 1) * $per_page;
+        $offset       = ($current_page - 1) * $this->per_page;
 
         $orderby = !empty($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : 'scheduled_at';
         $order   = !empty($_GET['order']) && in_array(strtolower($_GET['order']), ['asc', 'desc']) ? strtolower($_GET['order']) : 'desc';
 
-        // Handle sorting for profile column
-        $orderby_sql = ($orderby === 'profile_settings')
-            ? "JSON_UNQUOTE(JSON_EXTRACT(profile_settings, '$.label')) $order"
-            : "$orderby $order";
-
-        // Handle filters
-        $where_clauses = [];
-        $query_params = [];
-
         // Status filter
         $status_filter = isset($_GET['status_filter']) ? sanitize_text_field($_GET['status_filter']) : '';
-        if ($status_filter && in_array($status_filter, ['queued', 'processing', 'sent', 'failed'])) {
-            $where_clauses[] = 'status = %s';
-            $query_params[] = $status_filter;
-        }
 
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
-        if ($profile_filter) {
-            $where_clauses[] = "JSON_UNQUOTE(JSON_EXTRACT(profile_settings, '$.label')) = %s";
-            $query_params[] = $profile_filter;
-        }
 
-        // Build WHERE clause
-        $where_sql = '';
-        if (!empty($where_clauses)) {
-            $where_sql = 'WHERE ' . implode(' AND ', $where_clauses);
-        }
+        $result = $simple_smtp_email_queue->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter);
+        $this->emails = $result[0];
 
-        // Prepare the main query
-        $query = "SELECT * FROM $table $where_sql ORDER BY $orderby_sql LIMIT %d OFFSET %d";
-        $query_params[] = $per_page;
-        $query_params[] = $offset;
-
-        $this->emails = $wpdb->get_results(
-            $wpdb->prepare($query, $query_params)
-        );
-
-        // Get total items for pagination (with filters applied)
-        $this->total_items = (int) $wpdb->get_var(
-            $wpdb->prepare("SELECT COUNT(*) FROM $table $where_sql", array_slice($query_params, 0, -2))
-        );
+        $this->total_items = $result[1];
 
         $this->items = $this->emails;
 
         $this->set_pagination_args([
             'total_items' => $this->total_items,
-            'per_page'    => $per_page,
-            'total_pages' => ceil($this->total_items / $per_page),
+            'per_page'    => $this->per_page,
+            'total_pages' => ceil($this->total_items / $this->per_page),
         ]);
     }
 

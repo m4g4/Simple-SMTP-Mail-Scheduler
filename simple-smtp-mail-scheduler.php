@@ -23,6 +23,7 @@ require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
 
 require_once __DIR__ . '/globals.php';
 require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/db/index.php';
 require_once __DIR__ . '/install.php';
 require_once __DIR__ . '/includes/index.php';
 require_once __DIR__ . '/admin/index.php';

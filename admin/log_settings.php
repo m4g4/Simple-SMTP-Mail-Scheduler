@@ -12,8 +12,7 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
         }
 
         public function handle_log_actions() {
-            global $wpdb;
-            $table = simple_smtp_prepare_db_name();
+            global $simple_smtp_email_queue;
 
             $action   = sanitize_text_field($_GET['action'] ?? '');
             $email_id = isset($_GET['email_id']) ? intval($_GET['email_id']) : 0;
@@ -28,26 +27,15 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
 
             switch ($action) {
                 case 'simple_smtp_mail_retry':
-                    $wpdb->update(
-                        $table,
-                        ['status' => 'queued', 'retries' => 0],
-                        ['email_id' => $email_id],
-                        ['%s', '%d'],
-                        ['%d']
-                    );
+                    $simple_smtp_email_queue->retry_sending_email($email_id);
                     break;
 
                 case 'simple_smtp_mail_remove':
-                    $wpdb->delete($table, ['email_id' => $email_id], ['%d']);
+                    $simple_smtp_email_queue->delete_email($email_id);
                     break;
 
                 case 'simple_smtp_mail_front':
-                    $wpdb->query(
-                        $wpdb->prepare(
-                            "UPDATE $table SET priority = priority + 1 WHERE email_id = %d",
-                            $email_id
-                        )
-                    );
+                    $simple_smtp_email_queue->prioritize_email($email_id);
                     break;
             }
 
