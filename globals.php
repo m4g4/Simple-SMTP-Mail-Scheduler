@@ -24,9 +24,7 @@ final class Simple_SMTP_Constants {
     public const EMAILS_PER_UNIT  = 'simple_smtp_mail_scheduler_emails_per_unit';
     public const EMAILS_UNIT      = 'simple_smtp_mail_scheduler_emails_unit';
     public const EMAILS_TESTING   = 'simple_smtp_mail_scheduler_testing';
-    public const EMAILS_ITERATION = 'simple_smtp_mail_scheduler_iteration';
-    public const EMAILS_TOTAL_SENT= 'simple_smtp_mail_scheduler_total_sent';
-    public const EMAILS_RESET_TIME= 'simple_smtp_mail_scheduler_reset_time';
+    public const EMAILS_SCHEDULER_CARRY = 'simple_smtp_mail_scheduler_carry';
 
     // Limits
     public const EMAILS_LOG_MAX_ROWS = 100000;

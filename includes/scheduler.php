@@ -32,45 +32,18 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
         }
 
         public function tick(): void {
-            $iteration = (int) get_option( Simple_SMTP_Constants::EMAILS_ITERATION, 0 );
-            $totalSent = (int) get_option( Simple_SMTP_Constants::EMAILS_TOTAL_SENT, 0 );
-            $resetTime = (int) get_option( Simple_SMTP_Constants::EMAILS_RESET_TIME, 0 );
+            $carry = (int) get_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, 0 );
 
-            $now = current_time( 'timestamp' );
+            $toSend = floor($this->rate + $carry);
+            $new_carry = ($this->rate + $carry) - $toSend;
 
-            // Reset counters when interval expires
-            if ( $resetTime === 0 || $now >= $resetTime ) {
-                $iteration = 0;
-                $totalSent = 0;
-
-                switch ( $this->unit ) {
-                    case 'minute':
-                        $resetTime = strtotime( '+1 minute', $now );
-                        break;
-                    case 'hour':
-                        $resetTime = strtotime( '+1 hour', $now );
-                        break;
-                    case 'day':
-                        $resetTime = strtotime( '+1 day', $now );
-                        break;
-                    default:
-                        $resetTime = $now + 60; // safe fallback → reset every minute
-                        break;
-                }
+            if ($toSend > 0 && is_callable($this->callback)) {
+                ($this->callback)($toSend);
             }
 
-            $iteration++;
-            $shouldHaveSent = (int) ceil( $iteration * $this->rate );
-            $emailsToSend   = $shouldHaveSent - $totalSent;
+            error_log("Sending new batch of emails: " + $toSend);
 
-            if ( $emailsToSend > 0 && is_callable( $this->callback ) ) {
-                ( $this->callback )( $emailsToSend );
-                $totalSent = $shouldHaveSent;
-            }
-
-            update_option( Simple_SMTP_Constants::EMAILS_ITERATION, $iteration );
-            update_option( Simple_SMTP_Constants::EMAILS_TOTAL_SENT, $totalSent );
-            update_option( Simple_SMTP_Constants::EMAILS_RESET_TIME, $resetTime );
+            update_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, $new_carry );
 
             if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 simple_stmp_unschedule_cron_event();

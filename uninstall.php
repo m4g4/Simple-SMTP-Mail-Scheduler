@@ -15,8 +15,6 @@ delete_option(Simple_SMTP_Constants::PROFILE_ACTIVE);
 delete_option(Simple_SMTP_Constants::EMAILS_PER_UNIT);
 delete_option(Simple_SMTP_Constants::EMAILS_UNIT);
 delete_option(Simple_SMTP_Constants::EMAILS_TESTING);
-delete_option(Simple_SMTP_Constants::EMAILS_ITERATION);
-delete_option(Simple_SMTP_Constants::EMAILS_TOTAL_SENT);
-delete_option(Simple_SMTP_Constants::EMAILS_RESET_TIME);
+delete_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY);
 
 ?>

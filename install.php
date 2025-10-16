@@ -8,6 +8,10 @@ function simple_smtp_mail_scheduler_activation() {
 
     // bump version
     update_option( Simple_SMTP_Constants::DB_VERSION, Simple_SMTP_Constants::VERSION );
+
+    if (Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+        simple_stmp_schedule_cron_event();
+    }
 }
 
 add_action( 'plugins_loaded', function() {
