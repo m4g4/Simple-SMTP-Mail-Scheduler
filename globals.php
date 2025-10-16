@@ -37,5 +37,8 @@ final class Simple_SMTP_Constants {
     public const SETTINGS_PAGE = 'simple_smtp_mail_scheduler_settings';
     public const PROFILE_EDIT_PAGE = 'simple_smtp_mail_profile_edit';
 
+    // Scheduler
+    public const SCHEDULER_EVENT_NAME = 'simple_smtp_mail_send_emails_event';
+
     public const ALL_STATUSES = ['queued', 'processing', 'sent', 'failed'];
 }

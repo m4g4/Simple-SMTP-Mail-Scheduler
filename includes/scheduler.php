@@ -80,14 +80,14 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
 }
 
 function simple_stmp_schedule_cron_event() {
-    if (!wp_next_scheduled('simple_smtp_mail_send_emails_event')) {
-        wp_schedule_event(time(), 'minute', 'simple_smtp_mail_send_emails_event');
+    if (!wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME)) {
+        wp_schedule_event(time(), 'minute', Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     }
 }
 
 function simple_stmp_unschedule_cron_event() {
-    $timestamp = wp_next_scheduled('simple_smtp_mail_send_emails_event');
+    $timestamp = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     if ($timestamp) {
-        wp_unschedule_event($timestamp, 'simple_smtp_mail_send_emails_event');
+        wp_unschedule_event($timestamp, Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     }
 }

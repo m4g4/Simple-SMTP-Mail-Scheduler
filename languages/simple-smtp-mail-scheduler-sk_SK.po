@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-10-16 18:09+0200\n"
+"PO-Revision-Date: 2025-10-16 18:27+0200\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -257,8 +257,8 @@ msgid "Mail Log"
 msgstr "Záznamy emailov"
 
 #: admin/utils.php:125
-msgid "Email sending in progress"
-msgstr "Prebieha odosielanie e-mailu"
+msgid "Sending in progress"
+msgstr "Prebieha odosielanie"
 
 #: admin/utils.php:132
 msgid "There was an error activating the scheduler. Try reactivating the plugin."

@@ -8,11 +8,6 @@ function simple_smtp_mail_scheduler_activation() {
 
     // bump version
     update_option( Simple_SMTP_Constants::DB_VERSION, Simple_SMTP_Constants::VERSION );
-
-    // ensure cron job is registered
-    if ( ! wp_next_scheduled( 'simple_smtp_mail_send_emails_event' ) ) {
-        wp_schedule_event( time(), 'minute', 'simple_smtp_mail_send_emails_event' );
-    }
 }
 
 add_action( 'plugins_loaded', function() {

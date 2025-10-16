@@ -9,7 +9,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         private static $instance;
         public function __construct() {
             add_filter('pre_wp_mail', array($this, 'queue_mail_instead_of_sending'), 10, 2);
-            add_action('simple_smtp_mail_send_emails_event', array($this, 'cron_send_mails'));
+            add_action(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME, array($this, 'cron_send_mails'));
         }
 
         public static function get_instance() {

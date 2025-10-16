@@ -67,9 +67,11 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             global $wpdb;
             $count = $wpdb->get_var(
                 $wpdb->prepare(
-                    "SELECT COUNT(*) FROM $this->table_name WHERE status IN (%s, %s)",
+                    "SELECT COUNT(*) FROM $this->table_name
+                    WHERE (status = %s OR (status = %s AND retries < %d))",
                     'queued',
-                    'failed'
+                    'failed',
+                    Simple_SMTP_Constants::MAX_EMAIL_RETRIES
                 )
             );
             return (int) $count > 0;

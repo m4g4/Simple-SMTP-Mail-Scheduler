@@ -116,13 +116,13 @@ function simple_smtp_get_active_profile(): ?array {
 }
 
 function simple_stmp_scheduler_status_callback() {
-    $next = wp_next_scheduled('simple_smtp_mail_send_emails_event');
+    $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     $should_be_running = Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending();
 
     echo "<div style='padding: 16px; background: #fff;'>";
     if ($should_be_running) {
         if ($next) {
-            echo '<span style="color:green;font-weight:bold;">✅ ' . esc_html__('Email sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<span style="color:green;font-weight:bold;">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
             echo '<p class="description">' . sprintf(
                 esc_html__('Next run: %s', Simple_SMTP_Constants::DOMAIN),
                 esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $next))
