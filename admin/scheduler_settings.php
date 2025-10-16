@@ -7,11 +7,20 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler_Settings' ) ) {
 
     class Simple_SMTP_Mail_Scheduler_Settings {
 
+        private static $instance;
         public function __construct() {
             add_action( 'admin_init', [ $this, 'register_settings' ] );
             add_action( 'update_option_' . Simple_SMTP_Constants::EMAILS_PER_UNIT, [ $this, 'reset_scheduler_counters' ], 10, 2 );
             add_action( 'update_option_' . Simple_SMTP_Constants::EMAILS_UNIT, [ $this, 'reset_scheduler_counters' ], 10, 2 );
         }
+
+        public static function get_instance() {
+		    if ( null === self::$instance ) {
+			    self::$instance = new self();
+		    }
+
+		    return self::$instance;
+	    }
 
         /**
          * Reset scheduler counters when limits change.
@@ -149,4 +158,4 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler_Settings' ) ) {
     }
 }
 
-$simple_smtp_mail_scheduler_settings = new Simple_SMTP_Mail_Scheduler_Settings();
+Simple_SMTP_Mail_Scheduler_Settings::get_instance();

@@ -8,12 +8,15 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
 
     class Simple_SMTP_Mail_Log_Settings {
 
-        public function __construct() {
-        }
+        private static $instance;
+        public static function get_instance() {
+		    if ( null === self::$instance ) {
+			    self::$instance = new self();
+		    }
 
+		    return self::$instance;
+	    }
         public function handle_log_actions() {
-            global $simple_smtp_email_queue;
-
             $action   = sanitize_text_field($_GET['action'] ?? '');
             $email_id = isset($_GET['email_id']) ? intval($_GET['email_id']) : 0;
 
@@ -27,15 +30,15 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
 
             switch ($action) {
                 case 'simple_smtp_mail_retry':
-                    $simple_smtp_email_queue->retry_sending_email($email_id);
+                    Simple_SMTP_Email_Queue::get_instance()->retry_sending_email($email_id);
                     break;
 
                 case 'simple_smtp_mail_remove':
-                    $simple_smtp_email_queue->delete_email($email_id);
+                    Simple_SMTP_Email_Queue::get_instance()->delete_email($email_id);
                     break;
 
                 case 'simple_smtp_mail_front':
-                    $simple_smtp_email_queue->prioritize_email($email_id);
+                    Simple_SMTP_Email_Queue::get_instance()->prioritize_email($email_id);
                     break;
             }
 
@@ -62,5 +65,3 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
         }
     }
 }
-
-$simple_smtp_mail_log_settings = new Simple_SMTP_Mail_Log_Settings();

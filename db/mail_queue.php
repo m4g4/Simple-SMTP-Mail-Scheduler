@@ -9,11 +9,21 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
      * Handles database operations for the SMTP Mail Scheduler email queue.
      */
     class Simple_SMTP_Email_Queue {
+        private static $instance;
         private $table_name;
 
         public function __construct() {
-            $this->table_name = simple_smtp_prepare_queue_db_name();
+            global $wpdb;
+            $this->table_name = $wpdb->prefix . Simple_SMTP_Constants::QUEUE_DB_NAME;
         }
+
+        public static function get_instance() {
+		    if ( null === self::$instance ) {
+			    self::$instance = new self();
+		    }
+
+		    return self::$instance;
+	    }
 
         public function create_table() {
             global $wpdb;
@@ -264,12 +274,6 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             $wpdb->query($sql);
         }
     }
-
-    $simple_smtp_email_queue = new Simple_SMTP_Email_Queue();
-}
-function simple_smtp_prepare_queue_db_name() {
-    global $wpdb;
-    return $wpdb->prefix . Simple_SMTP_Constants::QUEUE_DB_NAME;
 }
 
 ?>

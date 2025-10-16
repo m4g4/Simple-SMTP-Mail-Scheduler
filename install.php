@@ -4,9 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function simple_smtp_mail_scheduler_activation() {
-    global $simple_smtp_email_queue;
-    
-    $simple_smtp_email_queue->create_table();
+    Simple_SMTP_Email_Queue::get_instance()->create_table();
 
     // bump version
     update_option( Simple_SMTP_Constants::DB_VERSION, Simple_SMTP_Constants::VERSION );

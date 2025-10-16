@@ -6,10 +6,19 @@ if (!defined('ABSPATH')) {
 if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
     class Simple_SMTP_Mail_Scheduler_Mailer {
+        private static $instance;
         public function __construct() {
             add_filter('pre_wp_mail', array($this, 'queue_mail_instead_of_sending'), 10, 2);
             add_action('simple_smtp_mail_send_emails_event', array($this, 'cron_send_mails'));
         }
+
+        public static function get_instance() {
+		    if ( null === self::$instance ) {
+			    self::$instance = new self();
+		    }
+
+		    return self::$instance;
+	    }
 
         /**
          * Trigger cron processing (entry point)
@@ -28,11 +37,9 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          * @return void
          */
         public function cron_send_mails_tick($emails_per_minute) {
-            global $simple_smtp_email_queue;
-
             $emails_per_minute = (int) max(1, $emails_per_minute);
 
-            $emails = $simple_smtp_email_queue->get_emails_to_process($emails_per_minute);
+            $emails = Simple_SMTP_Email_Queue::get_instance()->get_emails_to_process($emails_per_minute);
             if (empty($emails)) {
                 return;
             }
@@ -43,7 +50,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                     continue;
                 }
 
-                $updated = $simple_smtp_email_queue->update_email_status($email->email_id, $email->status);
+                $updated = Simple_SMTP_Email_Queue::get_instance()->update_email_status($email->email_id, $email->status);
 
                 if ($updated === false || $updated === 0) {
                     // Someone else processed it or update failed — skip
@@ -56,13 +63,13 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 $current_time = current_time('mysql');
 
                 if ($send_result === true) {
-                    $simple_smtp_email_queue->update_email_sent($email->email_id, $current_time);
+                    Simple_SMTP_Email_Queue::get_instance()->update_email_sent($email->email_id, $current_time);
                 } else {
                     // failure; increase retries
                     $retry_count = isset($email->retries) ? ((int)$email->retries + 1) : 1;
                     $error_msg = is_string($send_result) ? $send_result : 'Unknown error';
 
-                    $simple_smtp_email_queue->update_email_failed($email->email_id, $current_time, $retry_count, $error_msg);
+                    Simple_SMTP_Email_Queue::get_instance()->update_email_failed($email->email_id, $current_time, $retry_count, $error_msg);
                 }
             }
 
@@ -290,15 +297,13 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          * @return bool
          */
         public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {
-            global $simple_smtp_email_queue;
-
             $active_profile = function_exists('simple_smtp_get_active_profile') ? simple_smtp_get_active_profile() : null;
             if (empty($active_profile) || !is_array($active_profile)) {
                 error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
                 return false;
             }
 
-            $inserted = $simple_smtp_email_queue->queue_email($to, $subject, $message, $headers, $attachments, current_time('mysql'), $active_profile, $testing);
+            $inserted = Simple_SMTP_Email_Queue::get_instance()->queue_email($to, $subject, $message, $headers, $attachments, current_time('mysql'), $active_profile, $testing);
 
             // After inserting, prune if necessary
             if ($inserted !== false) {
@@ -359,11 +364,9 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          * @return void
          */
         private function remove_exceeding_emails() {
-            global $simple_smtp_email_queue;
-
             $limit = (int) Simple_SMTP_Constants::EMAILS_LOG_MAX_ROWS;
 
-            $total = $simple_smtp_email_queue->get_total_emails();
+            $total = Simple_SMTP_Email_Queue::get_instance()->get_total_emails();
 
             if ($total <= $limit) {
                 return;
@@ -371,7 +374,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
             $to_delete = $total - $limit;
 
-            $simple_smtp_email_queue->remove_exceeding_emails($to_delete);
+            Simple_SMTP_Email_Queue::get_instance()->remove_exceeding_emails($to_delete);
         }
 
         /**
@@ -437,4 +440,4 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
     }
 }
 
-$simple_smtp_mail_scheduler_mailer = new Simple_SMTP_Mail_Scheduler_Mailer();
+Simple_SMTP_Mail_Scheduler_Mailer::get_instance();

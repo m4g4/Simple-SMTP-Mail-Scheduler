@@ -6,12 +6,20 @@ if (!defined('ABSPATH')) {
 if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
 
     class Simple_SMTP_Mail_Profile_Page {
+        private static $instance;
 
         public function __construct() {
             add_action('admin_post_simple_smtp_mail_profile_activate', [$this, 'handle_profile_activation']);
             add_action('admin_post_simple_smtp_mail_profile_delete', [$this, 'handle_profile_delete']);
             add_action('admin_post_simple_smtp_mail_profile_save', [$this, 'handle_profile_save']);
         }
+        public static function get_instance() {
+		    if ( null === self::$instance ) {
+			    self::$instance = new self();
+		    }
+
+		    return self::$instance;
+	    }
 
         public function display_profile(string $profile_id = null): void {
             $is_new = $profile_id === null;
@@ -282,16 +290,11 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
         }
 
         private function test_connection($profile) {
-            global $simple_smtp_mail_scheduler_mailer;
             if (empty($profile) || !is_array($profile)) {
                 return false;
             }
         
-            if (!$simple_smtp_mail_scheduler_mailer || !method_exists($simple_smtp_mail_scheduler_mailer, 'prepare_mailer')) {
-                return false;
-            }
-        
-            $mailer = $simple_smtp_mail_scheduler_mailer->prepare_mailer($profile);
+            $mailer = Simple_SMTP_Mail_Scheduler_Mailer::get_instance()->prepare_mailer($profile);
             if ($mailer === null) {
                 return false;
             }
@@ -313,4 +316,4 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
     }
 }
 
-$simple_smtp_profile_page = new Simple_SMTP_Mail_Profile_Page();
+Simple_SMTP_Mail_Profile_Page::get_instance();

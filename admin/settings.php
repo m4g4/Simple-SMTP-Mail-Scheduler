@@ -32,8 +32,6 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         }
 
         public function settings_page() {
-            global $simple_smtp_mail_log_settings, $simple_smtp_mail_test_settings;
-
             $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
             ?>
             <div class="wrap">
@@ -59,10 +57,10 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                 <?php
                 if ($active_tab === 'general') {
                     $this->render_general_settings_tab();
-                } elseif ($active_tab === 'log' && isset($simple_smtp_mail_log_settings)) {
-                    $simple_smtp_mail_log_settings->render_tab();
-                } elseif ($active_tab === 'test' && isset($simple_smtp_mail_test_settings) && defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
-                    $simple_smtp_mail_test_settings->render_tab();
+                } elseif ($active_tab === 'log') {
+                    Simple_SMTP_Mail_Log_Settings::get_instance()->render_tab();
+                } elseif ($active_tab === 'test' && defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
+                    Simple_SMTP_Mail_Test_Settings::get_instance()->render_tab();
                 }
                 ?>
             </div>
@@ -123,11 +121,8 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         }
 
         public function edit_profiles() {
-            global $simple_smtp_profile_page;
             $profile_id = isset($_GET['profile']) ? sanitize_text_field($_GET['profile']) : null;
-            if (isset($simple_smtp_profile_page)) {
-                $simple_smtp_profile_page->display_profile($profile_id);
-            }
+            Simple_SMTP_Mail_Profile_Page::get_instance()->display_profile($profile_id);
         }
 
         public function testing_callback() {

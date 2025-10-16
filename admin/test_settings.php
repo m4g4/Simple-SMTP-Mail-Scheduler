@@ -7,6 +7,15 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
 
 	class Simple_SMTP_Mail_Test_Settings {
 
+        private static $instance;
+
+        public static function get_instance() {
+		    if ( null === self::$instance ) {
+			    self::$instance = new self();
+		    }
+
+		    return self::$instance;
+	    }
         public function render_tab() {
             $test_sent = false;
             $class     = '';
@@ -88,5 +97,3 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
         }
     }
 }
-
-$simple_smtp_mail_test_settings = new Simple_SMTP_Mail_Test_Settings();

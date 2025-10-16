@@ -61,8 +61,6 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             return;
         }
 
-        global $simple_smtp_email_queue;
-
         // Status filter
         $status_filter = isset($_GET['status_filter']) ? sanitize_text_field($_GET['status_filter']) : '';
         $statuses = [
@@ -82,7 +80,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
-        $profile_labels = $simple_smtp_email_queue->get_profile_labels();
+        $profile_labels = Simple_SMTP_Email_Queue::get_instance()->get_profile_labels();
         $profile_labels = array_unique(array_filter($profile_labels));
 
         echo '<select name="profile_filter" id="profile_filter">';
@@ -97,8 +95,6 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
     }
 
     public function prepare_items(): void {
-        global $simple_smtp_email_queue;
-
         $this->prepare_column_headers();
 
         $current_page = $this->get_pagenum();
@@ -113,7 +109,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
 
-        $result = $simple_smtp_email_queue->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter);
+        $result = Simple_SMTP_Email_Queue::get_instance()->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter);
         $this->emails = $result[0];
 
         $this->total_items = $result[1];
