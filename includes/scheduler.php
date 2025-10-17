@@ -32,13 +32,15 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
         }
 
         public function tick(): void {
-            $now       = current_time('timestamp');
+            // Use microtime for sub-second accuracy
+            $now = microtime(true);
 
-            $lastTime  = (int) get_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
-            $carry = (int) get_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, 0.0 );
-                
+            $lastTime  = (float) get_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
+            $carry     = (float) get_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, 0.0);
+            
             // How many seconds since last run
-            $elapsed   = max(1, $now - $lastTime);
+            $elapsed = max(0.1, $now - $lastTime); // never 0, avoid divide-by-zero
+            update_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK, $now, false);
                 
             // Convert your rate (emails per minute) into per-second rate
             $emailsPerSecond = $this->rate / 60.0;
@@ -49,26 +51,22 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
             // Integer number of emails to send this tick
             $toSend = (int) floor($emailsExact);
                 
-            // Save leftover fraction for next tick
-            $new_carry = $emailsExact - $toSend;
+            $carry = $emailsExact - $toSend;
                 
             if ($toSend > 0 && is_callable($this->callback)) {
-                ($this->callback)($toSend);
+                try {
+                    ($this->callback)($toSend);
+                } catch (\Throwable $e) {
+                    error_log('Simple SMTP tick() error: ' . $e->getMessage());
+                }
             }
-
-
-            // TODO for debugging purposes only
-            error_log("Sending new batch of emails: " . $toSend);
+            
+            update_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, $carry, false );
         
-            // Persist for next run
-            update_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
-            update_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY, $new_carry );
-        
-            // Clean up if queue is empty
             if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 simple_stmp_unschedule_cron_event();
                 delete_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK);
-                delete_option( Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY);
+                delete_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY);
             }
         }
     }
