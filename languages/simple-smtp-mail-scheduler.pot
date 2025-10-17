@@ -166,6 +166,10 @@ msgid "Scheduled At"
 msgstr ""
 
 #: admin/log_table.php:30
+msgid "Last Attempt At"
+msgstr ""
+
+#: admin/log_table.php:30
 msgid "Priority"
 msgstr ""
 

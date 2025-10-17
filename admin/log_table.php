@@ -27,6 +27,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             'profile'         => __('Profile', Simple_SMTP_Constants::DOMAIN),
             'status'          => __('Status', Simple_SMTP_Constants::DOMAIN),
             'scheduled_at'    => __('Scheduled At', Simple_SMTP_Constants::DOMAIN),
+            'last_attempt_at' => __('Last Attempt At', Simple_SMTP_Constants::DOMAIN),
             'priority'        => __('Priority', Simple_SMTP_Constants::DOMAIN),
             'actions'         => __('Actions', Simple_SMTP_Constants::DOMAIN),
         ];
@@ -45,6 +46,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             'profile'         => ['profile_settings', false],
             'status'          => ['status', false],
             'scheduled_at'    => ['scheduled_at', true],
+            'last_attempt_at'    => ['last_attempt_at', true],
         ];
     }
 
@@ -130,6 +132,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                 return esc_html(is_array($emails) ? implode(', ', $emails) : $emails);
             case 'subject':
             case 'scheduled_at':
+            case 'last_attempt_at':
                 return esc_html($item->$column_name);
             case 'profile':
                 $profile = json_decode($item->profile_settings, true);
