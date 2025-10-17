@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+require_once __DIR__ . '/hour_stats_bar_chart.php';
+
 if (!class_exists('Simple_SMTP_Mail_Settings')) {
 
     class Simple_SMTP_Mail_Settings {
@@ -49,6 +51,10 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                        class="nav-tab <?php echo $active_tab === 'log' ? 'nav-tab-active' : ''; ?>">
                         <?php echo esc_html__('Email Log', Simple_SMTP_Constants::DOMAIN); ?>
                     </a>
+                    <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=stats"
+                       class="nav-tab <?php echo $active_tab === 'stats' ? 'nav-tab-active' : ''; ?>">
+                        <?php echo esc_html__('Statistics', Simple_SMTP_Constants::DOMAIN); ?>
+                    </a>
                     <?php if (defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) : ?>
                         <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=test"
                            class="nav-tab <?php echo $active_tab === 'test' ? 'nav-tab-active' : ''; ?>">
@@ -62,6 +68,8 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                     $this->render_general_settings_tab();
                 } elseif ($active_tab === 'log') {
                     Simple_SMTP_Mail_Log_Settings::get_instance()->render_tab();
+                } elseif ($active_tab === 'stats') {
+                    Simple_SMTP_Mail_Statistics::get_instance()->render_tab();
                 } elseif ($active_tab === 'test' && defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
                     Simple_SMTP_Mail_Test_Settings::get_instance()->render_tab();
                 }
@@ -140,7 +148,6 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             </p>
             <?php
         }
-
         public function show_profiles() {
             $active_profile = get_option(Simple_SMTP_Constants::PROFILE_ACTIVE, null);
             $profiles = get_option(Simple_SMTP_Constants::PROFILES, []);

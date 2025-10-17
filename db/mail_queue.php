@@ -194,6 +194,19 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             );
         }
 
+        public function get_last_day_emails_grouped_by_hour() {
+            global $wpdb;
+
+            return $wpdb->get_results("
+                SELECT DATE_FORMAT(last_attempt_at, '%H:00') AS hour_label, COUNT(*) AS total
+                FROM $this->table_name
+                WHERE status = 'sent'
+                  AND last_attempt_at >= NOW() - INTERVAL 1 DAY
+                GROUP BY HOUR(last_attempt_at)
+                ORDER BY HOUR(last_attempt_at)
+            ");
+        }
+
         public function retry_sending_email($email_id) {
             global $wpdb;
 
