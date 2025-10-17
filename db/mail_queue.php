@@ -130,7 +130,7 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             return $wpdb->get_results($query);
         }
 
-        public function get_emails($per_page, $offset, $orderby, $order = 'asc', $status = '', $profile = '') {
+        public function get_emails($per_page, $offset, $orderby, $order = 'asc', $status = '', $profile = '', $search = '') {
             global $wpdb;
 
             $orderby_sql = ($orderby === 'profile_settings')
@@ -157,6 +157,15 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             $where_sql = '';
             if (!empty($where_clauses)) {
                 $where_sql = 'WHERE ' . implode(' AND ', $where_clauses);
+            }
+
+            if (!empty($search)) {
+                $like = '%' . $wpdb->esc_like($search) . '%';
+                
+                if (empty($where_sql))
+                    $where_sql = 'WHERE 1=1';
+
+                $where_sql .= $wpdb->prepare(" AND (subject LIKE %s OR recipient_email LIKE %s)", $like, $like);
             }
 
             // Prepare the main query

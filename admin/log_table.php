@@ -63,16 +63,20 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             return;
         }
 
-        // Status filter
-        $status_filter = isset($_GET['status_filter']) ? sanitize_text_field($_GET['status_filter']) : '';
+        // Filters
+        $status_filter  = isset($_GET['status_filter']) ? sanitize_text_field($_GET['status_filter']) : '';
+        $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
+        $search_query   = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+
         $statuses = [
-            'queued' => __('Queued', Simple_SMTP_Constants::DOMAIN),
+            'queued'     => __('Queued', Simple_SMTP_Constants::DOMAIN),
             'processing' => __('Processing', Simple_SMTP_Constants::DOMAIN),
-            'sent' => __('Sent', Simple_SMTP_Constants::DOMAIN),
-            'failed' => __('Failed', Simple_SMTP_Constants::DOMAIN),
+            'sent'       => __('Sent', Simple_SMTP_Constants::DOMAIN),
+            'failed'     => __('Failed', Simple_SMTP_Constants::DOMAIN),
         ];
 
         echo '<div class="alignleft actions">';
+
         echo '<select name="status_filter" id="status_filter">';
         echo '<option value="">' . esc_html__('All Statuses', Simple_SMTP_Constants::DOMAIN) . '</option>';
         foreach ($statuses as $value => $label) {
@@ -80,8 +84,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         }
         echo '</select>';
 
-        // Profile filter
-        $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
+        // Profile filter dropdown
         $profile_labels = Simple_SMTP_Email_Queue::get_instance()->get_profile_labels();
         $profile_labels = array_unique(array_filter($profile_labels));
 
@@ -92,13 +95,20 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         }
         echo '</select>';
 
+        // Search input
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Search email or subject...', Simple_SMTP_Constants::DOMAIN) . '" value="' . esc_attr($search_query) . '" />';
+
+        // Submit button
         submit_button(__('Filter', Simple_SMTP_Constants::DOMAIN), 'button', 'filter_action', false);
+
         echo '</div>';
     }
+
 
     public function prepare_items(): void {
         $this->prepare_column_headers();
 
+        $search_query = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
         $current_page = $this->get_pagenum();
         $offset       = ($current_page - 1) * $this->per_page;
 
@@ -111,7 +121,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
 
-        $result = Simple_SMTP_Email_Queue::get_instance()->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter);
+        $result = Simple_SMTP_Email_Queue::get_instance()->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter, $search_query);
         $this->emails = $result[0];
 
         $this->total_items = $result[1];

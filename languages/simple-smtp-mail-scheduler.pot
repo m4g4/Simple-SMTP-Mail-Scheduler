@@ -197,6 +197,9 @@ msgstr ""
 msgid "All Profiles"
 msgstr ""
 
+msgid "Search email or subject..."
+msgstr ""
+
 #: admin/log_table.php:93
 msgid "Filter"
 msgstr ""
