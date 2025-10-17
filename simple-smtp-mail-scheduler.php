@@ -29,10 +29,15 @@ require_once __DIR__ . '/includes/index.php';
 require_once __DIR__ . '/admin/index.php';
 
 register_activation_hook(__FILE__, 'simple_smtp_mail_scheduler_activation');
+register_deactivation_hook( __FILE__, 'simple_smtp_mail_scheduler_deactivation' );
 
 add_action('plugins_loaded', 'simple_smtp_mail_scheduler_textdomain');
 function simple_smtp_mail_scheduler_textdomain() {
     load_plugin_textdomain(Simple_SMTP_Constants::DOMAIN, false, basename(dirname(__FILE__)) . '/languages/' );
+}
+
+function simple_smtp_mail_scheduler_deactivation() {
+    simple_stmp_unschedule_cron_event();
 }
 
 add_filter('cron_schedules', 'simple_smtp_mail_add_cron_interval');
