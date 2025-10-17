@@ -8,8 +8,6 @@ if (!class_exists('WP_List_Table')) {
 }
 
 class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
-    private $emails;
-    private $total_items;
     private $per_page = 50;
 
     public function __construct() {
@@ -22,6 +20,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
     public function get_columns(): array {
         $columns = [
+            'cb'              => '<input type="checkbox" />',
             'recipient_email' => __('Recipient', Simple_SMTP_Constants::DOMAIN),
             'subject'         => __('Subject', Simple_SMTP_Constants::DOMAIN),
             'profile'         => __('Profile', Simple_SMTP_Constants::DOMAIN),
@@ -41,12 +40,21 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
     public function get_sortable_columns(): array {
         return [
+            'status'          => ['status', false],
+            'priority'        => ['priority', false],
+            'scheduled_at'    => ['scheduled_at', true],
+            'last_attempt_at' => ['last_attempt_at', true],
             'recipient_email' => ['recipient_email', true],
             'subject'         => ['subject', false],
             'profile'         => ['profile_settings', false],
-            'status'          => ['status', false],
-            'scheduled_at'    => ['scheduled_at', true],
-            'last_attempt_at'    => ['last_attempt_at', true],
+        ];
+    }
+
+    public function get_bulk_actions() {
+        return [
+            'retry'   => __('Retry', Simple_SMTP_Constants::DOMAIN),
+            'delete'  => __('Delete', Simple_SMTP_Constants::DOMAIN),
+            'front'   => __('Put to Front', Simple_SMTP_Constants::DOMAIN),
         ];
     }
 
@@ -122,16 +130,15 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
 
         $result = Simple_SMTP_Email_Queue::get_instance()->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter, $search_query);
-        $this->emails = $result[0];
 
-        $this->total_items = $result[1];
+        $total_items = $result[1];
 
-        $this->items = $this->emails;
+        $this->items = $result[0];
 
         $this->set_pagination_args([
-            'total_items' => $this->total_items,
+            'total_items' => $total_items,
             'per_page'    => $this->per_page,
-            'total_pages' => ceil($this->total_items / $this->per_page),
+            'total_pages' => ceil($total_items / $this->per_page),
         ]);
     }
 
@@ -174,6 +181,13 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             default:
                 return '';
         }
+    }
+
+    public function column_cb($item) {
+        return sprintf(
+            '<input type="checkbox" name="email_ids[]" value="%d" />',
+            absint($item->email_id)
+        );
     }
 
     public function get_row_actions($item): array {

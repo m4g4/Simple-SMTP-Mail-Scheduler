@@ -185,6 +185,15 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             return [$result, $total_items];
         }
 
+        public function get_emails_by_ids($email_ids) {
+            global $wpdb;
+
+            $placeholders = implode(',', array_fill(0, count($email_ids), '%d'));
+            return $wpdb->get_results(
+                $wpdb->prepare("SELECT * FROM $this->table_name WHERE email_id IN ($placeholders)", $email_ids)
+            );
+        }
+
         public function retry_sending_email($email_id) {
             global $wpdb;
 
@@ -197,10 +206,22 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             );
         }
 
+        public function retry_sending_emails($email_ids) {
+            global $wpdb;
+
+            $wpdb->query("UPDATE $this->table_name SET status = 'queued', retries = 0 WHERE email_id IN (" . implode(',', $email_ids) . ")");
+        }
+
         public function delete_email($email_id) {
             global $wpdb;
 
             $wpdb->delete($this->table_name, ['email_id' => $email_id], ['%d']);
+        }
+
+        public function delete_emails($email_ids) {
+            global $wpdb;
+
+            $wpdb->query("DELETE FROM $this->table_name WHERE email_id IN (" . implode(',', $email_ids) . ")");
         }
 
         public function prioritize_email($email_id) {
@@ -212,6 +233,11 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
                     $email_id
                 )
             );
+        }
+
+        public function prioritize_emails($email_ids) {
+            global $wpdb;
+            $wpdb->query("UPDATE $this->table_name SET priority = priority + 1 WHERE email_id IN (" . implode(',', $email_ids) . ")");
         }
 
         public function update_email_status($email_id, $status) {
