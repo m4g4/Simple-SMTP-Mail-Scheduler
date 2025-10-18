@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-10-17 19:01+0200\n"
+"PO-Revision-Date: 2025-10-18 23:47+0200\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -76,6 +76,12 @@ msgstr "Počet emailov za hodinu"
 
 msgid "Emails Sent per Hour (Last 24h)"
 msgstr "Odoslané e-maily za hodinu (posledných 24h)"
+
+msgid "Email Status Distribution (Last 24h)"
+msgstr "Distribúcia stavov e-mailov (posledných 24h)"
+
+msgid "No data to display."
+msgstr "Žiadne údaje na zobrazenie."
 
 #: admin/settings.php:53 admin/log_table.php:28
 msgid "Testing"

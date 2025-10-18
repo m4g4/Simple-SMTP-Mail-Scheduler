@@ -105,9 +105,9 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
 
             echo '</table>';
 
-            echo '<div style="display: flex; gap: 12px;">';
+            echo '<div class="s-smtp-profile-button-group">';
             submit_button($is_new ? __('Add Profile', Simple_SMTP_Constants::DOMAIN) : __('Save Profile', Simple_SMTP_Constants::DOMAIN));
-            echo '<div style="padding-top: 30px">';
+            echo '<div class="s-smtp-profile-back-button-wrapper">';
             echo '<a href="' . admin_url('options-general.php?page=' . Simple_SMTP_Constants::SETTINGS_PAGE) . '">';
             echo '<button type="button" class="button button-secondary">&larr; ' . __('Back', Simple_SMTP_Constants::DOMAIN) . '</button>';
             echo '</a>';

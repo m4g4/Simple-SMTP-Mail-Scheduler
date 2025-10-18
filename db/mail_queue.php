@@ -207,6 +207,17 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             ");
         }
 
+        public function get_status_data_last_24h() {
+            global $wpdb;
+
+            return $wpdb->get_results("
+                SELECT status, COUNT(*) as count
+                FROM $this->table_name
+                WHERE scheduled_at >= NOW() - INTERVAL 24 HOUR
+                GROUP BY status
+            ");
+        }
+
         public function retry_sending_email($email_id) {
             global $wpdb;
 

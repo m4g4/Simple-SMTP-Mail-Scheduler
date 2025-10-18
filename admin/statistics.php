@@ -23,11 +23,20 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Statistics' ) ) {
         public function render_tab(): void {
             ?>
             <div class="wrap">
-                <h2><?php esc_html_e('SMTP Mail Statistics', Simple_SMTP_Constants::DOMAIN); ?></h2>
-                <div style="max-width: 600px; max-height: 400px;">
-                    <?php
-                        Simple_SMTP_Mail_Hour_Stats_Bar_Chart::get_instance()->display();
-                    ?>
+                <h2><?php esc_html_e('Statistics', Simple_SMTP_Constants::DOMAIN); ?></h2>
+                <div class="s-smtp-mail-charts">
+                    <div class="s-smtp-mail-chart s-smtp-mail-hour-chart">
+                        <?php
+                            $chart = new Simple_SMTP_Mail_Hour_Stats_Bar_Chart();
+                            $chart->display();
+                        ?>
+                    </div>
+                    <div class="s-smtp-mail-chart s-smtp-mail-status-chart">
+                        <?php
+                            $chart = new Simple_SMTP_Mail_Status_Donut_Chart();
+                            $chart->display();
+                        ?>
+                    </div>
                 </div>
             </div>
             <?php

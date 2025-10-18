@@ -79,6 +79,15 @@ msgstr ""
 msgid "Emails per hour"
 msgstr ""
 
+msgid "Emails Sent per Hour (Last 24h)"
+msgstr ""
+
+msgid "Emails Sent per Hour (Last 24h)"
+msgstr ""
+
+msgid "No data to display."
+msgstr ""
+
 #: admin/settings.php:55 admin/log_table.php:35
 msgid "Testing"
 msgstr ""
@@ -391,3 +400,6 @@ msgstr ""
 #: simple-smtp-mail-scheduler.php:42
 msgid "Every Minute"
 msgstr ""
+
+
+

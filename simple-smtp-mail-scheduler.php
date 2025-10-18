@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Simple SMTP Mail Scheduler
  * Description: Intercepts WordPress emails, queues them, and sends via SMTP with retry logic and logging.
- * Version:     1.0.0
+ * Version:     1.5.0
  * Author:      m4g4
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

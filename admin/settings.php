@@ -3,8 +3,6 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-require_once __DIR__ . '/hour_stats_bar_chart.php';
-
 if (!class_exists('Simple_SMTP_Mail_Settings')) {
 
     class Simple_SMTP_Mail_Settings {
@@ -12,6 +10,16 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         public function __construct() {
             add_action('admin_menu', [$this, 'register_menus']);
             add_action('admin_init', [$this, 'register_settings']);
+            add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
+        }
+
+        public function enqueue_assets() {
+            wp_enqueue_style(
+		    	'simple-smtp-mail-scheduler-admin-assets',
+		    	plugins_url('css/admin.css', __FILE__),
+		    	array(),
+				Simple_SMTP_Constants::PLUGIN_VERSION
+		    );
         }
 
         public function register_menus() {
@@ -37,7 +45,7 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
             ?>
             <div class="wrap">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="s-smtp-headline-wrapper">
                     <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN); ?></h1>
                     <?php simple_stmp_scheduler_status_callback(); ?>
                 </div>

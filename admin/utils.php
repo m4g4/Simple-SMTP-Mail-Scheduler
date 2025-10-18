@@ -119,20 +119,20 @@ function simple_stmp_scheduler_status_callback() {
     $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     $should_be_running = Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending();
 
-    echo "<div style='padding: 16px; background: #fff;'>";
+    echo "<div class='s-smtp-status-bar'>";
     if ($should_be_running) {
         if ($next) {
-            echo '<span style="color:green;font-weight:bold;">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<span class="s-smtp-status-bar-running">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
             echo '<p class="description">' . sprintf(
                 esc_html__('Next run: %s', Simple_SMTP_Constants::DOMAIN),
                 esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $next))
             ) . '</p>';
         } else {
-            echo '<span style="color:red;font-weight:bold;">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<span class="s-smtp-status-bar-not-running">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
             echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
         }
     } else {
-        echo '<span style="color:#999;font-weight:bold;">⏸ ' . esc_html__('Idle', Simple_SMTP_Constants::DOMAIN) . '</span>';
+        echo '<span class="s-smtp-status-bar-idle">⏸ ' . esc_html__('Idle', Simple_SMTP_Constants::DOMAIN) . '</span>';
         echo '<p class="description">' . esc_html__('No emails scheduled for sending.', Simple_SMTP_Constants::DOMAIN) . '</p>';
     }
 

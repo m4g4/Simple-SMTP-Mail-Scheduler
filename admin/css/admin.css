@@ -1,0 +1,38 @@
+.s-smtp-headline-wrapper { 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.s-smtp-profile-button-group { 
+    display: flex; 
+    gap: 12px; 
+}
+
+.s-smtp-profile-back-button-wrapper {
+    padding-top: 30px;
+}
+
+.s-smtp-status-bar { padding: 16px; background: #fff; }
+
+.s-smtp-status-bar-running     { color:green; font-weight:bold; }
+.s-smtp-status-bar-not-running { color:red;   font-weight:bold; }
+.s-smtp-status-bar-idle        { color:#999;  font-weight:bold; }
+
+.s-smtp-mail-charts { display: flex; gap: 20px; flex-wrap: wrap; }
+
+.s-smtp-mail-chart { padding: 14px; background: #ffffff; border-radius: 4px; border: 1px solid #ddd; }
+.s-smtp-mail-hour-chart { flex: 0 0 600px; }
+.s-smtp-mail-status-chart { flex: 0 0 300px; }
+
+.s-smtp-mail-chart-wrapper {
+    position: relative;
+}
+
+.s-smtp-mail-no-donut-chart-data {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}

@@ -8,6 +8,7 @@ if (!defined('ABSPATH')) {
  */
 final class Simple_SMTP_Constants {
 
+    public const PLUGIN_VERSION     = '1.5.0';
     public const VERSION     = '1.2';
 
     // Database

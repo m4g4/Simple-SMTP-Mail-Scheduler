@@ -7,28 +7,10 @@ if (!defined('ABSPATH')) {
 if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
 
     class Simple_SMTP_Mail_Hour_Stats_Bar_Chart {
-        private static $instance;
-
-        public function __construct() {
-            add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
-        }
-
-        public static function get_instance() {
-		    if ( null === self::$instance ) {
-			    self::$instance = new self();
-		    }
-
-		    return self::$instance;
-	    }
-
-        public function enqueue_assets() {
-            // TODO Local asset with proper version should be used instead.
-            wp_enqueue_script('chartjs', 'https://cdn.jsdelivr.net/npm/chart.js', [], null, true);
-        }
 
         public function display() {
             ?>
-            <canvas id="smtpMailHourlyChart" height="200"></canvas>
+            <canvas id="smtpMailHourlyChart"></canvas>
             <?php
 
             $results = Simple_SMTP_Email_Queue::get_instance()->get_last_day_emails_grouped_by_hour();
@@ -87,6 +69,4 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
             );
         }
     }
-
-    Simple_SMTP_Mail_Hour_Stats_Bar_Chart::get_instance();
 }
