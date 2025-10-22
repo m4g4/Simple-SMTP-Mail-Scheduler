@@ -146,71 +146,38 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
                 // === Process headers ===
                 if (!empty($headers)) {
-                    if (is_string($headers)) {
-                        $headers = array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $headers)));
+                    $h = $this->process_headers($headers);
+                                
+                    // Reply-To
+                    if (!empty($h['reply_to']) && is_email($h['reply_to'])) {
+                        $mailer->addReplyTo($h['reply_to']);
                     }
-
-                    // Skip headers that must be unique and are already set by PHPMailer
-                    $skip = ['from', 'content-type', 'mime-version', 'to', 'subject'];
-
-                    if ($this->is_assoc_array($headers)) {
-                        foreach ($headers as $hname => $hvalue) {
-                            $hname_l = strtolower(trim((string)$hname));
-                            $hvalue = trim((string)$hvalue);
-
-                            if (in_array($hname_l, $skip, true)) {
-                                continue; // <-- important: skip duplicate content-type etc.
-                            }
-
-                            if ($hname_l === 'reply-to') {
-                                $mailer->addReplyTo($hvalue);
-                            } elseif ($hname_l === 'cc') {
-                                foreach (array_map('trim', explode(',', $hvalue)) as $cc) {
-                                    if (is_email($cc)) {
-                                        $mailer->addCC($cc);
-                                    }
-                                }
-                            } elseif ($hname_l === 'bcc') {
-                                foreach (array_map('trim', explode(',', $hvalue)) as $bcc) {
-                                    if (is_email($bcc)) {
-                                        $mailer->addBCC($bcc);
-                                    }
-                                }
-                            } else {
-                                $mailer->addCustomHeader($hname . ': ' . $hvalue);
+                
+                    // CC
+                    if (!empty($h['cc'])) {
+                        $ccs = (array) $h['cc'];
+                        foreach ($ccs as $cc) {
+                            if (is_email($cc)) {
+                                $mailer->addCC($cc);
                             }
                         }
-                    } else {
-                        // numeric-indexed header lines
-                        foreach ($headers as $header_line) {
-                            $header_line = trim($header_line);
-                            if ($header_line === '') continue;
-
-                            $header_lower = strtolower($header_line);
-                            if (preg_match('/^(from|content-type|mime-version|to|subject):/i', $header_lower)) {
-                                continue; // skip these to avoid duplicates
+                    }
+                
+                    // BCC
+                    if (!empty($h['bcc'])) {
+                        $bccs = (array) $h['bcc'];
+                        foreach ($bccs as $bcc) {
+                            if (is_email($bcc)) {
+                                $mailer->addBCC($bcc);
                             }
-
-                            if (stripos($header_line, 'reply-to:') === 0) {
-                                $addr = trim(substr($header_line, 9));
-                                if (is_email($addr)) {
-                                    $mailer->addReplyTo($addr);
-                                }
-                            } elseif (stripos($header_line, 'cc:') === 0) {
-                                foreach (array_map('trim', explode(',', substr($header_line, 3))) as $cc) {
-                                    if (is_email($cc)) {
-                                        $mailer->addCC($cc);
-                                    }
-                                }
-                            } elseif (stripos($header_line, 'bcc:') === 0) {
-                                foreach (array_map('trim', explode(',', substr($header_line, 4))) as $bcc) {
-                                    if (is_email($bcc)) {
-                                        $mailer->addBCC($bcc);
-                                    }
-                                }
-                            } else {
-                                $mailer->addCustomHeader($header_line);
-                            }
+                        }
+                    }
+                
+                    // Custom headers
+                    if (!empty($h['custom_header'])) {
+                        $custom_headers = (array) $h['custom_header'];
+                        foreach ($custom_headers as $header_line) {
+                            $mailer->addCustomHeader($header_line);
                         }
                     }
                 }
@@ -281,9 +248,10 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             // Queue
             $queued = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, $testing_flag);
 
-            if ($queued && Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+            error_log('Email scheduled ' . print_r($queued, true) . '| Has emails: ' . print_r(Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending(), true));
+            //if ($queued && Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 simple_stmp_schedule_cron_event();
-            }
+            //}
 
             // If enqueue succeeded, short-circuit wp_mail (return true)
             return $queued ? true : null;
@@ -301,22 +269,51 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          * @return bool
          */
         public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {
-            $active_profile = function_exists('simple_smtp_get_active_profile') ? simple_smtp_get_active_profile() : null;
-            if (empty($active_profile) || !is_array($active_profile)) {
-                error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
-                return false;
+            $profile = null;
+            $from = $this->parse_from_header($headers);
+                
+            // Try to match profile by 'From' email
+            if (!empty($from['email'])) {
+                $profile = simple_smtp_get_profile_by_mail($from['email']);
+            
+                // Override "from_name" if provided
+                if (!empty($from['name']) && is_array($profile)) {
+                    $profile['from_name'] = $from['name'];
+                }
             }
-
-            $inserted = Simple_SMTP_Email_Queue::get_instance()->queue_email($to, $subject, $message, $headers, $attachments, current_time('mysql'), $active_profile, $testing);
-
+        
+            // Fallback: use active profile
+            if (empty($profile) || !is_array($profile)) {
+                if (function_exists('simple_smtp_get_active_profile')) {
+                    $profile = simple_smtp_get_active_profile();
+                }
+                if (empty($profile) || !is_array($profile)) {
+                    error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
+                    return false;
+                }
+            }
+        
+            // Queue the email
+            $inserted = Simple_SMTP_Email_Queue::get_instance()->queue_email(
+                $to,
+                $subject,
+                $message,
+                $headers,
+                $attachments,
+                current_time('mysql'),
+                $profile,
+                $testing
+            );
+        
             // After inserting, prune if necessary
             if ($inserted !== false) {
                 $this->remove_exceeding_emails();
                 return true;
             }
-
+        
             return false;
         }
+
 
         /**
          * Initialize PHPMailer using profile settings array.
@@ -378,6 +375,149 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
             Simple_SMTP_Email_Queue::get_instance()->remove_exceeding_emails($to_delete);
         }
+
+        private function process_headers($headers) {
+            if (is_string($headers)) {
+                $headers = array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $headers)));
+            }
+        
+            $result = [
+                'cc' => [],
+                'bcc' => [],
+                'custom_header' => [],
+            ];
+        
+            // Skip headers that are managed by PHPMailer directly
+            $skip = ['from', 'content-type', 'mime-version', 'to', 'subject'];
+        
+            if ($this->is_assoc_array($headers)) {
+                // Associative array format
+                foreach ($headers as $hname => $hvalue) {
+                    $hname_l = strtolower(trim((string)$hname));
+                    $hvalue = trim((string)$hvalue);
+                
+                    if (in_array($hname_l, $skip, true)) {
+                        continue;
+                    }
+                
+                    switch ($hname_l) {
+                        case 'reply-to':
+                            if (is_email($hvalue)) {
+                                $result['reply_to'] = $hvalue;
+                            }
+                            break;
+                        
+                        case 'cc':
+                            foreach (array_map('trim', explode(',', $hvalue)) as $cc) {
+                                if (is_email($cc)) {
+                                    $result['cc'][] = $cc;
+                                }
+                            }
+                            break;
+                        
+                        case 'bcc':
+                            foreach (array_map('trim', explode(',', $hvalue)) as $bcc) {
+                                if (is_email($bcc)) {
+                                    $result['bcc'][] = $bcc;
+                                }
+                            }
+                            break;
+                        
+                        default:
+                            $result['custom_header'][] = $hname . ': ' . $hvalue;
+                            break;
+                    }
+                }
+            } else {
+                // Numeric-indexed header lines (like "CC: john@example.com")
+                foreach ($headers as $header_line) {
+                    $header_line = trim($header_line);
+                    if ($header_line === '') continue;
+                
+                    if (preg_match('/^(from|content-type|mime-version|to|subject):/i', $header_line)) {
+                        continue; // Skip duplicates
+                    }
+                
+                    if (stripos($header_line, 'reply-to:') === 0) {
+                        $addr = trim(substr($header_line, 9));
+                        if (is_email($addr)) {
+                            $result['reply_to'] = $addr;
+                        }
+                    } elseif (stripos($header_line, 'cc:') === 0) {
+                        foreach (array_map('trim', explode(',', substr($header_line, 3))) as $cc) {
+                            if (is_email($cc)) {
+                                $result['cc'][] = $cc;
+                            }
+                        }
+                    } elseif (stripos($header_line, 'bcc:') === 0) {
+                        foreach (array_map('trim', explode(',', substr($header_line, 4))) as $bcc) {
+                            if (is_email($bcc)) {
+                                $result['bcc'][] = $bcc;
+                            }
+                        }
+                    } else {
+                        $result['custom_header'][] = $header_line;
+                    }
+                }
+            }
+        
+            // Remove empty arrays for cleaner results
+            return array_filter($result);
+        }
+
+
+        private function parse_from_header($headers) {
+            // Normalize headers to an array of lines
+            if (is_string($headers)) {
+                $headers = array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $headers)));
+            }
+        
+            $from_line = '';
+        
+            if ($this->is_assoc_array($headers)) {
+                // Associative headers array
+                foreach ($headers as $hname => $hvalue) {
+                    if (strtolower(trim((string)$hname)) === 'from') {
+                        $from_line = trim($hvalue);
+                        break;
+                    }
+                }
+            } else {
+                // Numeric array of header lines
+                foreach ($headers as $header_line) {
+                    if (stripos($header_line, 'from:') === 0) {
+                        $from_line = trim(substr($header_line, 5));
+                        break;
+                    }
+                }
+            }
+        
+            if (empty($from_line)) {
+                return ['name' => '', 'email' => ''];
+            }
+        
+            $name  = '';
+            $email = '';
+            
+            if (preg_match('/(.*)<(.+)>/', $from_line, $matches)) {
+                $name  = trim(str_replace(['"', "'"], '', $matches[1]));
+                $email = sanitize_email(trim($matches[2]));
+            } elseif (is_email($from_line)) {
+                $email = sanitize_email($from_line);
+            } else {
+                // Sometimes plugins pass weird forms like "John Doe john@example.com"
+                if (preg_match('/([^\s]+@[^\s]+)/', $from_line, $matches)) {
+                    $email = sanitize_email($matches[1]);
+                    $name  = trim(str_replace($matches[1], '', $from_line));
+                }
+            }
+        
+            return [
+                'name'  => $name,
+                'email' => $email,
+            ];
+        }
+
 
         /**
          * Detect if the content-type header indicates HTML

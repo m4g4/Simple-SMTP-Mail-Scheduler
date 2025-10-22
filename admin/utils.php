@@ -115,6 +115,25 @@ function simple_smtp_get_active_profile(): ?array {
     return $profiles[ $active_profile_id ];
 }
 
+function simple_smtp_get_profile_by_mail($from_email) {
+    $profiles = get_option( Simple_SMTP_Constants::PROFILES, [] );
+
+    if (empty($profiles) || !is_array($profiles)) {
+        return null;
+    }
+
+    foreach ($profiles as $profile_id => $profile) {
+        if (
+            !empty($profile['from_email']) &&
+            strtolower($profile['from_email']) === strtolower($from_email)
+        ) {
+            return $profile;
+        }
+    }
+
+    return null;
+}
+
 function simple_stmp_scheduler_status_callback() {
     $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     $should_be_running = Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending();
