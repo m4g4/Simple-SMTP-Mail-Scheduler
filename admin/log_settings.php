@@ -40,6 +40,9 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                 case 'simple_smtp_mail_front':
                     Simple_SMTP_Email_Queue::get_instance()->prioritize_email($email_id);
                     break;
+                case 'simple_smtp_mail_send_now':
+                    Simple_SMTP_Mail_Scheduler_Mailer::get_instance()->send_email_by_id($email_id);
+                    break;
             }
 
             // Redirect to prevent action re-execution on page refresh

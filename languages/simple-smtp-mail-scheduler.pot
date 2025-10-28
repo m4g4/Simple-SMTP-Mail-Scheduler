@@ -243,6 +243,9 @@ msgstr ""
 msgid "Put to Front"
 msgstr ""
 
+msgid "Send Now"
+msgstr ""
+
 #: admin/test_settings.php:36
 msgid "Email sent (or queued) successfully!"
 msgstr ""

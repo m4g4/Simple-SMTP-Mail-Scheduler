@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-10-18 23:47+0200\n"
+"PO-Revision-Date: 2025-10-28 10:21+0100\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -241,6 +241,9 @@ msgstr "Odstrániť"
 #: admin/log_table.php:159
 msgid "Put to Front"
 msgstr "Presunúť dopredu"
+
+msgid "Send Now"
+msgstr "Poslať ihneď"
 
 #: admin/test_settings.php:27
 msgid "Email sent (or queued) successfully!"

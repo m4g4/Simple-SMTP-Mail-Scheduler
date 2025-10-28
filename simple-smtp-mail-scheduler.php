@@ -4,10 +4,14 @@
  * Description: Intercepts WordPress emails, queues them, and sends via SMTP with retry logic and logging.
  * Version:     1.5.0
  * Author:      m4g4
- * License:     GPLv2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * License:     GPLv3 or later
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: simple-smtp-mail-scheduler
  * Domain Path: /languages
+ * 
+ * Requires at least: 5.6
+ * Tested up to: 6.8
+ * Requires PHP: 7.4
  */
 
 

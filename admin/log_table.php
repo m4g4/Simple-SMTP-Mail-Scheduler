@@ -230,6 +230,19 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             );
         }
 
+        // Send now (queued only)
+        if ($item->status === 'queued') {
+            $actions['send-now'] = sprintf(
+                '<a href="%s">%s</a>',
+                esc_url(add_query_arg([
+                    'action'   => 'simple_smtp_mail_send_now',
+                    'email_id' => $item->email_id,
+                    '_wpnonce' => wp_create_nonce('simple_smtp_mail_send_now_' . $item->email_id),
+                ])),
+                __('Send Now', Simple_SMTP_Constants::DOMAIN)
+            );
+        }
+
         return $actions;
     }
 }

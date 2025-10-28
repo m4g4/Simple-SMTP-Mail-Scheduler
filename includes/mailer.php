@@ -45,31 +45,8 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             }
 
             foreach ($emails as $email) {
-                // Validate required fields
-                if (empty($email->email_id)) {
-                    continue;
-                }
-
-                $updated = Simple_SMTP_Email_Queue::get_instance()->update_email_status($email->email_id, $email->status);
-
-                if ($updated === false || $updated === 0) {
-                    // Someone else processed it or update failed — skip
-                    continue;
-                }
-
-                // Send the email
-                $send_result = $this->send_email_from_record($email);
-
-                $current_time = current_time('mysql');
-
-                if ($send_result === true) {
-                    Simple_SMTP_Email_Queue::get_instance()->update_email_sent($email->email_id, $current_time);
-                } else {
-                    // failure; increase retries
-                    $retry_count = isset($email->retries) ? ((int)$email->retries + 1) : 1;
-                    $error_msg = is_string($send_result) ? $send_result : 'Unknown error';
-
-                    Simple_SMTP_Email_Queue::get_instance()->update_email_failed($email->email_id, $current_time, $retry_count, $error_msg);
+                if(!$this->send_email($email)) {
+                    error_log("Failed to send email " . print_r($email));
                 }
             }
 
@@ -77,14 +54,53 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             $this->remove_exceeding_emails();
         }
 
-        /**
-         * Build PHPMailer from DB record and send the mail.
-         *
-         * Returns true on success, or an error string on failure.
-         *
-         * @param object $email DB row object
-         * @return true|string
-         */
+        public function send_email_by_id($email_id) {
+            $emails = Simple_SMTP_Email_Queue::get_instance()->get_emails_by_ids([$email_id]);
+            if (empty($emails) || count($emails) !== 1) {
+                throw new InvalidArgumentException( 'No such email ' . $email_id );
+            }
+
+            if(!$this->send_email($emails[0])) {
+                error_log("Failed to send email with id " . $email_id);
+            }
+
+            // prune old log rows if necessary
+            $this->remove_exceeding_emails();
+        }
+
+        protected function send_email($email) {
+            // Validate required fields
+            if (empty($email->email_id)) {
+                return false;
+            }
+
+            $updated = Simple_SMTP_Email_Queue::get_instance()->update_email_status($email->email_id, $email->status);
+
+            if ($updated === false || $updated === 0) {
+                // Someone else processed it or update failed — skip
+                return false;
+            }
+
+            // Send the email
+            $send_result = $this->send_email_from_record($email);
+
+            $current_time = current_time('mysql');
+
+            if ($send_result === true) {
+                Simple_SMTP_Email_Queue::get_instance()->update_email_sent($email->email_id, $current_time);
+            } else {
+                // failure; increase retries
+                $retry_count = isset($email->retries) ? ((int)$email->retries + 1) : 1;
+                $error_msg = is_string($send_result) ? $send_result : 'Unknown error';
+
+                Simple_SMTP_Email_Queue::get_instance()->update_email_failed($email->email_id, $current_time, $retry_count, $error_msg);
+
+                return false;
+            }
+
+            return true;
+        }
+
         protected function send_email_from_record($email) {
             // Extract and normalize fields
             $to_serialized = isset($email->recipient_email) ? $email->recipient_email : '';
@@ -140,26 +156,25 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 $mailer->CharSet = 'UTF-8';
                 $mailer->Subject = wp_strip_all_tags($subject);
                 $mailer->Body    = $message;
-                $mailer->AltBody = wp_strip_all_tags($message); // plain-text fallback
+                $mailer->AltBody = wp_strip_all_tags($message);   // plain-text fallback
                 $mailer->isHTML((bool)$is_html);                // sets Content-Type correctly
-                $mailer->XMailer = '';                          // hide PHPMailer signature
+                $mailer->XMailer = '';                                  // hide PHPMailer signature
 
                 // === Process headers ===
                 if (!empty($headers)) {
                     $h = $this->process_headers($headers);
                                 
                     // Reply-To
-                    if (!empty($h['reply_to']) && is_email($h['reply_to'])) {
-                        $mailer->addReplyTo($h['reply_to']);
+                    if (!empty($h['reply-to'])) {
+                        list($replyToEmail, $replyToName) = $this->parseAddress($h['reply-to']);
+                        $mailer->addReplyTo($replyToEmail, $replyToName);
                     }
                 
                     // CC
                     if (!empty($h['cc'])) {
                         $ccs = (array) $h['cc'];
                         foreach ($ccs as $cc) {
-                            if (is_email($cc)) {
-                                $mailer->addCC($cc);
-                            }
+                            $mailer->addCC($cc);
                         }
                     }
                 
@@ -167,15 +182,13 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                     if (!empty($h['bcc'])) {
                         $bccs = (array) $h['bcc'];
                         foreach ($bccs as $bcc) {
-                            if (is_email($bcc)) {
-                                $mailer->addBCC($bcc);
-                            }
+                            $mailer->addBCC($bcc);
                         }
                     }
                 
                     // Custom headers
-                    if (!empty($h['custom_header'])) {
-                        $custom_headers = (array) $h['custom_header'];
+                    if (!empty($h['custom-header'])) {
+                        $custom_headers = (array) $h['custom-header'];
                         foreach ($custom_headers as $header_line) {
                             $mailer->addCustomHeader($header_line);
                         }
@@ -202,15 +215,6 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             }
         }
 
-
-        /**
-         * Intercepts wp_mail() and queues the message instead of sending.
-         * Return null to let WordPress send the message; return true/false to short-circuit.
-         *
-         * @param null|bool $pre_wp_mail
-         * @param array     $atts
-         * @return null|bool
-         */
         public function queue_mail_instead_of_sending($pre_wp_mail, $atts) {
             // Respect a bypass constant to allow immediate sending
             if (defined('SMTP_MAIL_BYPASS_QUEUE') && SMTP_MAIL_BYPASS_QUEUE === true) {
@@ -248,37 +252,25 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             // Queue
             $queued = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, $testing_flag);
 
-            error_log('Email scheduled ' . print_r($queued, true) . '| Has emails: ' . print_r(Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending(), true));
-            //if ($queued && Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+            if ($queued && Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 simple_stmp_schedule_cron_event();
-            //}
+            }
 
             // If enqueue succeeded, short-circuit wp_mail (return true)
             return $queued ? true : null;
         }
 
-        /**
-         * Insert email into queue table
-         *
-         * @param array|string $to
-         * @param string $subject
-         * @param string $message
-         * @param array|string $headers
-         * @param array $attachments
-         * @param int $testing
-         * @return bool
-         */
         public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {
             $profile = null;
-            $from = $this->parse_from_header($headers);
+            list($fromEmail, $fromName) = $this->parse_from_header($headers);
                 
             // Try to match profile by 'From' email
-            if (!empty($from['email'])) {
-                $profile = simple_smtp_get_profile_by_mail($from['email']);
+            if (!empty($fromEmail)) {
+                $profile = simple_smtp_get_profile_by_mail($fromEmail);
             
                 // Override "from_name" if provided
-                if (!empty($from['name']) && is_array($profile)) {
-                    $profile['from_name'] = $from['name'];
+                if (!empty($fromName) && is_array($profile)) {
+                    $profile['from_name'] = $fromName;
                 }
             }
         
@@ -314,13 +306,6 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             return false;
         }
 
-
-        /**
-         * Initialize PHPMailer using profile settings array.
-         *
-         * @param array $profile
-         * @return \PHPMailer\PHPMailer\PHPMailer|null
-         */
         public function prepare_mailer($profile) {
             if (empty($profile) || !is_array($profile)) {
                 return null;
@@ -357,11 +342,6 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             }
         }
 
-        /**
-         * Remove oldest rows when exceeding the configured maximum.
-         *
-         * @return void
-         */
         private function remove_exceeding_emails() {
             $limit = (int) Simple_SMTP_Constants::EMAILS_LOG_MAX_ROWS;
 
@@ -384,7 +364,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             $result = [
                 'cc' => [],
                 'bcc' => [],
-                'custom_header' => [],
+                'custom-header' => [],
             ];
         
             // Skip headers that are managed by PHPMailer directly
@@ -402,9 +382,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 
                     switch ($hname_l) {
                         case 'reply-to':
-                            if (is_email($hvalue)) {
-                                $result['reply_to'] = $hvalue;
-                            }
+                            $result['reply-to'] = $hvalue;
                             break;
                         
                         case 'cc':
@@ -424,7 +402,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                             break;
                         
                         default:
-                            $result['custom_header'][] = $hname . ': ' . $hvalue;
+                            $result['custom-header'][] = $hname . ': ' . $hvalue;
                             break;
                     }
                 }
@@ -440,9 +418,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 
                     if (stripos($header_line, 'reply-to:') === 0) {
                         $addr = trim(substr($header_line, 9));
-                        if (is_email($addr)) {
-                            $result['reply_to'] = $addr;
-                        }
+                        $result['reply-to'] = $addr;
                     } elseif (stripos($header_line, 'cc:') === 0) {
                         foreach (array_map('trim', explode(',', substr($header_line, 3))) as $cc) {
                             if (is_email($cc)) {
@@ -456,7 +432,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                             }
                         }
                     } else {
-                        $result['custom_header'][] = $header_line;
+                        $result['custom-header'][] = $header_line;
                     }
                 }
             }
@@ -467,7 +443,6 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
 
         private function parse_from_header($headers) {
-            // Normalize headers to an array of lines
             if (is_string($headers)) {
                 $headers = array_filter(array_map('trim', preg_split("/\r\n|\n|\r/", $headers)));
             }
@@ -493,29 +468,10 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             }
         
             if (empty($from_line)) {
-                return ['name' => '', 'email' => ''];
+                return ['', ''];
             }
         
-            $name  = '';
-            $email = '';
-            
-            if (preg_match('/(.*)<(.+)>/', $from_line, $matches)) {
-                $name  = trim(str_replace(['"', "'"], '', $matches[1]));
-                $email = sanitize_email(trim($matches[2]));
-            } elseif (is_email($from_line)) {
-                $email = sanitize_email($from_line);
-            } else {
-                // Sometimes plugins pass weird forms like "John Doe john@example.com"
-                if (preg_match('/([^\s]+@[^\s]+)/', $from_line, $matches)) {
-                    $email = sanitize_email($matches[1]);
-                    $name  = trim(str_replace($matches[1], '', $from_line));
-                }
-            }
-        
-            return [
-                'name'  => $name,
-                'email' => $email,
-            ];
+            return $this->parseAddress($from_line);
         }
 
 
@@ -557,13 +513,20 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          */
         private function parseAddress($address) {
             $address = (string)$address;
-            if (preg_match('/^(.*)<(.+?)>$/', trim($address), $matches)) {
-                $name = trim(trim($matches[1]), "\"' ");
-                $email = trim($matches[2]);
-            } else {
+            if (preg_match('/(.*)<(.+)>/', trim($address), $matches)) {
+                $name  = trim(str_replace(['"', "'"], '', $matches[1]));
+                $email = sanitize_email(trim($matches[2]));
+            } elseif (is_email($address)) {
                 $name = '';
-                $email = trim($address);
+                $email = sanitize_email($address);
+            } else {
+                // Sometimes plugins pass weird forms like "John Doe john@example.com"
+                if (preg_match('/([^\s]+@[^\s]+)/', $address, $matches)) {
+                    $email = sanitize_email($matches[1]);
+                    $name  = trim(str_replace($matches[1], '', $address));
+                }
             }
+
             return array($email, $name);
         }
 
