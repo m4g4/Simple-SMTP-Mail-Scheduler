@@ -14,21 +14,21 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
             <?php
 
             $results = Simple_SMTP_Email_Queue::get_instance()->get_last_day_emails_grouped_by_hour();
+            
+            $labels = [];
+            $data = [];
 
-            $hours = [];
-
-            for ($i = 0; $i < 24; $i++) {
-                $hour = sprintf('%02d:00', $i);
-                $hours[$hour] = 0;
-            }
-        
+            $utcTimezone = new DateTimeZone('UTC');
+                    
             foreach ($results as $row) {
-                $hours[$row->hour_label] = (int) $row->total;
+                $dateTimeObject = new DateTime($row->time_slot, $utcTimezone);
+                $labels[] = $dateTimeObject->format('c');
+                $data[] = (int) $row->count;
             }
 
             wp_add_inline_script('chartjs', 'const smtpMailHourlyData = ' . wp_json_encode([
-                'labels' => array_keys($hours),
-                'values' => array_values($hours),
+                'labels' => $labels,
+                'values' => $data,
             ]) . ';', 'before');
 
             wp_add_inline_script('chartjs', "
@@ -48,7 +48,13 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
                             responsive: true,
                             scales: {
                                 x: {
-                                    ticks: { stepSize: 1 }
+                                    type: 'time',
+                                    time: {
+                                        unit: 'hour',
+                                        displayFormats: {
+                                            hour: 'HH:mm'
+                                        }
+                                    }
                                 },
                                 y: {
                                     beginAtZero: true,

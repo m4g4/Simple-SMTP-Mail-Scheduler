@@ -198,12 +198,12 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             global $wpdb;
 
             return $wpdb->get_results("
-                SELECT DATE_FORMAT(last_attempt_at, '%H:00') AS hour_label, COUNT(*) AS total
+                SELECT DATE_FORMAT(last_attempt_at, '%Y-%m-%d %H:00:00') AS time_slot, COUNT(*) AS count
                 FROM $this->table_name
                 WHERE status = 'sent'
-                  AND last_attempt_at >= NOW() - INTERVAL 1 DAY
-                GROUP BY HOUR(last_attempt_at)
-                ORDER BY HOUR(last_attempt_at)
+                    AND last_attempt_at >= NOW() - INTERVAL 24 HOUR
+                GROUP BY time_slot
+                ORDER BY time_slot ASC;
             ");
         }
 
