@@ -159,13 +159,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                 $color  = $colors[$item->priority] ?? 'black';
                 return '<span style="color:' . esc_attr($color) . '">' . esc_html($item->priority) . '</span>';
             case 'status':
-                $status_labels = [
-                    'queued'     => __('Queued', Simple_SMTP_Constants::DOMAIN),
-                    'processing' => __('Processing', Simple_SMTP_Constants::DOMAIN),
-                    'sent'       => __('Sent', Simple_SMTP_Constants::DOMAIN),
-                    'failed'     => __('Failed', Simple_SMTP_Constants::DOMAIN),
-                ];
-                $status = $status_labels[$item->status] ?? ucfirst($item->status);
+                $status = Simple_SMTP_Constants::get_status_text($item->status) ?? ucfirst($item->status);
                 $status_colors = [
                     'queued'     => 'orange',
                     'processing' => 'orange',

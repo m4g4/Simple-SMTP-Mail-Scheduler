@@ -42,4 +42,14 @@ final class Simple_SMTP_Constants {
     public const SCHEDULER_EVENT_NAME = 'simple_smtp_mail_send_emails_event';
 
     public const ALL_STATUSES = ['queued', 'processing', 'sent', 'failed'];
+
+    public static function get_status_text(string $status): string {
+        switch ($status) {
+            case 'queued': return __('Queued', self::DOMAIN);
+            case 'processing': return __('Processing', self::DOMAIN);
+            case 'sent': return __('Sent', self::DOMAIN);
+            case 'failed': return __('Failed', self::DOMAIN);
+            default: return '';
+        }
+    }
 }

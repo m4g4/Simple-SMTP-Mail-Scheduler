@@ -35,7 +35,7 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
             ];
         
             foreach ($results as $row) {
-                $data['labels'][] = ucfirst($row->status);
+                $data['labels'][] = Simple_SMTP_Constants::get_status_text($row->status) ?? ucfirst($row->status);
                 $data['values'][] = (int) $row->count;
                 $data['colors'][] = $color_map[$row->status] ?? '#9ca3af'; // gray fallback
             }
