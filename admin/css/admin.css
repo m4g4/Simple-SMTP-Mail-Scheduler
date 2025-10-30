@@ -19,11 +19,12 @@
 .s-smtp-status-bar-not-running { color:red;   font-weight:bold; }
 .s-smtp-status-bar-idle        { color:#999;  font-weight:bold; }
 
+.s-smtp-mail-charts_container { display: flex; gap: 20px; flex-direction: column; }
 .s-smtp-mail-charts { display: flex; gap: 20px; flex-wrap: wrap; }
 
 .s-smtp-mail-chart { padding: 14px; background: #ffffff; border-radius: 4px; border: 1px solid #ddd; }
-.s-smtp-mail-hour-chart { flex: 0 0 600px; }
-.s-smtp-mail-status-chart { flex: 0 0 300px; }
+.s-smtp-mail-bar-chart { flex: 0 0 600px; }
+.s-smtp-mail-donut-chart { flex: 0 0 300px; }
 
 .s-smtp-mail-chart-wrapper {
     position: relative;

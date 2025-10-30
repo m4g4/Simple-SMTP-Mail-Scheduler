@@ -64,8 +64,13 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
          * @return bool True if there are queued or failed emails, false otherwise.
          */
         public function has_email_entries_for_sending() {
+            $count = $this->get_email_entry_count_for_sending();
+            return (int) $count > 0;
+        }
+
+        public function get_email_entry_count_for_sending() {
             global $wpdb;
-            $count = $wpdb->get_var(
+            return (int) $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT COUNT(*) FROM $this->table_name
                     WHERE (status = %s OR (status = %s AND retries < %d))",
@@ -74,7 +79,6 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
                     Simple_SMTP_Constants::MAX_EMAIL_RETRIES
                 )
             );
-            return (int) $count > 0;
         }
 
         public function get_profile_labels() {

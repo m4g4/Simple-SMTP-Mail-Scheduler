@@ -107,6 +107,41 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         public function register_settings() {
             register_setting(
                 'simple_smtp_mail_settings_group',
+                Simple_SMTP_Constants::EMAILS_PER_UNIT,
+                [
+                    'type'              => 'integer',
+                    'sanitize_callback' => [ $this, 'sanitize_emails_per_unit' ],
+                    'default'           => 5,
+                ]
+            );
+
+            register_setting(
+                'simple_smtp_mail_settings_group',
+                Simple_SMTP_Constants::EMAILS_UNIT,
+                [
+                    'type'              => 'string',
+                    'sanitize_callback' => [ $this, 'sanitize_emails_unit' ],
+                    'default'           => 'minute',
+                ]
+            );
+
+            add_settings_section(
+                'scheduler_section',
+                __( 'Email Scheduler Settings', Simple_SMTP_Constants::DOMAIN ),
+                [ $this, 'scheduler_section_text' ],
+                Simple_SMTP_Constants::SETTINGS_PAGE
+            );
+
+            add_settings_field(
+                'emails_per_unit',
+                __( 'Emails per unit', Simple_SMTP_Constants::DOMAIN ),
+                [ $this, 'emails_per_unit_callback' ],
+                Simple_SMTP_Constants::SETTINGS_PAGE,
+                'scheduler_section'
+            );
+
+            register_setting(
+                'simple_smtp_mail_settings_group',
                 Simple_SMTP_Constants::EMAILS_TESTING,
                 [
                     'type' => 'boolean',
@@ -138,11 +173,72 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             //echo '<p>' . esc_html__('Configure general settings for the SMTP Mail Scheduler.', Simple_SMTP_Constants::DOMAIN) . '</p>';
         }
 
+        public function scheduler_section_text(): void {
+            echo '<p>' . esc_html__( 'Configure the email sending limits and scheduler settings below.', Simple_SMTP_Constants::DOMAIN ) . '</p>';
+        }
+
         public function edit_profiles() {
             $profile_id = isset($_GET['profile']) ? sanitize_text_field($_GET['profile']) : null;
             Simple_SMTP_Mail_Profile_Page::get_instance()->display_profile($profile_id);
         }
 
+        /**
+         * Emails per unit + unit selector field.
+         */
+        public function emails_per_unit_callback(): void {
+            $value = (int) get_option( Simple_SMTP_Constants::EMAILS_PER_UNIT, 5 );
+            $unit  = get_option( Simple_SMTP_Constants::EMAILS_UNIT, 'minute' );
+            ?>
+            <input type="number" name="<?php echo esc_attr( Simple_SMTP_Constants::EMAILS_PER_UNIT ); ?>" value="<?php echo esc_attr( $value ); ?>" min="1" />
+            <select name="<?php echo esc_attr( Simple_SMTP_Constants::EMAILS_UNIT ); ?>">
+                <?php
+                foreach (Simple_SMTP_Constants::UNITS as $unit_key ) {
+                    $label = Simple_SMTP_Constants::get_unit_text($unit_key);
+                    printf(
+                        '<option value="%s" %s>%s</option>',
+                        esc_attr( $unit_key ),
+                        selected( $unit, $unit_key, false ),
+                        esc_html( $label )
+                    );
+                }
+                ?>
+            </select>
+            <p class="description"><?php esc_html_e( 'Maximum number of emails that can be sent per time unit.', Simple_SMTP_Constants::DOMAIN ); ?></p>
+            <?php
+        }
+
+        /**
+         * Sanitize emails per unit.
+         */
+        public function sanitize_emails_per_unit( $value ): int {
+            $value = absint( $value );
+            if ( $value < 1 ) {
+                add_settings_error(
+                    Simple_SMTP_Constants::EMAILS_PER_UNIT,
+                    'invalid_emails_per_unit',
+                    __( 'Emails per unit must be a positive number.', Simple_SMTP_Constants::DOMAIN ),
+                    'error'
+                );
+                return (int) get_option( Simple_SMTP_Constants::EMAILS_PER_UNIT, 5 );
+            }
+            return $value;
+        }
+
+        /**
+         * Sanitize time unit.
+         */
+        public function sanitize_emails_unit( $value ): string {
+            if ( ! in_array( $value, Simple_SMTP_Constants::UNITS, true ) ) {
+                add_settings_error(
+                    Simple_SMTP_Constants::EMAILS_UNIT,
+                    'invalid_emails_unit',
+                    __( 'Invalid time unit selected.', Simple_SMTP_Constants::DOMAIN ),
+                    'error'
+                );
+                return get_option( Simple_SMTP_Constants::EMAILS_UNIT, 'minute' );
+            }
+            return $value;
+        }
         public function testing_callback() {
             $value = get_option(Simple_SMTP_Constants::EMAILS_TESTING, false);
             ?>

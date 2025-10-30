@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-10-28 10:21+0100\n"
+"PO-Revision-Date: 2025-10-30 10:09+0100\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -299,8 +299,8 @@ msgstr "Nie sú naplánované žiadne e-maily na odoslanie."
 
 #: admin/utils.php:124
 #, php-format
-msgid "Next run: %s"
-msgstr "Ďalšie spustenie: %s"
+msgid "%1$d emails queued • ETA %2$s (%3$s)"
+msgstr "%1$d naplánovaných emailov • ETA %2$s (%3$s)"
 
 #: admin/utils.php:128
 msgid "Not running"
@@ -397,3 +397,12 @@ msgstr "Test pripojenia SMTP <strong>zlyhal</strong>. Skontrolujte prihlasovacie
 #: simple-smtp-mail-scheduler.php:46
 msgid "Every Minute"
 msgstr "Každú minútu"
+
+msgid "Queue Fill (%)"
+msgstr "Zaplnenie fronty (%)"
+
+msgid "Time Slots"
+msgstr "Časové okná"
+
+msgid "Queue Projection: %s queued (Limit: %s %s)"
+msgstr "Aktuálne je naplánovaných %s (Limit: %s %s)"

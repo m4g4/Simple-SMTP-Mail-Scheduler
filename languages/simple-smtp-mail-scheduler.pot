@@ -288,7 +288,7 @@ msgstr ""
 
 #: admin/utils.php:127
 #, php-format
-msgid "Next run: %s"
+msgid "%1$d emails queued • ETA %2$s (%3$s)"
 msgstr ""
 
 #: admin/utils.php:131
@@ -404,5 +404,13 @@ msgstr ""
 msgid "Every Minute"
 msgstr ""
 
+msgid "Queue Fill (%)"
+msgstr ""
+
+msgid "Time Slots"
+msgstr ""
+
+msgid "Queue Projection: %s queued (Limit: %s %s)"
+msgstr ""
 
 

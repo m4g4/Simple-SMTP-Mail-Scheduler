@@ -136,16 +136,29 @@ function simple_smtp_get_profile_by_mail($from_email) {
 
 function simple_stmp_scheduler_status_callback() {
     $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
-    $should_be_running = Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending();
+    $queued_emails = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
 
     echo "<div class='s-smtp-status-bar'>";
-    if ($should_be_running) {
+
+    if ($queued_emails > 0) {
         if ($next) {
+            $rate = (int) get_option(Simple_SMTP_Constants::EMAILS_PER_UNIT, 0);
+            $unit = get_option(Simple_SMTP_Constants::EMAILS_UNIT, 'minute');
+
+            $eta_timestamp = simple_stmp_scheduler_calculate_eta($queued_emails, $rate, $unit);
+            $eta_human = date_i18n(get_option('time_format'), $eta_timestamp);
+
+            $duration = simple_stmp_scheduler_format_duration($eta_timestamp - time());
+
             echo '<span class="s-smtp-status-bar-running">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
-            echo '<p class="description">' . sprintf(
-                esc_html__('Next run: %s', Simple_SMTP_Constants::DOMAIN),
-                esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $next))
-            ) . '</p>';
+            echo '<p class="description">'
+                . sprintf(
+                    esc_html__('%1$d emails queued • ETA %2$s (%3$s)', Simple_SMTP_Constants::DOMAIN),
+                    $queued_emails,
+                    esc_html($eta_human),
+                    esc_html($duration)
+                )
+                . '</p>';
         } else {
             echo '<span class="s-smtp-status-bar-not-running">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
             echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
@@ -156,4 +169,38 @@ function simple_stmp_scheduler_status_callback() {
     }
 
     echo "</div>";
+}
+
+function simple_stmp_scheduler_calculate_eta(int $queued, float $rate, string $unit): int {
+    if ($rate <= 0) {
+        return time();
+    }
+    $slots = $queued / $rate;
+    $duration_seconds = $slots * simple_stmp_scheduler_slot_time_seconds($unit);
+    return time() + $duration_seconds;
+}
+
+function simple_stmp_scheduler_slot_time_seconds(string $unit): float {
+    return match ($unit) {
+        'day'    => 86400,
+        'hour'   => 3600,
+        'minute' => 60,
+        default  => 0.0,
+    };
+}
+
+function simple_stmp_scheduler_format_duration(float $seconds): string {
+    if ($seconds < 60) {
+        return round($seconds) . 's';
+    } elseif ($seconds < 3600) {
+        return floor($seconds / 60) . 'm';
+    } elseif ($seconds < 86400) {
+        $h = floor($seconds / 3600);
+        $m = floor(($seconds % 3600) / 60);
+        return sprintf('%dh %dm', $h, $m);
+    } else {
+        $d = floor($seconds / 86400);
+        $h = floor(($seconds % 86400) / 3600);
+        return sprintf('%dd %dh', $d, $h);
+    }
 }

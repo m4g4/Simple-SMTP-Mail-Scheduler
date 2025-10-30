@@ -5,6 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once __DIR__ . '/common.php';
+require_once __DIR__ . '/queue_status_bar_chart.php';
 require_once __DIR__ . '/hour_stats_bar_chart.php';
 require_once __DIR__ . '/status_donut_chart.php';
 

@@ -52,4 +52,15 @@ final class Simple_SMTP_Constants {
             default: return '';
         }
     }
+
+    public const UNITS = [ 'minute', 'hour', 'day' ];
+
+    public static function get_unit_text(string $status): string {
+        switch ($status) {
+            case 'minute': return __('per Minute', self::DOMAIN);
+            case 'hour': return __('per Hour', self::DOMAIN);
+            case 'day': return __('per Day', self::DOMAIN);
+            default: return '';
+        }
+    }
 }
