@@ -41,7 +41,7 @@ function simple_smtp_mail_scheduler_textdomain() {
 }
 
 function simple_smtp_mail_scheduler_deactivation() {
-    simple_stmp_unschedule_cron_event();
+    simple_smtp_unschedule_cron_event();
 }
 
 add_filter('cron_schedules', 'simple_smtp_mail_add_cron_interval');

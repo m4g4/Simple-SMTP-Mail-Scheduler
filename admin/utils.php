@@ -144,6 +144,10 @@ function simple_stmp_scheduler_status_callback() {
         if ($next) {
             $rate = (int) get_option(Simple_SMTP_Constants::EMAILS_PER_UNIT, 0);
             $unit = get_option(Simple_SMTP_Constants::EMAILS_UNIT, 'minute');
+            $queued_max  = (int) get_option(Simple_SMTP_Constants::IN_QUEUE_MAX,$queued_emails);
+            $sent = $queued_max - $queued_emails;
+
+            $progress = min(100, ($sent / $queued_max) * 100);
 
             $eta_timestamp = simple_stmp_scheduler_calculate_eta($queued_emails, $rate, $unit);
             $eta_human = date_i18n(get_option('time_format'), $eta_timestamp);
@@ -151,6 +155,7 @@ function simple_stmp_scheduler_status_callback() {
             $duration = simple_stmp_scheduler_format_duration($eta_timestamp - time());
 
             echo '<span class="s-smtp-status-bar-running">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            simple_stmp_scheduler_progress_bar($progress);
             echo '<p class="description">'
                 . sprintf(
                     esc_html__('%1$d emails queued • ETA %2$s (%3$s)', Simple_SMTP_Constants::DOMAIN),
@@ -203,4 +208,10 @@ function simple_stmp_scheduler_format_duration(float $seconds): string {
         $h = floor(($seconds % 86400) / 3600);
         return sprintf('%dd %dh', $d, $h);
     }
+}
+
+function simple_stmp_scheduler_progress_bar($progress) {
+    echo '<div class="s-smtp-mail-progress-bar">';
+    echo '<div class="s-smtp-mail-progress" style="width:' . esc_attr($progress) . '%;"></div>';
+    echo '</div>';
 }
