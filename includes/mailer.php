@@ -156,9 +156,11 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 $mailer->CharSet = 'UTF-8';
                 $mailer->Subject = wp_strip_all_tags($subject);
                 $mailer->Body    = $message;
-                $mailer->AltBody = wp_strip_all_tags($message);   // plain-text fallback
-                $mailer->isHTML((bool)$is_html);                // sets Content-Type correctly
-                $mailer->XMailer = '';                                  // hide PHPMailer signature
+                if ($is_html) {
+                    $mailer->AltBody = $this->html_to_text($message);
+                }
+                $mailer->isHTML((bool)$is_html);
+                $mailer->XMailer = false;
 
                 // === Process headers ===
                 if (!empty($headers)) {
@@ -551,6 +553,89 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             }
             return array_keys($arr) !== range(0, count($arr) - 1);
         }
+
+        private function html_to_text($html) {
+            /* ---------------------------------------------------------
+               STEP 0: Extract ONLY *clickable* URLs (a href, form action)
+               --------------------------------------------------------- */
+            preg_match_all('#\b(https?://[^\s"\'<>]+)|(mailto:[^\s"\'<>]+)#i', $html, $raw);
+            $clickable_urls = [];
+            foreach ($raw[0] as $m) {
+                $url = html_entity_decode(trim($m), ENT_QUOTES, 'UTF-8');
+                if (
+                    preg_match('#^https?://(www\.w3\.org/|urn:schemas|fonts\.googleapis|fonts\.gstatic)#i', $url) ||
+                    preg_match('#\.dtd$|\.(css|js|xml|json|svg|ico|png|jpg|jpeg|gif|webp)(\?.*)?$#i', $url) ||
+                    $url === '#' || 
+                    preg_match('#^javascript:#i', $url)
+                ) {
+                    continue;
+                }
+                $clickable_urls[] = $url;
+            }
+        
+            /* ---------------------------------------------------------
+               STEP 1: Annotate ONLY hidden clickable URLs
+               --------------------------------------------------------- */
+            $html = preg_replace_callback(
+                '#(<[^>]*\s)(href|action)=(["\'])([^"\']+)(\3[^>]*>)#i',
+                function ($m) {
+                    $url = trim($m[4]);
+                    $tag = $m[0];
+                    if (
+                        preg_match('#rel=["\']?(stylesheet|icon)#i', $tag) ||
+                        preg_match('#\.(css|js|png|jpg|gif|webp|svg|ico)$#i', $url) ||
+                        in_array($url, ['#', 'javascript:void(0)'])
+                    ) {
+                        return $m[0];
+                    }
+                    if (preg_match('#^<a\s#i', $tag)) return $m[0];
+                    return $m[1] . $m[2] . '=' . $m[3] . $url . $m[5] . " [Link: $url]";
+                },
+                $html
+            );
+        
+            /* ---------------------------------------------------------
+               STEP 2: REPLACE IMAGES — NO URL IN PLAIN TEXT
+               --------------------------------------------------------- */
+            $html = preg_replace('#<img[^>]*alt=["\']([^"\']*)["\'][^>]*>#i', '[Image: $1]', $html);
+            $html = preg_replace('#<img[^>]*>#i', '[Image]', $html);
+        
+            /* ---------------------------------------------------------
+               STEP 3: <a> tags — clean label (url)
+               --------------------------------------------------------- */
+            $html = preg_replace_callback(
+                '#<a\s[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a>#is',
+                function ($m) {
+                    $url = trim($m[1]);
+                    $inner = $m[2];
+                    if (preg_match('#\.(css|js|png|jpg|gif|webp)#i', $url)) return strip_tags($inner);
+                
+                    $label = trim(strip_tags($inner));
+                    $url_clean = preg_replace('#^https?://#i', '', $url);
+                    $label_clean = preg_replace('#^https?://#i', '', $label);
+                    if (strpos($label_clean, $url_clean) !== false || $label === $url) {
+                        return $label;
+                    }
+                    return "$label ($url)";
+                },
+                $html
+            );
+        
+            /* ---------------------------------------------------------
+               STEP 4-5: Clean up
+               --------------------------------------------------------- */
+            $html = preg_replace('#<br\s*/?>#i', "\n", $html);
+            $html = preg_replace('#</(p|div|section|table|tr)>#i', "\n\n", $html);
+            $html = preg_replace('#<!--.*?-->#s', '', $html);
+            $text = wp_strip_all_tags($html);
+            $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+            $text = preg_replace('#[ \t]+#', ' ', $text);
+            $text = preg_replace('#(\n\s*){3,}#', "\n\n", $text);
+            $text = trim($text);
+        
+            return $text;
+        }
+
     }
 }
 
