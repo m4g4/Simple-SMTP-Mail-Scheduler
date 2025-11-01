@@ -51,3 +51,7 @@
     background: linear-gradient(90deg, #22c55e, #16a34a);
     transition: width 0.4s ease-in-out;
 }
+
+.s-smtp-start-scheduler:not(.started)  {
+    cursor: pointer;
+}

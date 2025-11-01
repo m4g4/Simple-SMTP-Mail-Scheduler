@@ -11,15 +11,36 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             add_action('admin_menu', [$this, 'register_menus']);
             add_action('admin_init', [$this, 'register_settings']);
             add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
+            add_action('wp_ajax_simple-smtp-mail-scheduler-start', [$this, 'ajax_start_scheduler']);
         }
 
         public function enqueue_assets() {
             wp_enqueue_style(
-		    	'simple-smtp-mail-scheduler-admin-assets',
+		    	'simple-smtp-mail-scheduler-admin-css',
 		    	plugins_url('css/admin.css', __FILE__),
 		    	array(),
 				Simple_SMTP_Constants::PLUGIN_VERSION
 		    );
+
+            wp_enqueue_script(
+		    	'simple-smtp-mail-scheduler-admin-js',
+		    	plugins_url('js/admin.js', __FILE__),
+		    	array('jquery'),
+				Simple_SMTP_Constants::PLUGIN_VERSION
+		    );
+
+            wp_localize_script( 
+                'simple-smtp-mail-scheduler-admin-js',
+                'ajax_params',
+                array(
+                    'ajax_url'       => admin_url( 'admin-ajax.php' ),
+                    'start_action'   => 'simple-smtp-mail-scheduler-start',
+                    'start_text'     => __( 'Start', Simple_SMTP_Constants::DOMAIN ),
+                    'started_text'   => __( 'Started', Simple_SMTP_Constants::DOMAIN ),
+                    'starting_text'  => __( 'Starting', Simple_SMTP_Constants::DOMAIN ),
+                    'ajax_nonce'     => wp_create_nonce( 'simple-smtp-mail-scheduler-start' ),
+                )
+            );
         }
 
         public function register_menus() {
@@ -320,6 +341,20 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 
         public function sanitize_emails_testing($value) {
             return (bool) $value;
+        }
+
+        public function ajax_start_scheduler() {
+            check_ajax_referer('simple-smtp-mail-scheduler-start', 'ajax_nonce');
+
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(['message' => 'Permission denied']);
+            }
+        
+            if (!wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME)) {
+                wp_schedule_event(time(), 'minute', Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
+            }
+
+            wp_send_json_success(['message' => 'Scheduler started successfully!']);
         }
     }
 }

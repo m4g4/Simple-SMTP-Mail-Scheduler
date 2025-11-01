@@ -166,6 +166,7 @@ function simple_stmp_scheduler_status_callback() {
                 . '</p>';
         } else {
             echo '<span class="s-smtp-status-bar-not-running">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo ' <a class="s-smtp-start-scheduler">▶️ ' . esc_html__('Start', Simple_SMTP_Constants::DOMAIN) . '</a>';
             echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
         }
     } else {
