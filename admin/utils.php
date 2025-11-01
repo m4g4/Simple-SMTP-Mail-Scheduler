@@ -144,10 +144,10 @@ function simple_stmp_scheduler_status_callback() {
         if ($next) {
             $rate = (int) get_option(Simple_SMTP_Constants::EMAILS_PER_UNIT, 0);
             $unit = get_option(Simple_SMTP_Constants::EMAILS_UNIT, 'minute');
-            $queued_max  = (int) get_option(Simple_SMTP_Constants::IN_QUEUE_MAX,$queued_emails);
-            $sent = $queued_max - $queued_emails;
+            $current_queue_count  = (int) get_option(Simple_SMTP_Constants::CURRENT_QUEUE_COUNT,$queued_emails);
+            $sent = $current_queue_count - $queued_emails;
 
-            $progress = min(100, ($sent / $queued_max) * 100);
+            $progress = min(100, ($sent / $current_queue_count) * 100);
 
             $eta_timestamp = simple_stmp_scheduler_calculate_eta($queued_emails, $rate, $unit);
             $eta_human = date_i18n(get_option('time_format'), $eta_timestamp);

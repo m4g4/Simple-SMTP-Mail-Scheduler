@@ -66,7 +66,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
             if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 error_log('tick: Unschedule Cron event');
                 simple_smtp_unschedule_cron_event();
-                delete_option(Simple_SMTP_Constants::IN_QUEUE_MAX);
+                delete_option(Simple_SMTP_Constants::CURRENT_QUEUE_COUNT);
                 delete_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_LAST_TICK);
                 delete_option(Simple_SMTP_Constants::EMAILS_SCHEDULER_CARRY);
             }

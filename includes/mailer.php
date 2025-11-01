@@ -255,20 +255,14 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             $queued_result = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, $testing_flag);
 
             if ($queued_result) {
-                $queued = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
-                $queued_max  = (int) get_option(Simple_SMTP_Constants::IN_QUEUE_MAX, 0);
+                $current_queue_count  = (int) get_option(Simple_SMTP_Constants::CURRENT_QUEUE_COUNT, 0);
+                update_option(Simple_SMTP_Constants::CURRENT_QUEUE_COUNT, $current_queue_count + 1);
 
-                if ($queued > $queued_max) {
-                    update_option(Simple_SMTP_Constants::IN_QUEUE_MAX, $queued);
-                }
-
-                if ($queued > 0) {
-                    simple_smtp_schedule_cron_event();
-                }
+                simple_smtp_schedule_cron_event();
             }
 
             // If enqueue succeeded, short-circuit wp_mail (return true)
-            return $queued ? true : null;
+            return $queued_result ? true : null;
         }
 
         public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {

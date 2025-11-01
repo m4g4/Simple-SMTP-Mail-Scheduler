@@ -29,7 +29,7 @@ final class Simple_SMTP_Constants {
     // Stored values
     public const EMAILS_SCHEDULER_LAST_TICK = 'simple_smtp_mail_scheduler_last_tick';
     public const EMAILS_SCHEDULER_CARRY = 'simple_smtp_mail_scheduler_carry';
-    public const IN_QUEUE_MAX   = 'simple_smtp_mail_scheduler_queued_max';
+    public const CURRENT_QUEUE_COUNT   = 'simple_smtp_mail_scheduler_current_queue_count';
 
     // Limits
     public const EMAILS_LOG_MAX_ROWS = 100000;
