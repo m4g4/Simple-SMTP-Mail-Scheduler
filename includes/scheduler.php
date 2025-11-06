@@ -75,23 +75,14 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
 }
 
 function simple_smtp_schedule_cron_event() {
-    error_log('Attempt to schedule cron was done. Is it already scheduled? ' . print_r(wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME), true));
-    for ($i = 0; $i < 10; $i++) {
-        if (!wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME)) {
-            error_log('Scheduling cron...');
-            $return = wp_schedule_event(time(), 'minute', Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
-            error_log('CRON scheduling result ' . print_r($return, true));
-        } else {
-            break;
-        }
+    if (!wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME)) {
+        $return = wp_schedule_event(time(), 'minute', Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     }
 }
 
 function simple_smtp_unschedule_cron_event() {
     $timestamp = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
-    error_log('Tried to unschedule cron. Is already scheduled? ' . print_r($timestamp));
     if ($timestamp) {
-        error_log('Unscheduling cron...');
         wp_unschedule_event($timestamp, Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     }
 }

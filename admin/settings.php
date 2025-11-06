@@ -350,9 +350,7 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                 wp_send_json_error(['message' => 'Permission denied']);
             }
         
-            if (!wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME)) {
-                wp_schedule_event(time(), 'minute', Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
-            }
+            simple_smtp_schedule_cron_event();
 
             wp_send_json_success(['message' => 'Scheduler started successfully!']);
         }
