@@ -248,11 +248,8 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 return null;
             }
 
-            // Determine testing flag from options
-            $testing_flag = (int) get_option(Simple_SMTP_Constants::EMAILS_TESTING, 0);
-
             // Queue
-            $queued_result = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, $testing_flag);
+            $queued_result = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, false);
 
             if ($queued_result) {
                 $current_queue_count  = (int) get_option(Simple_SMTP_Constants::CURRENT_QUEUE_COUNT, 0);

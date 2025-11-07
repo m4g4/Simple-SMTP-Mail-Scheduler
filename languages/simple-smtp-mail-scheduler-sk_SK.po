@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-11-07 08:57+0100\n"
+"PO-Revision-Date: 2025-11-07 11:23+0100\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -86,18 +86,6 @@ msgstr "Žiadne údaje na zobrazenie."
 #: admin/settings.php:53 admin/log_table.php:28
 msgid "Testing"
 msgstr "Testovanie"
-
-#: admin/settings.php:109
-msgid "Testing Mode"
-msgstr "Testovací režim"
-
-#: admin/settings.php:117
-msgid "Configure general settings for the SMTP Mail Scheduler."
-msgstr "Nastavte všeobecné nastavenia pre SMTP Mail Plánovač."
-
-#: admin/settings.php:134
-msgid "Enable testing mode (emails will not be sent)"
-msgstr "Povoliť testovací režim (emaily nebudú odoslané)"
 
 #: admin/settings.php:137
 msgid "When enabled, emails are logged but not sent to recipients."

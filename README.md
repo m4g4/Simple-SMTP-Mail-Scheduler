@@ -8,7 +8,6 @@
 - **SMTP Profiles**: Configure multiple SMTP profiles with settings like host, port, and authentication.
 - **Profile Snapshots**: Stores a snapshot of SMTP settings for each email to prevent issues from profile changes or deletions.
 - **Priority and Scheduling**: Assign priorities to emails and schedule them for specific times.
-- **Testing Mode**: Log emails without sending them for testing purposes.
 - **Admin Log Interface**: View queued, sent, and failed emails with details like recipient, subject, profile, and status.
 - **Retry Mechanism**: Automatically retries failed emails up to a configurable limit.
 - **Clean Logging**: Limits the number of stored email logs to prevent database bloat.
@@ -47,10 +46,6 @@
 3. **Manage SMTP Profiles**:
    - Add, edit, or delete SMTP profiles in the plugin settings.
    - Each queued email stores a snapshot of the profile settings to ensure consistent sending even if profiles change.
-
-4. **Testing Mode**:
-   - Enable testing mode in the settings to log emails without sending them.
-   - Check the logs to verify email content and settings.
 
 ## Requirements
 

@@ -31,10 +31,6 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
             'actions'         => __('Actions', Simple_SMTP_Constants::DOMAIN),
         ];
 
-        if (defined('SIMPLE_SMTP_TESTING_MODE') && SIMPLE_SMTP_TESTING_MODE == 1) {
-            $columns['testing'] = __('Testing', Simple_SMTP_Constants::DOMAIN);
-        }
-
         return $columns;
     }
 
@@ -168,8 +164,6 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                 ];
                 $color = $status_colors[$item->status] ?? 'gray';
                 return '<span style="color:' . esc_attr($color) . '">' . esc_html($status) . '</span>';
-            case 'testing':
-                return $item->testing ? '<span style="color: blue;">' . __('Yes', Simple_SMTP_Constants::DOMAIN) . '</span>' : __('No', Simple_SMTP_Constants::DOMAIN);
             case 'actions':
                 return $this->row_actions($this->get_row_actions($item));
             default:
