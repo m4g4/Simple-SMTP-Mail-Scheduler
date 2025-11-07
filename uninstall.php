@@ -14,5 +14,6 @@ delete_option(Simple_SMTP_Constants::PROFILES);
 delete_option(Simple_SMTP_Constants::PROFILE_ACTIVE);
 delete_option(Simple_SMTP_Constants::EMAILS_PER_UNIT);
 delete_option(Simple_SMTP_Constants::EMAILS_UNIT);
+delete_option(Simple_SMTP_Constants::DISABLE);
 
 ?>

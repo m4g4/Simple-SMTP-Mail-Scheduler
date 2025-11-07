@@ -24,6 +24,9 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          * Trigger cron processing (entry point)
          */
         public function cron_send_mails() {
+            $disable_plugin = get_option(Simple_SMTP_Constants::DISABLE, false);
+            if ($disable_plugin) return;
+            
             // The scheduler class is expected to call the provided callback
             // with a number (emails per run). Keep backward-compatible call.
             $scheduler = new Simple_SMTP_Mail_Scheduler(array($this, 'cron_send_mails_tick'));
@@ -218,8 +221,10 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         }
 
         public function queue_mail_instead_of_sending($pre_wp_mail, $atts) {
+            $disable_plugin = get_option(Simple_SMTP_Constants::DISABLE, false);
+
             // Respect a bypass constant to allow immediate sending
-            if (defined('SMTP_MAIL_BYPASS_QUEUE') && SMTP_MAIL_BYPASS_QUEUE === true) {
+            if ((defined('SMTP_MAIL_BYPASS_QUEUE') && SMTP_MAIL_BYPASS_QUEUE === true) || $disable_plugin) {
                 return null;
             }
 

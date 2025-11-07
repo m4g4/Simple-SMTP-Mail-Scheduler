@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-11-07 11:23+0100\n"
+"PO-Revision-Date: 2025-11-07 18:03+0100\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -15,6 +15,10 @@ msgstr ""
 #: admin/scheduler_settings.php:51
 msgid "Email Scheduler Settings"
 msgstr "Nastavenia plánovača emailov"
+
+#: admin/tabs/general_settings.php:73
+msgid "Disable plugin functionality"
+msgstr "Vypnúť funkčnosť pluginu"
 
 #: admin/scheduler_settings.php:58
 msgid "Emails per unit"
@@ -48,9 +52,31 @@ msgstr "Počet emailov za jednotku musí byť kladné číslo."
 msgid "Invalid time unit selected."
 msgstr "Vybraná jednotka času je neplatná."
 
+#: admin/tabs/general_settings.php:181
+msgid ""
+"When checked, the plugin will not filter emails sent through the WordPress wp_mail() function. When unchecked, "
+"all wp_mail() emails will be intercepted and processed by the plugin. Other email-sending methods in WordPress "
+"are not affected and bypass the plugin entirely."
+msgstr ""
+"Keď je zaškrtnuté, plugin nebude filtrovať e-maily odoslané pomocou funkcie wp_mail() vo WordPresse. Keď nie "
+"je zaškrtnuté, všetky e-maily odoslané cez wp_mail() budú zachytené a spracované pluginom. Iné spôsoby "
+"odosielania e-mailov vo WordPresse nie sú ovplyvnené a úplne obchádzajú plugin."
+
 #: admin/settings.php:17 admin/settings.php:18 admin/settings.php:40
 msgid "Simple SMTP Mail Scheduler"
 msgstr "Jednoduchý SMTP Mail Plánovač"
+
+#: admin/settings.php:40 admin/utils.php:178
+msgid "Start"
+msgstr "Spustiť"
+
+#: admin/settings.php:41
+msgid "Started"
+msgstr "Spustený"
+
+#: admin/settings.php:42
+msgid "Starting"
+msgstr "Spúšťa sa"
 
 #: admin/settings.php:26 admin/profile_page.php:45
 msgid "Edit SMTP Profile"
@@ -82,6 +108,14 @@ msgstr "Distribúcia stavov e-mailov (posledných 24h)"
 
 msgid "No data to display."
 msgstr "Žiadne údaje na zobrazenie."
+
+#: admin/utils.php:141
+msgid "Disabled"
+msgstr "Vypnuté"
+
+#: admin/utils.php:142
+msgid "Email processing is turned off. Emails sent through wp_mail() are not handled by the plugin."
+msgstr "Spracovanie e-mailov je deaktivované. E-maily odoslané cez wp_mail() plugin neobsluhuje."
 
 #: admin/settings.php:53 admin/log_table.php:28
 msgid "Testing"

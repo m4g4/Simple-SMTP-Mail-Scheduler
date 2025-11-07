@@ -13,7 +13,7 @@
     padding-top: 30px;
 }
 
-.s-smtp-status-bar { padding: 16px; background: #fff; }
+.s-smtp-status-bar {max-width: 320px; padding: 16px; background: #fff; }
 
 .s-smtp-status-bar-running     { color:green; font-weight:bold; }
 .s-smtp-status-bar-not-running { color:red;   font-weight:bold; }

@@ -24,6 +24,7 @@ final class Simple_SMTP_Constants {
     public const PROFILE_ACTIVE   = 'simple_smtp_mail_scheduler_profile_active';
     public const EMAILS_PER_UNIT  = 'simple_smtp_mail_scheduler_emails_per_unit';
     public const EMAILS_UNIT      = 'simple_smtp_mail_scheduler_emails_unit';
+    public const DISABLE      = 'simple_smtp_mail_scheduler_disable';
     
     // Stored values
     public const EMAILS_SCHEDULER_LAST_TICK = 'simple_smtp_mail_scheduler_last_tick';
@@ -47,7 +48,7 @@ final class Simple_SMTP_Constants {
     public const SETTINGS_SECTION_SCHEDULER = 'simple_smtp_mail_scheduler_settings_' . self::SECTION_SCHEDULER;
 
     // Option groups
-    public const SCHEDULER_OPTION_GROUP = 'simple_smtp_mail_scheduler_group';
+    public const GENERAL_OPTION_GROUP = 'simple_smtp_mail_option_group';
 
     // Scheduler
     public const SCHEDULER_EVENT_NAME = 'simple_smtp_mail_send_emails_event';

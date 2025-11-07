@@ -32,6 +32,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                 Simple_SMTP_Constants::SETTINGS_SECTION_SCHEDULER
             );
 
+            $this->register_basic_settings();
             $this->register_scheduler_settings();
         }
 
@@ -40,10 +41,11 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             <div class="wrap">
                 <form method="post" action="options.php">
                     <?php
-                    settings_fields(Simple_SMTP_Constants::SCHEDULER_OPTION_GROUP);
+                    settings_fields(Simple_SMTP_Constants::GENERAL_OPTION_GROUP);
+
+                    $this->show_profiles();
 
                     do_settings_sections(Simple_SMTP_Constants::SETTINGS_SECTION_BASIC);
-                    $this->show_profiles();
                     do_settings_sections(Simple_SMTP_Constants::SETTINGS_SECTION_SCHEDULER);
                     
                     submit_button();
@@ -56,9 +58,28 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             }
         }
 
+        private function register_basic_settings() {
+            register_setting(
+                Simple_SMTP_Constants::GENERAL_OPTION_GROUP,
+                Simple_SMTP_Constants::DISABLE,
+                [
+                    'type' => 'boolean',
+                    'sanitize_callback' => fn($value) => (bool) $value,
+                    'default' => false
+                ]
+            );
+            add_settings_field(
+                'disable',
+                __('Disable plugin functionality', Simple_SMTP_Constants::DOMAIN),
+                [$this, 'disable_callback'],
+                Simple_SMTP_Constants::SETTINGS_SECTION_BASIC,
+                Simple_SMTP_Constants::SECTION_BASIC
+            );
+        }
+
         private function register_scheduler_settings() {
             register_setting(
-                Simple_SMTP_Constants::SCHEDULER_OPTION_GROUP,
+                Simple_SMTP_Constants::GENERAL_OPTION_GROUP,
                 Simple_SMTP_Constants::EMAILS_PER_UNIT,
                 [
                     'type'              => 'integer',
@@ -68,7 +89,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             );
 
             register_setting(
-                Simple_SMTP_Constants::SCHEDULER_OPTION_GROUP,
+                Simple_SMTP_Constants::GENERAL_OPTION_GROUP,
                 Simple_SMTP_Constants::EMAILS_UNIT,
                 [
                     'type'              => 'string',
@@ -146,6 +167,19 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                 return get_option( Simple_SMTP_Constants::EMAILS_UNIT, 'minute' );
             }
             return $value;
+        }
+
+        public function disable_callback() {
+            $value = get_option(Simple_SMTP_Constants::DISABLE, false);
+            ?>
+            <label>
+                <input type="checkbox" name="<?php echo esc_attr(Simple_SMTP_Constants::DISABLE); ?>"
+                       value="1" <?php checked($value, true); ?> />
+            </label>
+            <p class="description">
+                <?php esc_html_e('When checked, the plugin will not filter emails sent through the WordPress wp_mail() function. When unchecked, all wp_mail() emails will be intercepted and processed by the plugin. Other email-sending methods in WordPress are not affected and bypass the plugin entirely.', Simple_SMTP_Constants::DOMAIN); ?>
+            </p>
+            <?php
         }
         
         public function show_profiles() {

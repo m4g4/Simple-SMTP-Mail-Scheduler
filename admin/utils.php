@@ -135,6 +135,15 @@ function simple_smtp_get_profile_by_mail($from_email) {
 }
 
 function simple_stmp_scheduler_status_callback() {
+    $disable_plugin = get_option(Simple_SMTP_Constants::DISABLE, false);
+    if ($disable_plugin) {
+        echo "<div class='s-smtp-status-bar'>";
+        echo '<span class="s-smtp-status-bar-disabled">🛑 ' . esc_html__('Disabled', Simple_SMTP_Constants::DOMAIN) . '</span>';
+        echo '<p class="description">' . esc_html__('Email processing is turned off. Emails sent through wp_mail() are not handled by the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+        echo '</div>';
+        return;
+    }
+
     $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     $queued_emails = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
 
