@@ -12,12 +12,16 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
 
             ?>
             <div class="s-smtp-mail-chart-wrapper">
-                <canvas id="smtpMailStatusChart"></canvas>
                 <?php
                 if (empty($results)) {
-                    echo '<div class="s-smtp-mail-no-donut-chart-data">' . __('No data to display.', Simple_SMTP_Constants::DOMAIN) . '</div>';
+                    echo '<h4>' . __('Email Status Distribution (Last 24h)', Simple_SMTP_Constants::DOMAIN) . '</h4>';
+                    echo '<div class="s-smtp-mail-no-chart-data">' . __('No data to display.', Simple_SMTP_Constants::DOMAIN) . '</div>';
+                    return;
                 }
                 ?>
+
+            <div class="s-smtp-mail-chart-wrapper">
+                <canvas id="smtpMailStatusChart"></canvas>
             </div>
             <?php
 

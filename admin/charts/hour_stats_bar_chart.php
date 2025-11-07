@@ -9,11 +9,23 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
     class Simple_SMTP_Mail_Hour_Stats_Bar_Chart {
 
         public function display() {
-            ?>
-            <canvas id="smtpMailHourlyChart"></canvas>
-            <?php
-
             $results = Simple_SMTP_Email_Queue::get_instance()->get_last_day_emails_grouped_by_hour();
+
+            if (empty($results)) {
+                ?>
+                <div class="s-smtp-mail-chart-wrapper">
+                    <h4><?php echo __('Emails Sent per Hour (Last 24h)', Simple_SMTP_Constants::DOMAIN)?></h4>
+                    <div class="s-smtp-mail-no-chart-data"><?php echo __('No data to display.', Simple_SMTP_Constants::DOMAIN);?></div>
+                </div>
+                <?php
+                return;
+            }
+
+            ?>
+            <div class="s-smtp-mail-chart-wrapper">
+                <canvas id="smtpMailHourlyChart"></canvas>
+            </div>
+            <?php
             
             $labels = [];
             $data = [];
@@ -45,7 +57,6 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
                             }]
                         },
                         options: {
-                            responsive: true,
                             scales: {
                                 x: {
                                     type: 'time',
