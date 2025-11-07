@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+define('SIMPLE_SMTP_MAIL_SCHEDULER_PLUGIN',    plugin_basename(__FILE__));
+
 // TESTING MODE
 define('SIMPLE_SMTP_TESTING_MODE', 1);
 

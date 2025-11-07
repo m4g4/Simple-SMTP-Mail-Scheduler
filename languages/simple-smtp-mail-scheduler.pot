@@ -413,4 +413,5 @@ msgstr ""
 msgid "Queue Projection: %s queued (Limit: %s %s)"
 msgstr ""
 
-
+msgid "Settings"
+msgstr ""

@@ -12,6 +12,8 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             add_action('admin_init', [$this, 'register_settings']);
             add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
             add_action('wp_ajax_simple-smtp-mail-scheduler-start', [$this, 'ajax_start_scheduler']);
+
+            add_filter('plugin_action_links_' . SIMPLE_SMTP_MAIL_SCHEDULER_PLUGIN, [$this, 'add_settings_link']);
         }
 
         public function enqueue_assets() {
@@ -112,8 +114,8 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             <div class="wrap">
                 <form method="post" action="options.php">
                     <?php
-                    $this->show_profiles();
                     settings_fields('simple_smtp_mail_settings_group');
+                    $this->show_profiles();
                     do_settings_sections(Simple_SMTP_Constants::SETTINGS_PAGE);
                     submit_button();
                     ?>
@@ -126,6 +128,25 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         }
 
         public function register_settings() {
+            add_settings_section(
+                'scheduler_section',
+                __( 'Email Scheduler Settings', Simple_SMTP_Constants::DOMAIN ),
+                [ $this, 'scheduler_section_text' ],
+                Simple_SMTP_Constants::SETTINGS_PAGE
+            );
+
+            add_settings_section(
+                'main_section',
+                '',//__('General Settings', Simple_SMTP_Constants::DOMAIN),
+                [$this, 'main_section_text'],
+                Simple_SMTP_Constants::SETTINGS_PAGE
+            );
+
+            $this->register_units_settings();
+            $this->register_testing_settings();
+        }
+
+        private function register_units_settings() {
             register_setting(
                 'simple_smtp_mail_settings_group',
                 Simple_SMTP_Constants::EMAILS_PER_UNIT,
@@ -146,13 +167,6 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                 ]
             );
 
-            add_settings_section(
-                'scheduler_section',
-                __( 'Email Scheduler Settings', Simple_SMTP_Constants::DOMAIN ),
-                [ $this, 'scheduler_section_text' ],
-                Simple_SMTP_Constants::SETTINGS_PAGE
-            );
-
             add_settings_field(
                 'emails_per_unit',
                 __( 'Emails per unit', Simple_SMTP_Constants::DOMAIN ),
@@ -160,7 +174,9 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                 Simple_SMTP_Constants::SETTINGS_PAGE,
                 'scheduler_section'
             );
+        }
 
+        private function register_testing_settings() {
             register_setting(
                 'simple_smtp_mail_settings_group',
                 Simple_SMTP_Constants::EMAILS_TESTING,
@@ -169,13 +185,6 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                     'sanitize_callback' => [$this, 'sanitize_emails_testing'],
                     'default' => false
                 ]
-            );
-
-            add_settings_section(
-                'main_section',
-                '',//__('General Settings', Simple_SMTP_Constants::DOMAIN),
-                [$this, 'main_section_text'],
-                Simple_SMTP_Constants::SETTINGS_PAGE
             );
 
             // Conditionally register testing field if SIMPLE_SMTP_TESTING_MODE is 1
@@ -353,6 +362,12 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             simple_smtp_schedule_cron_event();
 
             wp_send_json_success(['message' => 'Scheduler started successfully!']);
+        }
+
+        public function add_settings_link($links) {
+            $settings_link = '<a href="options-general.php?page='.Simple_SMTP_Constants::SETTINGS_PAGE.'">' . __('Settings', Simple_SMTP_Constants::DOMAIN) . '</a>';
+            array_unshift($links, $settings_link);
+            return $links;
         }
     }
 }
