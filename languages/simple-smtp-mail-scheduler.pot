@@ -319,6 +319,15 @@ msgid ""
 "settings."
 msgstr ""
 
+msgid "Always use the specified "From" email address, even if another is provided by the sender."
+msgstr ""
+
+msgid "Automatically set the Return-Path header to match the "From" email address."
+msgstr ""
+
+msgid "Always use the specified "From" name, even if another is provided by the sender."
+msgstr ""
+
 #: admin/settings.php:40 admin/utils.php:178
 msgid "Start"
 msgstr ""

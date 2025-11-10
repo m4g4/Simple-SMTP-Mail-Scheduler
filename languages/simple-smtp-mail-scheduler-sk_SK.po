@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-11-07 18:03+0100\n"
+"PO-Revision-Date: 2025-11-10 09:29+0100\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -415,6 +415,15 @@ msgstr "Heslo je povinné."
 #: admin/profile_page.php:221
 msgid "SMTP connection test <strong>failed</strong>. Check credentials or server settings."
 msgstr "Test pripojenia SMTP <strong>zlyhal</strong>. Skontrolujte prihlasovacie údaje alebo nastavenia servera."
+
+msgid "Always use the specified \"From\" email address, even if another is provided by the sender."
+msgstr "Vždy použiť zadanú e-mailovú adresu „Od Email“, aj keď odosielateľ uvedie inú."
+
+msgid "Automatically set the Return-Path header to match the \"From\" email address."
+msgstr "Automaticky nastaviť hlavičku Return-Path tak, aby zodpovedala e-mailovej adrese „Od“."
+
+msgid "Always use the specified \"From\" name, even if another is provided by the sender."
+msgstr "Vždy použiť zadané meno „Od mena“, aj keď odosielateľ uvedie iné."
 
 #: simple-smtp-mail-scheduler.php:46
 msgid "Every Minute"

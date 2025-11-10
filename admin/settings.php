@@ -31,6 +31,13 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 				Simple_SMTP_Constants::PLUGIN_VERSION
 		    );
 
+            wp_enqueue_script(
+		    	'simple-smtp-mail-scheduler-profile-page-js',
+		    	plugins_url('js/profile_page.js', __FILE__),
+		    	array('jquery'),
+				Simple_SMTP_Constants::PLUGIN_VERSION
+		    );
+
             wp_localize_script( 
                 'simple-smtp-mail-scheduler-admin-js',
                 'ajax_params',

@@ -29,6 +29,9 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
                 'label'      => '',
                 'from_email' => '',
                 'from_name'  => '',
+                'force_from_email' => false,
+                'match_return_path' => false,
+                'force_from_name' => false,
                 'host'       => '',
                 'port'       => 465,
                 'encryption' => 'ssl',
@@ -55,7 +58,7 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
             simple_smtp_echo_message_styles();
             $this->show_errors();
 
-            echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
+            echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" class="simple-smtp-profile-form">';
             wp_nonce_field('simple_smtp_mail_profile_save');
             echo '<input type="hidden" name="action" value="simple_smtp_mail_profile_save">';
             echo '<input type="hidden" name="profile_id" value="' . esc_attr($profile_id) . '">';
@@ -64,11 +67,36 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
             echo '<tr><th scope="row"><label for="label">' . __('Label', Simple_SMTP_Constants::DOMAIN) . '</label></th>
                   <td><input type="text" class="regular-text" name="label" id="label" value="' . esc_attr($profile['label']) . '"></td></tr>';
 
-            echo '<tr><th scope="row"><label for="from_email">' . __('From Email', Simple_SMTP_Constants::DOMAIN) . '</label></th>
-                  <td><input type="email" class="regular-text" name="from_email" id="from_email" value="' . esc_attr($profile['from_email']) . '"></td></tr>';
+            echo '<tr>
+                <th scope="row"><label for="from_email">' . __('From Email', Simple_SMTP_Constants::DOMAIN) . '</label></th>
+                <td>
+                    <input type="email" class="regular-text" name="from_email" id="from_email" value="' . esc_attr($profile['from_email']) . '">
+                    <div style="padding-top: 10px;">
+                    <label>
+                        <input type="checkbox" name="force_from_email" id="force_from_email" value="1" ' . checked(!empty($profile['force_from_email']), true, false) . '>
+                        ' . __('Always use the specified "From" email address, even if another is provided by the sender.', Simple_SMTP_Constants::DOMAIN) . '
+                    </label>
+                    </div>
+                    <div>
+                    <label>
+                        <input type="checkbox" name="match_return_path" id="match_return_path" value="1" ' . checked(!empty($profile['match_return_path']), true, false) . '>
+                        ' . __('Automatically set the Return-Path header to match the "From" email address.', Simple_SMTP_Constants::DOMAIN) . '
+                    </label>
+                    </div>
+                </td>
+            </tr>';
 
             echo '<tr><th scope="row"><label for="from_name">' . __('From Name', Simple_SMTP_Constants::DOMAIN) . '</label></th>
-                  <td><input type="text" class="regular-text" name="from_name" id="from_name" value="' . esc_attr($profile['from_name']) . '"></td></tr>';
+                  <td>
+                    <input type="text" class="regular-text" name="from_name" id="from_name" value="' . esc_attr($profile['from_name']) . '">  
+                    <div style="padding-top: 10px;">
+                    <label>
+                        <input type="checkbox" name="force_from_name" id="force_from_name" value="1" ' . checked(!empty($profile['force_from_name']), true, false) . '>
+                            ' . __('Always use the specified "From" name, even if another is provided by the sender.', Simple_SMTP_Constants::DOMAIN) . '
+                    </label>
+                    </div>
+                  </td>
+                  </tr>';
 
             echo '<tr><th scope="row"><label for="host">' . __('SMTP Host', Simple_SMTP_Constants::DOMAIN) . '</label></th>
                   <td><input type="text" class="regular-text code" name="host" id="host" value="' . esc_attr($profile['host']) . '"></td></tr>';
@@ -149,6 +177,9 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
             $autotls    = isset($_POST['autotls']) ? 1 : 0;
             $username   = sanitize_text_field($_POST['username']);
             $password   = $_POST['password'] ?? '';
+            $sender     = isset($_POST['match_return_path']) ? $from_email : '';
+            $force_from_email = isset($_POST['force_from_email']) ? 1 : 0;
+            $force_from_name = isset($_POST['force_from_name']) ? 1 : 0;
         
             $profiles = get_option(Simple_SMTP_Constants::PROFILES, []);
             $existing_profile = !empty($profiles[$profile_id]);
@@ -158,11 +189,14 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
                 'label'      => $label,
                 'from_email' => $from_email,
                 'from_name'  => $from_name,
+                'sender'     => $sender,
                 'host'       => $host,
                 'port'       => $port,
                 'encryption' => $encryption,
                 'autotls'    => $autotls,
                 'username'   => $username,
+                'force_from_email' => $force_from_email,
+                'force_from_name' => $force_from_name,
             ];
         
             // Validate input
@@ -209,12 +243,15 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
                 'label'     => $label,
                 'from_email'=> $from_email,
                 'from_name' => $from_name,
+                'sender'    => $sender,
                 'host'      => $host,
                 'port'      => $port,
                 'encryption'=> $encryption,
                 'autotls'   => $autotls,
                 'username'  => $username,
                 'password'  => $encrypted_password,
+                'force_from_email' => $force_from_email,
+                'force_from_name' => $force_from_name,
             ];
             update_option(Simple_SMTP_Constants::PROFILES, $profiles);
         

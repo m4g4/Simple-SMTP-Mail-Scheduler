@@ -155,10 +155,17 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                     return 'No valid recipient addresses';
                 }
 
+                list($from_email, $from_name) = $this->determine_from_fields($headers, $profile_settings);
+                $sender = $this->determine_sender($profile_settings);
+
                 // === Message basics ===
                 $mailer->CharSet = 'UTF-8';
                 $mailer->Subject = wp_strip_all_tags($subject);
                 $mailer->Body    = $message;
+                if ($sender)
+                    $mailer->Sender = $sender;
+                $mailer->From       = $from_email;
+                $mailer->FromName   = $from_name;
                 if ($is_html) {
                     $mailer->AltBody = $this->html_to_text($message);
                 }
@@ -267,29 +274,11 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             return $queued_result ? true : null;
         }
 
-        public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {
-            $profile = null;
-            list($fromEmail, $fromName) = $this->parse_from_header($headers);
-                
-            // Try to match profile by 'From' email
-            if (!empty($fromEmail)) {
-                $profile = simple_smtp_get_profile_by_mail($fromEmail);
-            
-                // Override "from_name" if provided
-                if (!empty($fromName) && is_array($profile)) {
-                    $profile['from_name'] = $fromName;
-                }
-            }
-        
-            // Fallback: use active profile
+        public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {        
+            $profile = simple_smtp_get_active_profile();
             if (empty($profile) || !is_array($profile)) {
-                if (function_exists('simple_smtp_get_active_profile')) {
-                    $profile = simple_smtp_get_active_profile();
-                }
-                if (empty($profile) || !is_array($profile)) {
-                    error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
-                    return false;
-                }
+                error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
+                return false;
             }
         
             // Queue the email
@@ -324,8 +313,6 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 $mailer->isSMTP();
                 $mailer->Host       = isset($profile['host']) ? (string)$profile['host'] : '';
                 $mailer->Port       = isset($profile['port']) ? (int)$profile['port'] : 25;
-                $mailer->From       = isset($profile['from_email']) ? (string)$profile['from_email'] : '';
-                $mailer->FromName   = isset($profile['from_name']) ? (string)$profile['from_name'] : '';
                 $mailer->SMTPAuth   = true;
                 $mailer->Username   = isset($profile['username']) ? (string)$profile['username'] : '';
                 $mailer->Password   = isset($profile['password']) ? simple_smtp_mail_decrypt_password($profile['password']) : '';
@@ -630,6 +617,44 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             $text = trim($text);
         
             return $text;
+        }
+
+        private function determine_from_fields($headers, $profile) {
+            $from_email_profile = isset($profile['from_email']) ? (string)$profile['from_email'] : '';
+            $from_name_profile = isset($profile['from_name']) ? (string)$profile['from_name'] : '';
+
+            $force_from_email = isset($profile['force_from_email']) && $profile['force_from_email'] === 1;
+            $force_from_name = isset($profile['force_from_name']) && $profile['force_from_name'] === 1;
+
+            if ($force_from_email && !empty($from_email_profile) && 
+                $force_from_name && !empty($from_name_profile)) {
+                return [$from_email_profile, $from_name_profile];
+            }
+
+            list($from_email_headers, $from_name_headers) = $this->parse_from_header($headers);
+
+            $from_email = $from_email_headers;
+            if ($force_from_email && !empty($from_email_profile)) {
+                $from_email = $from_email_profile;
+            }
+
+            $from_name = $from_name_headers;
+            if ($force_from_name && !empty($from_name_profile)) {
+                $from_name = $from_name_profile;
+            }
+
+            return [$from_email, $from_name];
+        }
+
+        private function determine_sender($profile) {
+            $from_email = isset($profile['from_email']) ? (string)$profile['from_email'] : null;
+            $match_return_path = isset($profile['match_return_path']) && $profile['match_return_path'] === 1;
+            
+            if ($match_return_path) {
+                return $from_email;
+            }
+
+            return null;
         }
 
     }
