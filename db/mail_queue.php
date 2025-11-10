@@ -198,6 +198,15 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             );
         }
 
+        public function get_email_by_id($email_id) {
+            $emails = $this->get_emails_by_ids([$email_id]);
+            if (empty($emails) || count($emails) !== 1) {
+                return null;
+            }
+
+            return $emails[0];
+        }
+
         public function get_last_day_emails_grouped_by_hour() {
             global $wpdb;
 

@@ -58,12 +58,12 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         }
 
         public function send_email_by_id($email_id) {
-            $emails = Simple_SMTP_Email_Queue::get_instance()->get_emails_by_ids([$email_id]);
-            if (empty($emails) || count($emails) !== 1) {
+            $email = Simple_SMTP_Email_Queue::get_instance()->get_email_by_id($email_id);
+            if (!$email) {
                 throw new InvalidArgumentException( 'No such email ' . $email_id );
             }
 
-            if(!$this->send_email($emails[0])) {
+            if(!$this->send_email($email)) {
                 error_log("Failed to send email with id " . $email_id);
             }
 

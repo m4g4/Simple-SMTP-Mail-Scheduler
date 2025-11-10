@@ -28,20 +28,37 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                 wp_die(__('Security check failed.', Simple_SMTP_Constants::DOMAIN));
             }
 
+            $queue = Simple_SMTP_Email_Queue::get_instance();
+
+            $email = $queue->get_email_by_id($email_id);
+            if (!$email) {
+                wp_die(__('Email not found.', Simple_SMTP_Constants::DOMAIN));
+            }
+
+            $status = $email->status ?? '';
+
             switch ($action) {
                 case 'simple_smtp_mail_retry':
-                    Simple_SMTP_Email_Queue::get_instance()->retry_sending_email($email_id);
+                    if ($status === 'failed') {
+                        $queue->retry_sending_email($email_id);
+                    }
                     break;
 
                 case 'simple_smtp_mail_remove':
-                    Simple_SMTP_Email_Queue::get_instance()->delete_email($email_id);
+                    if ($status !== 'processing') {
+                        $queue->delete_email($email_id);
+                    }
                     break;
 
                 case 'simple_smtp_mail_front':
-                    Simple_SMTP_Email_Queue::get_instance()->prioritize_email($email_id);
+                    if ($status === 'queued') {
+                        $queue->prioritize_email($email_id);
+                    }
                     break;
                 case 'simple_smtp_mail_send_now':
-                    Simple_SMTP_Mail_Scheduler_Mailer::get_instance()->send_email_by_id($email_id);
+                    if ($status === 'queued') {
+                        Simple_SMTP_Mail_Scheduler_Mailer::get_instance()->send_email_by_id($email_id);
+                    }
                     break;
             }
 
