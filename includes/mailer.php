@@ -634,12 +634,12 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             list($from_email_headers, $from_name_headers) = $this->parse_from_header($headers);
 
             $from_email = $from_email_headers;
-            if ($force_from_email && !empty($from_email_profile)) {
+            if (empty($from_email) || ($force_from_email && !empty($from_email_profile))) {
                 $from_email = $from_email_profile;
             }
 
             $from_name = $from_name_headers;
-            if ($force_from_name && !empty($from_name_profile)) {
+            if (empty($from_name) || ($force_from_name && !empty($from_name_profile))) {
                 $from_name = $from_name_profile;
             }
 
