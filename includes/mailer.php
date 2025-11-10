@@ -49,7 +49,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
             foreach ($emails as $email) {
                 if(!$this->send_email($email)) {
-                    error_log("Failed to send email " . print_r($email));
+                    error_log("Failed to send email " . print_r($email, true));
                 }
             }
 
