@@ -19,7 +19,7 @@ function simple_smtp_mail_scheduler_enqueue_charts() {
 		'charts',
 		plugins_url('js/chart.js', __FILE__),
 		array('jquery'),
-		Simple_SMTP_Constants::PLUGIN_VERSION
+		Ssmptms_Constants::PLUGIN_VERSION
 	);
 
     wp_localize_script( 

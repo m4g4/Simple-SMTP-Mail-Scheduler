@@ -22,7 +22,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
 		    	self::$script_handle,
 		    	plugins_url('js/hour_stats_chart.js', __FILE__),
 		    	array('jquery'),
-				Simple_SMTP_Constants::PLUGIN_VERSION
+				Ssmptms_Constants::PLUGIN_VERSION
 		    );
         }
 
@@ -79,7 +79,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
             ?>
             <div class="ssmptms-mail-chart ssmptms-bar-chart">
                 <div class="ssmptms-mail-chart-header">
-                    <h4><?php echo __('Emails Sent per Hour', Simple_SMTP_Constants::DOMAIN)?></h4>
+                    <h4><?php echo __('Emails Sent per Hour', Ssmptms_Constants::DOMAIN)?></h4>
                     <input 
                         id="<?php echo esc_attr($this->date_picker_id()) ?>" 
                         class="ssmptms-date-picker"
@@ -110,7 +110,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
                         create_chart: ssmptmsCreateHourStatsChart,
                         ajax_action: "' . self::$action . '",
                         ajax_nonce:  "' . wp_create_nonce( self::$action ) . '",
-                        text_no_data: "'.__('No data to display.', Simple_SMTP_Constants::DOMAIN).'"
+                        text_no_data: "'.__('No data to display.', Ssmptms_Constants::DOMAIN).'"
                     }
                     ssmptmsCreateChartWithDatePicker(options);
                 });

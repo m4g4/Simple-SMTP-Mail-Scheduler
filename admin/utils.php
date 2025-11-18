@@ -64,7 +64,7 @@ function simple_smtp_mail_encrypt_password( string $plaintext ): string {
 
     $encrypted = openssl_encrypt(
         $plaintext,
-        Simple_SMTP_Constants::CIPHER,
+        Ssmptms_Constants::CIPHER,
         $key,
         OPENSSL_RAW_DATA,
         $iv
@@ -92,7 +92,7 @@ function simple_smtp_mail_decrypt_password( string $ciphertext ): string {
 
     $decrypted = openssl_decrypt(
         $encrypted,
-        Simple_SMTP_Constants::CIPHER,
+        Ssmptms_Constants::CIPHER,
         $key,
         OPENSSL_RAW_DATA,
         $iv
@@ -105,8 +105,8 @@ function simple_smtp_mail_decrypt_password( string $ciphertext ): string {
  * Retrieve the active SMTP profile (array) or null if invalid.
  */
 function simple_smtp_get_active_profile(): ?array {
-    $active_profile_id = get_option( Simple_SMTP_Constants::PROFILE_ACTIVE, null );
-    $profiles          = get_option( Simple_SMTP_Constants::PROFILES, [] );
+    $active_profile_id = get_option( Ssmptms_Constants::PROFILE_ACTIVE, null );
+    $profiles          = get_option( Ssmptms_Constants::PROFILES, [] );
 
     if ( ! $active_profile_id || empty( $profiles ) || ! isset( $profiles[ $active_profile_id ] ) ) {
         return null;
@@ -116,7 +116,7 @@ function simple_smtp_get_active_profile(): ?array {
 }
 
 function simple_smtp_get_profile_by_mail($from_email) {
-    $profiles = get_option( Simple_SMTP_Constants::PROFILES, [] );
+    $profiles = get_option( Ssmptms_Constants::PROFILES, [] );
 
     if (empty($profiles) || !is_array($profiles)) {
         return null;
@@ -135,25 +135,25 @@ function simple_smtp_get_profile_by_mail($from_email) {
 }
 
 function simple_stmp_scheduler_status_callback() {
-    $disable_plugin = get_option(Simple_SMTP_Constants::DISABLE, false);
+    $disable_plugin = get_option(Ssmptms_Constants::DISABLE, false);
     if ($disable_plugin) {
         echo "<div class='ssmptms-status-bar'>";
-        echo '<span class="ssmptms-status-bar-disabled">🛑 ' . esc_html__('Disabled', Simple_SMTP_Constants::DOMAIN) . '</span>';
-        echo '<p class="description">' . esc_html__('Email processing is turned off. Emails sent through wp_mail() are not handled by the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+        echo '<span class="ssmptms-status-bar-disabled">🛑 ' . esc_html__('Disabled', Ssmptms_Constants::DOMAIN) . '</span>';
+        echo '<p class="description">' . esc_html__('Email processing is turned off. Emails sent through wp_mail() are not handled by the plugin.', Ssmptms_Constants::DOMAIN) . '</p>';
         echo '</div>';
         return;
     }
 
-    $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
+    $next = wp_next_scheduled(Ssmptms_Constants::SCHEDULER_EVENT_NAME);
     $queued_emails = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
 
     echo "<div class='ssmptms-status-bar'>";
 
     if ($queued_emails > 0) {
         if ($next) {
-            $rate = (int) get_option(Simple_SMTP_Constants::EMAILS_PER_UNIT, 0);
-            $unit = get_option(Simple_SMTP_Constants::EMAILS_UNIT, 'minute');
-            $current_queue_count  = (int) get_option(Simple_SMTP_Constants::CURRENT_QUEUE_COUNT,$queued_emails);
+            $rate = (int) get_option(Ssmptms_Constants::EMAILS_PER_UNIT, 0);
+            $unit = get_option(Ssmptms_Constants::EMAILS_UNIT, 'minute');
+            $current_queue_count  = (int) get_option(Ssmptms_Constants::CURRENT_QUEUE_COUNT,$queued_emails);
             $sent = $current_queue_count - $queued_emails;
 
             $progress = min(100, ($sent / $current_queue_count) * 100);
@@ -163,24 +163,24 @@ function simple_stmp_scheduler_status_callback() {
 
             $duration = simple_stmp_scheduler_format_duration($eta_timestamp - time());
 
-            echo '<span class="ssmptms-status-bar-running">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<span class="ssmptms-status-bar-running">✅ ' . esc_html__('Sending in progress', Ssmptms_Constants::DOMAIN) . '</span>';
             simple_stmp_scheduler_progress_bar($progress);
             echo '<p class="description">'
                 . sprintf(
-                    esc_html__('%1$d emails queued • ETA %2$s (%3$s)', Simple_SMTP_Constants::DOMAIN),
+                    esc_html__('%1$d emails queued • ETA %2$s (%3$s)', Ssmptms_Constants::DOMAIN),
                     $queued_emails,
                     esc_html($eta_human),
                     esc_html($duration)
                 )
                 . '</p>';
         } else {
-            echo '<span class="ssmptms-status-bar-not-running">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
-            echo ' <a class="ssmptms-start-scheduler">▶️ ' . esc_html__('Start', Simple_SMTP_Constants::DOMAIN) . '</a>';
-            echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+            echo '<span class="ssmptms-status-bar-not-running">🚫 ' . esc_html__('Not running!', Ssmptms_Constants::DOMAIN) . '</span>';
+            echo ' <a class="ssmptms-start-scheduler">▶️ ' . esc_html__('Start', Ssmptms_Constants::DOMAIN) . '</a>';
+            echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Ssmptms_Constants::DOMAIN) . '</p>';
         }
     } else {
-        echo '<span class="ssmptms-status-bar-idle">⏸ ' . esc_html__('Idle', Simple_SMTP_Constants::DOMAIN) . '</span>';
-        echo '<p class="description">' . esc_html__('No emails scheduled for sending.', Simple_SMTP_Constants::DOMAIN) . '</p>';
+        echo '<span class="ssmptms-status-bar-idle">⏸ ' . esc_html__('Idle', Ssmptms_Constants::DOMAIN) . '</span>';
+        echo '<p class="description">' . esc_html__('No emails scheduled for sending.', Ssmptms_Constants::DOMAIN) . '</p>';
     }
 
     echo "</div>";

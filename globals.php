@@ -3,10 +3,7 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-/**
- * Centralized constants for Simple SMTP Mail Scheduler
- */
-final class Simple_SMTP_Constants {
+final class Ssmptms_Constants {
 
     public const PLUGIN_VERSION     = '1.6.0';
     public const VERSION     = '1.2';

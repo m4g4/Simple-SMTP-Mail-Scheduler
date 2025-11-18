@@ -21,21 +21,21 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 		    	'simple-smtp-mail-scheduler-admin-css',
 		    	plugins_url('css/admin.css', __FILE__),
 		    	array(),
-				Simple_SMTP_Constants::PLUGIN_VERSION
+				Ssmptms_Constants::PLUGIN_VERSION
 		    );
 
             wp_enqueue_script(
 		    	'simple-smtp-mail-scheduler-admin-js',
 		    	plugins_url('js/admin.js', __FILE__),
 		    	array('jquery'),
-				Simple_SMTP_Constants::PLUGIN_VERSION
+				Ssmptms_Constants::PLUGIN_VERSION
 		    );
 
             wp_enqueue_script(
 		    	'simple-smtp-mail-scheduler-profile-page-js',
 		    	plugins_url('js/profile_page.js', __FILE__),
 		    	array('jquery'),
-				Simple_SMTP_Constants::PLUGIN_VERSION
+				Ssmptms_Constants::PLUGIN_VERSION
 		    );
 
             wp_localize_script( 
@@ -44,9 +44,9 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                 array(
                     'ajax_url'       => admin_url( 'admin-ajax.php' ),
                     'start_action'   => 'simple-smtp-mail-scheduler-start',
-                    'start_text'     => __( 'Start', Simple_SMTP_Constants::DOMAIN ),
-                    'started_text'   => __( 'Started', Simple_SMTP_Constants::DOMAIN ),
-                    'starting_text'  => __( 'Starting', Simple_SMTP_Constants::DOMAIN ),
+                    'start_text'     => __( 'Start', Ssmptms_Constants::DOMAIN ),
+                    'started_text'   => __( 'Started', Ssmptms_Constants::DOMAIN ),
+                    'starting_text'  => __( 'Starting', Ssmptms_Constants::DOMAIN ),
                     'ajax_nonce'     => wp_create_nonce( 'simple-smtp-mail-scheduler-start' ),
                 )
             );
@@ -54,19 +54,19 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 
         public function register_menus() {
             add_options_page(
-                __('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN),
-                __('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN),
+                __('Simple SMTP Mail Scheduler', Ssmptms_Constants::DOMAIN),
+                __('Simple SMTP Mail Scheduler', Ssmptms_Constants::DOMAIN),
                 'manage_options',
-                Simple_SMTP_Constants::SETTINGS_PAGE,
+                Ssmptms_Constants::SETTINGS_PAGE,
                 [$this, 'settings_page']
             );
 
             add_submenu_page(
                 null,
-                __('Edit SMTP Profile', Simple_SMTP_Constants::DOMAIN),
-                __('Edit SMTP', Simple_SMTP_Constants::DOMAIN),
+                __('Edit SMTP Profile', Ssmptms_Constants::DOMAIN),
+                __('Edit SMTP', Ssmptms_Constants::DOMAIN),
                 'manage_options',
-                Simple_SMTP_Constants::PROFILE_EDIT_PAGE,
+                Ssmptms_Constants::PROFILE_EDIT_PAGE,
                 [$this, 'edit_profiles']
             );
         }
@@ -76,26 +76,26 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             ?>
             <div class="wrap">
                 <div class="ssmptms-headline-wrapper">
-                    <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN); ?></h1>
+                    <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Ssmptms_Constants::DOMAIN); ?></h1>
                     <?php simple_stmp_scheduler_status_callback(); ?>
                 </div>
 
                 <h2 class="nav-tab-wrapper">
-                    <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=general"
+                    <a href="?page=<?php echo esc_attr(Ssmptms_Constants::SETTINGS_PAGE); ?>&tab=general"
                        class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('General Settings', Simple_SMTP_Constants::DOMAIN); ?>
+                        <?php echo esc_html__('General Settings', Ssmptms_Constants::DOMAIN); ?>
                     </a>
-                    <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=log"
+                    <a href="?page=<?php echo esc_attr(Ssmptms_Constants::SETTINGS_PAGE); ?>&tab=log"
                        class="nav-tab <?php echo $active_tab === 'log' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Email Log', Simple_SMTP_Constants::DOMAIN); ?>
+                        <?php echo esc_html__('Email Log', Ssmptms_Constants::DOMAIN); ?>
                     </a>
-                    <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=stats"
+                    <a href="?page=<?php echo esc_attr(Ssmptms_Constants::SETTINGS_PAGE); ?>&tab=stats"
                        class="nav-tab <?php echo $active_tab === 'stats' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Statistics', Simple_SMTP_Constants::DOMAIN); ?>
+                        <?php echo esc_html__('Statistics', Ssmptms_Constants::DOMAIN); ?>
                     </a>
-                    <a href="?page=<?php echo esc_attr(Simple_SMTP_Constants::SETTINGS_PAGE); ?>&tab=test"
+                    <a href="?page=<?php echo esc_attr(Ssmptms_Constants::SETTINGS_PAGE); ?>&tab=test"
                         class="nav-tab <?php echo $active_tab === 'test' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Testing', Simple_SMTP_Constants::DOMAIN); ?>
+                        <?php echo esc_html__('Testing', Ssmptms_Constants::DOMAIN); ?>
                     </a>
                 </h2>
 
@@ -140,7 +140,7 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         }
 
         public function add_settings_link($links) {
-            $settings_link = '<a href="options-general.php?page='.Simple_SMTP_Constants::SETTINGS_PAGE.'">' . __('Settings', Simple_SMTP_Constants::DOMAIN) . '</a>';
+            $settings_link = '<a href="options-general.php?page='.Ssmptms_Constants::SETTINGS_PAGE.'">' . __('Settings', Ssmptms_Constants::DOMAIN) . '</a>';
             array_unshift($links, $settings_link);
             return $links;
         }

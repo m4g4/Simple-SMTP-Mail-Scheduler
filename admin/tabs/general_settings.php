@@ -19,17 +19,17 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
 
         public function register_settings() {
             add_settings_section(
-                Simple_SMTP_Constants::SECTION_BASIC,
+                Ssmptms_Constants::SECTION_BASIC,
                 '',
                 function() {},
-                Simple_SMTP_Constants::SETTINGS_SECTION_BASIC
+                Ssmptms_Constants::SETTINGS_SECTION_BASIC
             );
 
             add_settings_section(
-                Simple_SMTP_Constants::SECTION_SCHEDULER,
-                __( 'Email Scheduler Settings', Simple_SMTP_Constants::DOMAIN ),
+                Ssmptms_Constants::SECTION_SCHEDULER,
+                __( 'Email Scheduler Settings', Ssmptms_Constants::DOMAIN ),
                 [ $this, 'scheduler_section_text' ],
-                Simple_SMTP_Constants::SETTINGS_SECTION_SCHEDULER
+                Ssmptms_Constants::SETTINGS_SECTION_SCHEDULER
             );
 
             $this->register_basic_settings();
@@ -41,12 +41,12 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             <div class="wrap">
                 <form method="post" action="options.php">
                     <?php
-                    settings_fields(Simple_SMTP_Constants::GENERAL_OPTION_GROUP);
+                    settings_fields(Ssmptms_Constants::GENERAL_OPTION_GROUP);
 
                     $this->show_profiles();
 
-                    do_settings_sections(Simple_SMTP_Constants::SETTINGS_SECTION_BASIC);
-                    do_settings_sections(Simple_SMTP_Constants::SETTINGS_SECTION_SCHEDULER);
+                    do_settings_sections(Ssmptms_Constants::SETTINGS_SECTION_BASIC);
+                    do_settings_sections(Ssmptms_Constants::SETTINGS_SECTION_SCHEDULER);
                     
                     submit_button();
                     ?>
@@ -60,8 +60,8 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
 
         private function register_basic_settings() {
             register_setting(
-                Simple_SMTP_Constants::GENERAL_OPTION_GROUP,
-                Simple_SMTP_Constants::DISABLE,
+                Ssmptms_Constants::GENERAL_OPTION_GROUP,
+                Ssmptms_Constants::DISABLE,
                 [
                     'type' => 'boolean',
                     'sanitize_callback' => fn($value) => (bool) $value,
@@ -70,17 +70,17 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             );
             add_settings_field(
                 'disable',
-                __('Disable plugin functionality', Simple_SMTP_Constants::DOMAIN),
+                __('Disable plugin functionality', Ssmptms_Constants::DOMAIN),
                 [$this, 'disable_callback'],
-                Simple_SMTP_Constants::SETTINGS_SECTION_BASIC,
-                Simple_SMTP_Constants::SECTION_BASIC
+                Ssmptms_Constants::SETTINGS_SECTION_BASIC,
+                Ssmptms_Constants::SECTION_BASIC
             );
         }
 
         private function register_scheduler_settings() {
             register_setting(
-                Simple_SMTP_Constants::GENERAL_OPTION_GROUP,
-                Simple_SMTP_Constants::EMAILS_PER_UNIT,
+                Ssmptms_Constants::GENERAL_OPTION_GROUP,
+                Ssmptms_Constants::EMAILS_PER_UNIT,
                 [
                     'type'              => 'integer',
                     'sanitize_callback' => [ $this, 'sanitize_emails_per_unit' ],
@@ -89,8 +89,8 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             );
 
             register_setting(
-                Simple_SMTP_Constants::GENERAL_OPTION_GROUP,
-                Simple_SMTP_Constants::EMAILS_UNIT,
+                Ssmptms_Constants::GENERAL_OPTION_GROUP,
+                Ssmptms_Constants::EMAILS_UNIT,
                 [
                     'type'              => 'string',
                     'sanitize_callback' => [ $this, 'sanitize_emails_unit' ],
@@ -100,29 +100,29 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
 
             add_settings_field(
                 'emails_per_unit',
-                __( 'Emails per unit', Simple_SMTP_Constants::DOMAIN ),
+                __( 'Emails per unit', Ssmptms_Constants::DOMAIN ),
                 [ $this, 'emails_per_unit_callback' ],
-                Simple_SMTP_Constants::SETTINGS_SECTION_SCHEDULER,
-                Simple_SMTP_Constants::SECTION_SCHEDULER
+                Ssmptms_Constants::SETTINGS_SECTION_SCHEDULER,
+                Ssmptms_Constants::SECTION_SCHEDULER
             );
         }
 
         public function scheduler_section_text(): void {
-            echo '<p>' . esc_html__( 'Configure the email sending limits and scheduler settings below.', Simple_SMTP_Constants::DOMAIN ) . '</p>';
+            echo '<p>' . esc_html__( 'Configure the email sending limits and scheduler settings below.', Ssmptms_Constants::DOMAIN ) . '</p>';
         }
 
         /**
          * Emails per unit + unit selector field.
          */
         public function emails_per_unit_callback(): void {
-            $value = (int) get_option( Simple_SMTP_Constants::EMAILS_PER_UNIT, 5 );
-            $unit  = get_option( Simple_SMTP_Constants::EMAILS_UNIT, 'minute' );
+            $value = (int) get_option( Ssmptms_Constants::EMAILS_PER_UNIT, 5 );
+            $unit  = get_option( Ssmptms_Constants::EMAILS_UNIT, 'minute' );
             ?>
-            <input type="number" name="<?php echo esc_attr( Simple_SMTP_Constants::EMAILS_PER_UNIT ); ?>" value="<?php echo esc_attr( $value ); ?>" min="1" />
-            <select name="<?php echo esc_attr( Simple_SMTP_Constants::EMAILS_UNIT ); ?>">
+            <input type="number" name="<?php echo esc_attr( Ssmptms_Constants::EMAILS_PER_UNIT ); ?>" value="<?php echo esc_attr( $value ); ?>" min="1" />
+            <select name="<?php echo esc_attr( Ssmptms_Constants::EMAILS_UNIT ); ?>">
                 <?php
-                foreach (Simple_SMTP_Constants::UNITS as $unit_key ) {
-                    $label = Simple_SMTP_Constants::get_unit_text($unit_key);
+                foreach (Ssmptms_Constants::UNITS as $unit_key ) {
+                    $label = Ssmptms_Constants::get_unit_text($unit_key);
                     printf(
                         '<option value="%s" %s>%s</option>',
                         esc_attr( $unit_key ),
@@ -132,7 +132,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                 }
                 ?>
             </select>
-            <p class="description"><?php esc_html_e( 'Maximum number of emails that can be sent per time unit.', Simple_SMTP_Constants::DOMAIN ); ?></p>
+            <p class="description"><?php esc_html_e( 'Maximum number of emails that can be sent per time unit.', Ssmptms_Constants::DOMAIN ); ?></p>
             <?php
         }
 
@@ -143,12 +143,12 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
             $value = absint( $value );
             if ( $value < 1 ) {
                 add_settings_error(
-                    Simple_SMTP_Constants::EMAILS_PER_UNIT,
+                    Ssmptms_Constants::EMAILS_PER_UNIT,
                     'invalid_emails_per_unit',
-                    __( 'Emails per unit must be a positive number.', Simple_SMTP_Constants::DOMAIN ),
+                    __( 'Emails per unit must be a positive number.', Ssmptms_Constants::DOMAIN ),
                     'error'
                 );
-                return (int) get_option( Simple_SMTP_Constants::EMAILS_PER_UNIT, 5 );
+                return (int) get_option( Ssmptms_Constants::EMAILS_PER_UNIT, 5 );
             }
             return $value;
         }
@@ -157,45 +157,45 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
          * Sanitize time unit.
          */
         public function sanitize_emails_unit( $value ): string {
-            if ( ! in_array( $value, Simple_SMTP_Constants::UNITS, true ) ) {
+            if ( ! in_array( $value, Ssmptms_Constants::UNITS, true ) ) {
                 add_settings_error(
-                    Simple_SMTP_Constants::EMAILS_UNIT,
+                    Ssmptms_Constants::EMAILS_UNIT,
                     'invalid_emails_unit',
-                    __( 'Invalid time unit selected.', Simple_SMTP_Constants::DOMAIN ),
+                    __( 'Invalid time unit selected.', Ssmptms_Constants::DOMAIN ),
                     'error'
                 );
-                return get_option( Simple_SMTP_Constants::EMAILS_UNIT, 'minute' );
+                return get_option( Ssmptms_Constants::EMAILS_UNIT, 'minute' );
             }
             return $value;
         }
 
         public function disable_callback() {
-            $value = get_option(Simple_SMTP_Constants::DISABLE, false);
+            $value = get_option(Ssmptms_Constants::DISABLE, false);
             ?>
             <label>
-                <input type="checkbox" name="<?php echo esc_attr(Simple_SMTP_Constants::DISABLE); ?>"
+                <input type="checkbox" name="<?php echo esc_attr(Ssmptms_Constants::DISABLE); ?>"
                        value="1" <?php checked($value, true); ?> />
             </label>
             <p class="description">
-                <?php esc_html_e('When checked, the plugin will not filter emails sent through the WordPress wp_mail() function. When unchecked, all wp_mail() emails will be intercepted and processed by the plugin. Other email-sending methods in WordPress are not affected and bypass the plugin entirely.', Simple_SMTP_Constants::DOMAIN); ?>
+                <?php esc_html_e('When checked, the plugin will not filter emails sent through the WordPress wp_mail() function. When unchecked, all wp_mail() emails will be intercepted and processed by the plugin. Other email-sending methods in WordPress are not affected and bypass the plugin entirely.', Ssmptms_Constants::DOMAIN); ?>
             </p>
             <?php
         }
         
         public function show_profiles() {
-            $active_profile = get_option(Simple_SMTP_Constants::PROFILE_ACTIVE, null);
-            $profiles = get_option(Simple_SMTP_Constants::PROFILES, []);
+            $active_profile = get_option(Ssmptms_Constants::PROFILE_ACTIVE, null);
+            $profiles = get_option(Ssmptms_Constants::PROFILES, []);
 
             ?>
-            <h2><?php echo esc_html__('SMTP Profiles', Simple_SMTP_Constants::DOMAIN); ?></h2>
+            <h2><?php echo esc_html__('SMTP Profiles', Ssmptms_Constants::DOMAIN); ?></h2>
             <table class="widefat">
                 <thead>
                 <tr>
-                    <th><?php echo esc_html__('Label', Simple_SMTP_Constants::DOMAIN); ?></th>
-                    <th><?php echo esc_html__('Host', Simple_SMTP_Constants::DOMAIN); ?></th>
-                    <th><?php echo esc_html__('From Email', Simple_SMTP_Constants::DOMAIN); ?></th>
-                    <th><?php echo esc_html__('Active', Simple_SMTP_Constants::DOMAIN); ?></th>
-                    <th><?php echo esc_html__('Actions', Simple_SMTP_Constants::DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Label', Ssmptms_Constants::DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Host', Ssmptms_Constants::DOMAIN); ?></th>
+                    <th><?php echo esc_html__('From Email', Ssmptms_Constants::DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Active', Ssmptms_Constants::DOMAIN); ?></th>
+                    <th><?php echo esc_html__('Actions', Ssmptms_Constants::DOMAIN); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -206,9 +206,9 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                         $host  = isset($profile['host']) ? esc_html($profile['host']) : '';
                         $email = isset($profile['from_email']) ? esc_html($profile['from_email']) : '';
 
-                        $is_active = ($active_profile === $key) ? '✅ ' . esc_html__('Active', Simple_SMTP_Constants::DOMAIN) : '';
+                        $is_active = ($active_profile === $key) ? '✅ ' . esc_html__('Active', Ssmptms_Constants::DOMAIN) : '';
 
-                        $edit_url = admin_url('admin.php?page=' . Simple_SMTP_Constants::PROFILE_EDIT_PAGE . '&profile=' . urlencode($key));
+                        $edit_url = admin_url('admin.php?page=' . Ssmptms_Constants::PROFILE_EDIT_PAGE . '&profile=' . urlencode($key));
                         $activate_url = wp_nonce_url(
                             admin_url("admin-post.php?action=simple_smtp_mail_profile_activate&profile=$key"),
                             'simple_smtp_mail_profile_activate'
@@ -218,8 +218,8 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                             'simple_smtp_mail_profile_delete'
                         );
 
-                        $activate = !$is_active ? ' | <a href="' . esc_url($activate_url) . '">' . esc_html__('Set Active', Simple_SMTP_Constants::DOMAIN) . '</a>' : '';
-                        $delete   = !$is_active ? ' | <a href="' . esc_url($delete_url) . '" onclick="return confirm(\'' . esc_js(__('Are you sure you want to delete this profile?', Simple_SMTP_Constants::DOMAIN)) . '\');">' . esc_html__('Delete', Simple_SMTP_Constants::DOMAIN) . '</a>' : '';
+                        $activate = !$is_active ? ' | <a href="' . esc_url($activate_url) . '">' . esc_html__('Set Active', Ssmptms_Constants::DOMAIN) . '</a>' : '';
+                        $delete   = !$is_active ? ' | <a href="' . esc_url($delete_url) . '" onclick="return confirm(\'' . esc_js(__('Are you sure you want to delete this profile?', Ssmptms_Constants::DOMAIN)) . '\');">' . esc_html__('Delete', Ssmptms_Constants::DOMAIN) . '</a>' : '';
                         ?>
                         <tr>
                             <td><?php echo $label; ?></td>
@@ -227,7 +227,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                             <td><?php echo $email; ?></td>
                             <td><?php echo $is_active; ?></td>
                             <td>
-                                <a href="<?php echo esc_url($edit_url); ?>"><?php echo esc_html__('Edit', Simple_SMTP_Constants::DOMAIN); ?></a>
+                                <a href="<?php echo esc_url($edit_url); ?>"><?php echo esc_html__('Edit', Ssmptms_Constants::DOMAIN); ?></a>
                                 <?php echo $activate; ?>
                                 <?php echo $delete; ?>
                             </td>
@@ -235,15 +235,15 @@ if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
                     <?php endforeach; ?>
                 <?php else : ?>
                     <tr>
-                        <td colspan="5" style="text-align:center;"><?php echo esc_html__('No SMTP profiles found.', Simple_SMTP_Constants::DOMAIN); ?></td>
+                        <td colspan="5" style="text-align:center;"><?php echo esc_html__('No SMTP profiles found.', Ssmptms_Constants::DOMAIN); ?></td>
                     </tr>
                 <?php endif; ?>
                 </tbody>
             </table>
             <br />
-            <a href="<?php echo esc_url(admin_url('admin.php?page=' . Simple_SMTP_Constants::PROFILE_EDIT_PAGE . '&new=1')); ?>"
+            <a href="<?php echo esc_url(admin_url('admin.php?page=' . Ssmptms_Constants::PROFILE_EDIT_PAGE . '&new=1')); ?>"
                class="button button-secondary">
-                <?php echo esc_html__('Add new profile', Simple_SMTP_Constants::DOMAIN); ?>
+                <?php echo esc_html__('Add new profile', Ssmptms_Constants::DOMAIN); ?>
             </a>
             <?php
         }

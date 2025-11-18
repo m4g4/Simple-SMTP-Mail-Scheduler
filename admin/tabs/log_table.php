@@ -12,8 +12,8 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
     public function __construct() {
         parent::__construct([
-            'singular' => __('Email', Simple_SMTP_Constants::DOMAIN),
-            'plural'   => __('Emails', Simple_SMTP_Constants::DOMAIN),
+            'singular' => __('Email', Ssmptms_Constants::DOMAIN),
+            'plural'   => __('Emails', Ssmptms_Constants::DOMAIN),
             'ajax'     => false,
         ]);
     }
@@ -21,14 +21,14 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
     public function get_columns(): array {
         $columns = [
             'cb'              => '<input type="checkbox" />',
-            'recipient_email' => __('Recipient', Simple_SMTP_Constants::DOMAIN),
-            'subject'         => __('Subject', Simple_SMTP_Constants::DOMAIN),
-            'profile'         => __('Profile', Simple_SMTP_Constants::DOMAIN),
-            'status'          => __('Status', Simple_SMTP_Constants::DOMAIN),
-            'scheduled_at'    => __('Scheduled At', Simple_SMTP_Constants::DOMAIN),
-            'last_attempt_at' => __('Last Attempt At', Simple_SMTP_Constants::DOMAIN),
-            'priority'        => __('Priority', Simple_SMTP_Constants::DOMAIN),
-            'actions'         => __('Actions', Simple_SMTP_Constants::DOMAIN),
+            'recipient_email' => __('Recipient', Ssmptms_Constants::DOMAIN),
+            'subject'         => __('Subject', Ssmptms_Constants::DOMAIN),
+            'profile'         => __('Profile', Ssmptms_Constants::DOMAIN),
+            'status'          => __('Status', Ssmptms_Constants::DOMAIN),
+            'scheduled_at'    => __('Scheduled At', Ssmptms_Constants::DOMAIN),
+            'last_attempt_at' => __('Last Attempt At', Ssmptms_Constants::DOMAIN),
+            'priority'        => __('Priority', Ssmptms_Constants::DOMAIN),
+            'actions'         => __('Actions', Ssmptms_Constants::DOMAIN),
         ];
 
         return $columns;
@@ -48,9 +48,9 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
 
     public function get_bulk_actions() {
         return [
-            'retry'   => __('Retry', Simple_SMTP_Constants::DOMAIN),
-            'delete'  => __('Delete', Simple_SMTP_Constants::DOMAIN),
-            'front'   => __('Put to Front', Simple_SMTP_Constants::DOMAIN),
+            'retry'   => __('Retry', Ssmptms_Constants::DOMAIN),
+            'delete'  => __('Delete', Ssmptms_Constants::DOMAIN),
+            'front'   => __('Put to Front', Ssmptms_Constants::DOMAIN),
         ];
     }
 
@@ -73,16 +73,16 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         $search_query   = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
 
         $statuses = [
-            'queued'     => __('Queued', Simple_SMTP_Constants::DOMAIN),
-            'processing' => __('Processing', Simple_SMTP_Constants::DOMAIN),
-            'sent'       => __('Sent', Simple_SMTP_Constants::DOMAIN),
-            'failed'     => __('Failed', Simple_SMTP_Constants::DOMAIN),
+            'queued'     => __('Queued', Ssmptms_Constants::DOMAIN),
+            'processing' => __('Processing', Ssmptms_Constants::DOMAIN),
+            'sent'       => __('Sent', Ssmptms_Constants::DOMAIN),
+            'failed'     => __('Failed', Ssmptms_Constants::DOMAIN),
         ];
 
         echo '<div class="alignleft actions">';
 
         echo '<select name="status_filter" id="status_filter">';
-        echo '<option value="">' . esc_html__('All Statuses', Simple_SMTP_Constants::DOMAIN) . '</option>';
+        echo '<option value="">' . esc_html__('All Statuses', Ssmptms_Constants::DOMAIN) . '</option>';
         foreach ($statuses as $value => $label) {
             echo '<option value="' . esc_attr($value) . '"' . selected($status_filter, $value, false) . '>' . esc_html($label) . '</option>';
         }
@@ -93,17 +93,17 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
         $profile_labels = array_unique(array_filter($profile_labels));
 
         echo '<select name="profile_filter" id="profile_filter">';
-        echo '<option value="">' . esc_html__('All Profiles', Simple_SMTP_Constants::DOMAIN) . '</option>';
+        echo '<option value="">' . esc_html__('All Profiles', Ssmptms_Constants::DOMAIN) . '</option>';
         foreach ($profile_labels as $label) {
             echo '<option value="' . esc_attr($label) . '"' . selected($profile_filter, $label, false) . '>' . esc_html($label) . '</option>';
         }
         echo '</select>';
 
         // Search input
-        echo '<input type="search" name="s" placeholder="' . esc_attr__('Search email or subject...', Simple_SMTP_Constants::DOMAIN) . '" value="' . esc_attr($search_query) . '" />';
+        echo '<input type="search" name="s" placeholder="' . esc_attr__('Search email or subject...', Ssmptms_Constants::DOMAIN) . '" value="' . esc_attr($search_query) . '" />';
 
         // Submit button
-        submit_button(__('Filter', Simple_SMTP_Constants::DOMAIN), 'button', 'filter_action', false);
+        submit_button(__('Filter', Ssmptms_Constants::DOMAIN), 'button', 'filter_action', false);
 
         echo '</div>';
     }
@@ -149,13 +149,13 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                 return esc_html($item->$column_name);
             case 'profile':
                 $profile = json_decode($item->profile_settings, true);
-                return esc_html($profile['label'] ?? __('Unknown Profile', Simple_SMTP_Constants::DOMAIN));
+                return esc_html($profile['label'] ?? __('Unknown Profile', Ssmptms_Constants::DOMAIN));
             case 'priority':
                 $colors = ['0' => 'gray', '1' => 'blue', '2' => 'orange', '3' => 'red'];
                 $color  = $colors[$item->priority] ?? 'black';
                 return '<span style="color:' . esc_attr($color) . '">' . esc_html($item->priority) . '</span>';
             case 'status':
-                $status = Simple_SMTP_Constants::get_status_text($item->status) ?? ucfirst($item->status);
+                $status = Ssmptms_Constants::get_status_text($item->status) ?? ucfirst($item->status);
                 $status_colors = [
                     'queued'     => 'orange',
                     'processing' => 'orange',
@@ -190,7 +190,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                     'email_id' => $item->email_id,
                     '_wpnonce' => wp_create_nonce('simple_smtp_mail_retry_' . $item->email_id),
                 ])),
-                __('Retry', Simple_SMTP_Constants::DOMAIN)
+                __('Retry', Ssmptms_Constants::DOMAIN)
             );
         }
 
@@ -202,7 +202,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                 'email_id' => $item->email_id,
                 '_wpnonce' => wp_create_nonce('simple_smtp_mail_remove_' . $item->email_id),
             ])),
-            __('Remove', Simple_SMTP_Constants::DOMAIN)
+            __('Remove', Ssmptms_Constants::DOMAIN)
         );
 
         // Put to front (queued only)
@@ -214,7 +214,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                     'email_id' => $item->email_id,
                     '_wpnonce' => wp_create_nonce('simple_smtp_mail_front_' . $item->email_id),
                 ])),
-                __('Put to Front', Simple_SMTP_Constants::DOMAIN)
+                __('Put to Front', Ssmptms_Constants::DOMAIN)
             );
         }
 
@@ -227,7 +227,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends WP_List_Table {
                     'email_id' => $item->email_id,
                     '_wpnonce' => wp_create_nonce('simple_smtp_mail_send_now_' . $item->email_id),
                 ])),
-                __('Send Now', Simple_SMTP_Constants::DOMAIN)
+                __('Send Now', Ssmptms_Constants::DOMAIN)
             );
         }
 

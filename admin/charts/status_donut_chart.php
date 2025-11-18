@@ -20,7 +20,7 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
 		    	self::$script_handle,
 		    	plugins_url('js/status_donut_chart.js', __FILE__),
 		    	array('jquery'),
-				Simple_SMTP_Constants::PLUGIN_VERSION
+				Ssmptms_Constants::PLUGIN_VERSION
 		    );
         }
 
@@ -65,7 +65,7 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
             ];
 
             foreach ($results as $row) {
-                $data['labels'][] = Simple_SMTP_Constants::get_status_text($row->status) ?? ucfirst($row->status);
+                $data['labels'][] = Ssmptms_Constants::get_status_text($row->status) ?? ucfirst($row->status);
                 $data['values'][] = (int)$row->count;
                 $data['colors'][] = $color_map[$row->status] ?? '#9ca3af';
             }
@@ -79,7 +79,7 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
             ?>
             <div class="ssmptms-mail-chart ssmptms-donut-chart">
                 <div class="ssmptms-mail-chart-header">
-                    <h4><?php echo __('Email Status Distribution', Simple_SMTP_Constants::DOMAIN); ?></h4>
+                    <h4><?php echo __('Email Status Distribution', Ssmptms_Constants::DOMAIN); ?></h4>
                     <input 
                         id="<?php echo esc_attr($this->date_picker_id()) ?>" 
                         class="ssmptms-date-picker"
@@ -110,7 +110,7 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
                         create_chart: ssmptmsCreateStatusDonutChart,
                         ajax_action: "' . self::$action . '",
                         ajax_nonce:  "' . wp_create_nonce( self::$action ) . '",
-                        text_no_data: "'.__('No data to display.', Simple_SMTP_Constants::DOMAIN).'"
+                        text_no_data: "'.__('No data to display.', Ssmptms_Constants::DOMAIN).'"
                     }
                     ssmptmsCreateChartWithDatePicker(options);
                 });
