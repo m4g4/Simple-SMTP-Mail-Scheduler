@@ -75,7 +75,7 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
             $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'general';
             ?>
             <div class="wrap">
-                <div class="s-smtp-headline-wrapper">
+                <div class="ssmptms-headline-wrapper">
                     <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Simple_SMTP_Constants::DOMAIN); ?></h1>
                     <?php simple_stmp_scheduler_status_callback(); ?>
                 </div>

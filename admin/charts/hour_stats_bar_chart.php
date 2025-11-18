@@ -77,16 +77,16 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
 
         public function display() {
             ?>
-            <div class="s-smtp-mail-chart s-smtp-mail-bar-chart">
-                <div class="s-smtp-mail-chart-header">
+            <div class="ssmptms-mail-chart ssmptms-bar-chart">
+                <div class="ssmptms-mail-chart-header">
                     <h4><?php echo __('Emails Sent per Hour', Simple_SMTP_Constants::DOMAIN)?></h4>
                     <input 
                         id="<?php echo esc_attr($this->date_picker_id()) ?>" 
-                        class="s-smtp-mail-date-picker"
+                        class="ssmptms-date-picker"
                         type="text"
                     />
                 </div>
-                <div class="s-smtp-mail-chart-wrapper">
+                <div class="ssmptms-mail-chart-wrapper">
                     <?php echo $this->display_chart(); ?>
                 </div>
             </div>

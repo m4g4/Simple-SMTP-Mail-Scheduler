@@ -1,5 +1,5 @@
 jQuery(function ($) {
-    $(document).on('click', '.s-smtp-start-scheduler:not(.started)', function(e) {
+    $(document).on('click', '.ssmptms-start-scheduler:not(.started)', function(e) {
         e.preventDefault();
         const $btn = jQuery(this);
         $btn.text(`⏳ ${ssmptms_admin_ajax_params.starting_text} ...`);

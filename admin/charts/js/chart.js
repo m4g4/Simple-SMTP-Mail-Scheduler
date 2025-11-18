@@ -21,7 +21,7 @@ function ssmptmsCreateChartWithDatePicker(options) {
     let chartInstance = null;
 
     const spinnerHTML = `
-        <div class="s-smtp-mail-loading-spinner">
+        <div class="ssmptms-loading-spinner">
             <span class="spinner is-active" style="float:none;"></span>
         </div>
     `;
@@ -41,7 +41,7 @@ function ssmptmsCreateChartWithDatePicker(options) {
     }
 
     function clearNoDataMessage() {
-        wrapper.find('.s-smtp-mail-no-chart-data').remove();
+        wrapper.find('.ssmptms-no-chart-data').remove();
     }
 
     function showNoDataMessage() {
@@ -49,7 +49,7 @@ function ssmptmsCreateChartWithDatePicker(options) {
         hideCanvas();
 
         wrapper.append(
-            '<div class="s-smtp-mail-no-chart-data">' + text_no_data + '</div>'
+            '<div class="ssmptms-no-chart-data">' + text_no_data + '</div>'
         );
     }
 

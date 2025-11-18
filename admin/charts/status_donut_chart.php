@@ -77,16 +77,16 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
 
         public function display() {
             ?>
-            <div class="s-smtp-mail-chart s-smtp-mail-donut-chart">
-                <div class="s-smtp-mail-chart-header">
+            <div class="ssmptms-mail-chart ssmptms-donut-chart">
+                <div class="ssmptms-mail-chart-header">
                     <h4><?php echo __('Email Status Distribution', Simple_SMTP_Constants::DOMAIN); ?></h4>
                     <input 
                         id="<?php echo esc_attr($this->date_picker_id()) ?>" 
-                        class="s-smtp-mail-date-picker"
+                        class="ssmptms-date-picker"
                         type="text"
                     />
                 </div>
-                <div class="s-smtp-mail-chart-wrapper">
+                <div class="ssmptms-mail-chart-wrapper">
                     <?php echo $this->display_chart(); ?>
                 </div>
             </div>

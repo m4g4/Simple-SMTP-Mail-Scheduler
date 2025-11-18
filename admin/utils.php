@@ -137,8 +137,8 @@ function simple_smtp_get_profile_by_mail($from_email) {
 function simple_stmp_scheduler_status_callback() {
     $disable_plugin = get_option(Simple_SMTP_Constants::DISABLE, false);
     if ($disable_plugin) {
-        echo "<div class='s-smtp-status-bar'>";
-        echo '<span class="s-smtp-status-bar-disabled">🛑 ' . esc_html__('Disabled', Simple_SMTP_Constants::DOMAIN) . '</span>';
+        echo "<div class='ssmptms-status-bar'>";
+        echo '<span class="ssmptms-status-bar-disabled">🛑 ' . esc_html__('Disabled', Simple_SMTP_Constants::DOMAIN) . '</span>';
         echo '<p class="description">' . esc_html__('Email processing is turned off. Emails sent through wp_mail() are not handled by the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
         echo '</div>';
         return;
@@ -147,7 +147,7 @@ function simple_stmp_scheduler_status_callback() {
     $next = wp_next_scheduled(Simple_SMTP_Constants::SCHEDULER_EVENT_NAME);
     $queued_emails = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
 
-    echo "<div class='s-smtp-status-bar'>";
+    echo "<div class='ssmptms-status-bar'>";
 
     if ($queued_emails > 0) {
         if ($next) {
@@ -163,7 +163,7 @@ function simple_stmp_scheduler_status_callback() {
 
             $duration = simple_stmp_scheduler_format_duration($eta_timestamp - time());
 
-            echo '<span class="s-smtp-status-bar-running">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo '<span class="ssmptms-status-bar-running">✅ ' . esc_html__('Sending in progress', Simple_SMTP_Constants::DOMAIN) . '</span>';
             simple_stmp_scheduler_progress_bar($progress);
             echo '<p class="description">'
                 . sprintf(
@@ -174,12 +174,12 @@ function simple_stmp_scheduler_status_callback() {
                 )
                 . '</p>';
         } else {
-            echo '<span class="s-smtp-status-bar-not-running">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
-            echo ' <a class="s-smtp-start-scheduler">▶️ ' . esc_html__('Start', Simple_SMTP_Constants::DOMAIN) . '</a>';
+            echo '<span class="ssmptms-status-bar-not-running">🚫 ' . esc_html__('Not running!', Simple_SMTP_Constants::DOMAIN) . '</span>';
+            echo ' <a class="ssmptms-start-scheduler">▶️ ' . esc_html__('Start', Simple_SMTP_Constants::DOMAIN) . '</a>';
             echo '<p class="description">' . esc_html__('There was an error activating the scheduler. Try reactivating the plugin.', Simple_SMTP_Constants::DOMAIN) . '</p>';
         }
     } else {
-        echo '<span class="s-smtp-status-bar-idle">⏸ ' . esc_html__('Idle', Simple_SMTP_Constants::DOMAIN) . '</span>';
+        echo '<span class="ssmptms-status-bar-idle">⏸ ' . esc_html__('Idle', Simple_SMTP_Constants::DOMAIN) . '</span>';
         echo '<p class="description">' . esc_html__('No emails scheduled for sending.', Simple_SMTP_Constants::DOMAIN) . '</p>';
     }
 
@@ -221,7 +221,7 @@ function simple_stmp_scheduler_format_duration(float $seconds): string {
 }
 
 function simple_stmp_scheduler_progress_bar($progress) {
-    echo '<div class="s-smtp-mail-progress-bar">';
-    echo '<div class="s-smtp-mail-progress" style="width:' . esc_attr($progress) . '%;"></div>';
+    echo '<div class="ssmptms-progress-bar">';
+    echo '<div class="ssmptms-progress" style="width:' . esc_attr($progress) . '%;"></div>';
     echo '</div>';
 }
