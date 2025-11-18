@@ -22,16 +22,53 @@
 .s-smtp-mail-charts_container { display: flex; gap: 20px; flex-direction: column; }
 .s-smtp-mail-charts { display: flex; gap: 20px; flex-wrap: wrap; }
 
-.s-smtp-mail-chart { height: 300px; padding: 14px; background: #ffffff; border-radius: 4px; border: 1px solid #ddd; }
+.s-smtp-mail-chart { 
+    display: flex;
+    flex-direction: column;
+    height: 360px; 
+    padding: 14px; 
+    background: #ffffff; 
+    border-radius: 4px; 
+    border: 1px solid #ddd;
+}
 .s-smtp-mail-bar-chart { flex: 0 0 600px; }
-.s-smtp-mail-donut-chart { flex: 0 0 300px; }
+.s-smtp-mail-donut-chart { flex: 0 0 360px; }
+.s-smtp-mail-donut-chart .s-smtp-mail-chart-wrapper { padding: 0 30px; }
+
+.s-smtp-mail-chart-header {
+    flex: 0 0 auto;
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.s-smtp-mail-chart-header h4 {
+    width: 180px;
+    text-align: center;
+    margin: 0;
+    font-size: 12px;
+}
+
+input.s-smtp-mail-date-picker { 
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px; 
+    height: 30px; 
+    text-align: center; 
+    border: 0;
+    font-size: 12px;
+    cursor: pointer;
+}
 
 .s-smtp-mail-chart-wrapper {
     position: relative;
-    height: 100%;
+    flex: 1 1 auto;
 }
-
-.s-smtp-mail-chart-wrapper h4 { text-align: center; margin: 5px 0; font-size: 12px;}
 
 .s-smtp-mail-no-chart-data {
     position: absolute;
@@ -39,6 +76,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
+}
+
+.s-smtp-mail-loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .s-smtp-mail-progress-bar {

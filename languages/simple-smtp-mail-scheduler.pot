@@ -369,7 +369,7 @@ msgid "No data to display."
 msgstr ""
 
 #: admin/charts/status_donut_chart.php:73
-msgid "Email Status Distribution (Last 24h)"
+msgid "Email Status Distribution"
 msgstr ""
 
 #: admin/charts/queue_status_bar_chart.php:107
@@ -390,7 +390,7 @@ msgid "Emails per hour"
 msgstr ""
 
 #: admin/charts/hour_stats_bar_chart.php:68
-msgid "Emails Sent per Hour (Last 24h)"
+msgid "Emails Sent per Hour"
 msgstr ""
 
 #: admin/utils.php:141

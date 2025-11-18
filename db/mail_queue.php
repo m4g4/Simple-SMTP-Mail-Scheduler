@@ -207,29 +207,42 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             return $emails[0];
         }
 
-        public function get_last_day_emails_grouped_by_hour() {
+        public function get_day_emails_grouped_by_hour($date) {
             global $wpdb;
-
-            return $wpdb->get_results("
-                SELECT DATE_FORMAT(last_attempt_at, '%Y-%m-%d %H:00:00') AS time_slot, COUNT(*) AS count
-                FROM $this->table_name
+                
+            // Convert dd.mm.yy or any string to a proper MySQL DAY start
+            $dt = new DateTime($date);
+            $start = $dt->format('Y-m-d 00:00:00');
+            $end   = $dt->format('Y-m-d 23:59:59');
+                
+            $sql = $wpdb->prepare("
+                SELECT DATE_FORMAT(last_attempt_at, '%%Y-%%m-%%d %%H:00:00') AS time_slot, 
+                       COUNT(*) AS count
+                FROM {$this->table_name}
                 WHERE status = 'sent'
-                    AND last_attempt_at >= NOW() - INTERVAL 24 HOUR
+                  AND last_attempt_at BETWEEN %s AND %s
                 GROUP BY time_slot
-                ORDER BY time_slot ASC;
-            ");
+                ORDER BY time_slot ASC
+            ", $start, $end);
+                
+            return $wpdb->get_results($sql);
         }
 
-        public function get_status_data_last_24h() {
+
+        public function get_status_data_by_date($date) {
             global $wpdb;
 
-            return $wpdb->get_results("
+            $sql = $wpdb->prepare("
                 SELECT status, COUNT(*) as count
-                FROM $this->table_name
-                WHERE scheduled_at >= NOW() - INTERVAL 24 HOUR
+                FROM {$this->table_name}
+                WHERE scheduled_at >= DATE_SUB(%s, INTERVAL 24 HOUR)
+                AND scheduled_at < %s
                 GROUP BY status
-            ");
+            ", $date, $date);
+
+            return $wpdb->get_results($sql);
         }
+
 
         public function retry_sending_email($email_id) {
             global $wpdb;

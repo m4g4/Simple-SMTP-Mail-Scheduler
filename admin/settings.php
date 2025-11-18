@@ -40,7 +40,7 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
 
             wp_localize_script( 
                 'simple-smtp-mail-scheduler-admin-js',
-                'ajax_params',
+                'ssmptms_admin_ajax_params',
                 array(
                     'ajax_url'       => admin_url( 'admin-ajax.php' ),
                     'start_action'   => 'simple-smtp-mail-scheduler-start',
