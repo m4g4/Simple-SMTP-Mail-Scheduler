@@ -234,14 +234,19 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
         public function get_status_data_by_date($date) {
             global $wpdb;
 
-            $sql = $wpdb->prepare("
-                SELECT status, COUNT(*) as count
-                FROM {$this->table_name}
-                WHERE scheduled_at >= DATE_SUB(%s, INTERVAL 24 HOUR)
-                AND scheduled_at < %s
-                GROUP BY status
-            ", $date, $date);
+            $start = $date . ' 00:00:00';
 
+            // But better: use proper date boundaries to include up to the very last microsecond
+            $sql = $wpdb->prepare(
+                "SELECT status, COUNT(*) as count
+                 FROM {$this->table_name}
+                 WHERE scheduled_at >= %s
+                   AND scheduled_at < %s + INTERVAL 1 DAY
+                 GROUP BY status",
+                $start,
+                $start
+            );
+        
             return $wpdb->get_results($sql);
         }
 
