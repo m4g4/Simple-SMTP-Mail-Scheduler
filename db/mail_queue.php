@@ -1,4 +1,6 @@
 <?php
+namespace Ssmptms;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -14,7 +16,7 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
 
         public function __construct() {
             global $wpdb;
-            $this->table_name = $wpdb->prefix . Ssmptms_Constants::QUEUE_DB_NAME;
+            $this->table_name = $wpdb->prefix . Constants::QUEUE_DB_NAME;
         }
 
         public static function get_instance() {
@@ -76,7 +78,7 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
                     WHERE (status = %s OR (status = %s AND retries < %d))",
                     'queued',
                     'failed',
-                    Ssmptms_Constants::MAX_EMAIL_RETRIES
+                    Constants::MAX_EMAIL_RETRIES
                 )
             );
         }
@@ -126,7 +128,7 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
                  LIMIT %d",
                 'queued',
                 'failed',
-                Ssmptms_Constants::MAX_EMAIL_RETRIES,
+                Constants::MAX_EMAIL_RETRIES,
                 0, // testing = 0 only send real emails
                 $emails_per_minute
             );
@@ -146,7 +148,7 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             $query_params = [];
 
             // Status filter
-            if ($status && in_array($status, Ssmptms_Constants::ALL_STATUSES)) {
+            if ($status && in_array($status, Constants::ALL_STATUSES)) {
                 $where_clauses[] = 'status = %s';
                 $query_params[] = $status;
             }
@@ -211,7 +213,7 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
             global $wpdb;
                 
             // Convert dd.mm.yy or any string to a proper MySQL DAY start
-            $dt = new DateTime($date);
+            $dt = new \DateTime($date);
             $start = $dt->format('Y-m-d 00:00:00');
             $end   = $dt->format('Y-m-d 23:59:59');
                 

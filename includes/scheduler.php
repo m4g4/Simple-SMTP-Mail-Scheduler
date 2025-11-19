@@ -1,4 +1,6 @@
 <?php
+namespace Ssmptms;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
@@ -12,8 +14,8 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
         private $callback;
 
         public function __construct( callable $callback ) {
-            $this->emailsPerUnit = (int) get_option( Ssmptms_Constants::EMAILS_PER_UNIT, 0 );
-            $this->unit          = get_option( Ssmptms_Constants::EMAILS_UNIT, 'minute' );
+            $this->emailsPerUnit = (int) get_option( Constants::EMAILS_PER_UNIT, 0 );
+            $this->unit          = get_option( Constants::EMAILS_UNIT, 'minute' );
             $this->rate          = $this->calculateRate( $this->emailsPerUnit, $this->unit );
             $this->callback      = $callback;
         }
@@ -35,12 +37,12 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
             // Use microtime for sub-second accuracy
             $now = microtime(true);
 
-            $lastTime  = (float) get_option(Ssmptms_Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
-            $carry     = (float) get_option( Ssmptms_Constants::EMAILS_SCHEDULER_CARRY, 0.0);
+            $lastTime  = (float) get_option(Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
+            $carry     = (float) get_option( Constants::EMAILS_SCHEDULER_CARRY, 0.0);
             
             // How many seconds since last run
             $elapsed = max(0.1, $now - $lastTime); // never 0, avoid divide-by-zero
-            update_option(Ssmptms_Constants::EMAILS_SCHEDULER_LAST_TICK, $now, false);
+            update_option(Constants::EMAILS_SCHEDULER_LAST_TICK, $now, false);
                 
             // Convert your rate (emails per minute) into per-second rate
             $emailsPerSecond = $this->rate / 60.0;
@@ -61,28 +63,28 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
                 }
             }
             
-            update_option( Ssmptms_Constants::EMAILS_SCHEDULER_CARRY, $carry, false );
+            update_option( Constants::EMAILS_SCHEDULER_CARRY, $carry, false );
         
             if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 error_log('tick: Unschedule Cron event');
                 simple_smtp_unschedule_cron_event();
-                delete_option(Ssmptms_Constants::CURRENT_QUEUE_COUNT);
-                delete_option(Ssmptms_Constants::EMAILS_SCHEDULER_LAST_TICK);
-                delete_option(Ssmptms_Constants::EMAILS_SCHEDULER_CARRY);
+                delete_option(Constants::CURRENT_QUEUE_COUNT);
+                delete_option(Constants::EMAILS_SCHEDULER_LAST_TICK);
+                delete_option(Constants::EMAILS_SCHEDULER_CARRY);
             }
         }
     }
 }
 
 function simple_smtp_schedule_cron_event() {
-    if (!wp_next_scheduled(Ssmptms_Constants::SCHEDULER_EVENT_NAME)) {
-        $return = wp_schedule_event(time(), 'minute', Ssmptms_Constants::SCHEDULER_EVENT_NAME);
+    if (!wp_next_scheduled(Constants::SCHEDULER_EVENT_NAME)) {
+        $return = wp_schedule_event(time(), 'minute', Constants::SCHEDULER_EVENT_NAME);
     }
 }
 
 function simple_smtp_unschedule_cron_event() {
-    $timestamp = wp_next_scheduled(Ssmptms_Constants::SCHEDULER_EVENT_NAME);
+    $timestamp = wp_next_scheduled(Constants::SCHEDULER_EVENT_NAME);
     if ($timestamp) {
-        wp_unschedule_event($timestamp, Ssmptms_Constants::SCHEDULER_EVENT_NAME);
+        wp_unschedule_event($timestamp, Constants::SCHEDULER_EVENT_NAME);
     }
 }

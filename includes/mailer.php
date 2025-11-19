@@ -1,4 +1,7 @@
 <?php
+
+namespace Ssmptms;
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
@@ -9,7 +12,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         private static $instance;
         public function __construct() {
             add_filter('pre_wp_mail', array($this, 'queue_mail_instead_of_sending'), 10, 2);
-            add_action(Ssmptms_Constants::SCHEDULER_EVENT_NAME, array($this, 'cron_send_mails'));
+            add_action(Constants::SCHEDULER_EVENT_NAME, array($this, 'cron_send_mails'));
         }
 
         public static function get_instance() {
@@ -24,7 +27,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
          * Trigger cron processing (entry point)
          */
         public function cron_send_mails() {
-            $disable_plugin = get_option(Ssmptms_Constants::DISABLE, false);
+            $disable_plugin = get_option(Constants::DISABLE, false);
             if ($disable_plugin) return;
             
             // The scheduler class is expected to call the provided callback
@@ -60,7 +63,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         public function send_email_by_id($email_id) {
             $email = Simple_SMTP_Email_Queue::get_instance()->get_email_by_id($email_id);
             if (!$email) {
-                throw new InvalidArgumentException( 'No such email ' . $email_id );
+                throw new \InvalidArgumentException( 'No such email ' . $email_id );
             }
 
             if(!$this->send_email($email)) {
@@ -228,7 +231,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         }
 
         public function queue_mail_instead_of_sending($pre_wp_mail, $atts) {
-            $disable_plugin = get_option(Ssmptms_Constants::DISABLE, false);
+            $disable_plugin = get_option(Constants::DISABLE, false);
 
             // Respect a bypass constant to allow immediate sending
             if ((defined('SMTP_MAIL_BYPASS_QUEUE') && SMTP_MAIL_BYPASS_QUEUE === true) || $disable_plugin) {
@@ -264,8 +267,8 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             $queued_result = $this->mail_enqueue_email($parsed_recipients, $subject, $message, $headers, $attachments, false);
 
             if ($queued_result) {
-                $current_queue_count  = (int) get_option(Ssmptms_Constants::CURRENT_QUEUE_COUNT, 0);
-                update_option(Ssmptms_Constants::CURRENT_QUEUE_COUNT, $current_queue_count + 1);
+                $current_queue_count  = (int) get_option(Constants::CURRENT_QUEUE_COUNT, 0);
+                update_option(Constants::CURRENT_QUEUE_COUNT, $current_queue_count + 1);
 
                 simple_smtp_schedule_cron_event();
             }
@@ -275,7 +278,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         }
 
         public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {        
-            $profile = simple_smtp_get_active_profile();
+            $profile = get_active_profile();
             if (empty($profile) || !is_array($profile)) {
                 error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
                 return false;
@@ -315,7 +318,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 $mailer->Port       = isset($profile['port']) ? (int)$profile['port'] : 25;
                 $mailer->SMTPAuth   = true;
                 $mailer->Username   = isset($profile['username']) ? (string)$profile['username'] : '';
-                $mailer->Password   = isset($profile['password']) ? simple_smtp_mail_decrypt_password($profile['password']) : '';
+                $mailer->Password   = isset($profile['password']) ? decrypt_password($profile['password']) : '';
                 $mailer->Timeout    = 10;
                 $mailer->SMTPAutoTLS = !empty($profile['autotls']);
                 $encryption = isset($profile['encryption']) ? strtolower((string)$profile['encryption']) : '';
@@ -337,7 +340,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         }
 
         private function remove_exceeding_emails() {
-            $limit = (int) Ssmptms_Constants::EMAILS_LOG_MAX_ROWS;
+            $limit = (int) Constants::EMAILS_LOG_MAX_ROWS;
 
             $total = Simple_SMTP_Email_Queue::get_instance()->get_total_emails();
 

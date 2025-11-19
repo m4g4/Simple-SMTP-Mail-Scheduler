@@ -1,4 +1,5 @@
 <?php
+namespace Ssmptms;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
@@ -14,16 +15,16 @@ if (!class_exists('Simple_SMTP_Mail_Queue_Status_Bar_Chart')) {
             <?php
 
             $count = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
-            $capacity = get_option(Ssmptms_Constants::EMAILS_PER_UNIT, 0);
-            $unit = get_option(Ssmptms_Constants::EMAILS_UNIT, 0);
+            $capacity = get_option(Constants::EMAILS_PER_UNIT, 0);
+            $unit = get_option(Constants::EMAILS_UNIT, 0);
 
-            $unitText = Ssmptms_Constants::get_unit_text($unit);
+            $unitText = Constants::get_unit_text($unit);
 
             wp_add_inline_script('chartjs', 'const smtpMailQueueStatusData = ' . wp_json_encode([
                 'queued' => $count,
                 'rate'   => $capacity,
                 'unit'   => $unit,
-                'unitSlotTime' => simple_stmp_scheduler_slot_time_seconds($unit)
+                'unitSlotTime' => slot_time_seconds($unit)
             ]) . ';', 'before');
 
             wp_add_inline_script('chartjs', '
@@ -104,13 +105,13 @@ if (!class_exists('Simple_SMTP_Mail_Queue_Status_Bar_Chart')) {
                                     },
                                     title: {
                                         display: true,
-                                        text: "' . __('Queue Fill (%)', Ssmptms_Constants::DOMAIN) . '"
+                                        text: "' . __('Queue Fill (%)', Constants::DOMAIN) . '"
                                     }
                                 },
                                 x: {
                                     title: {
                                         display: true,
-                                        text: "' . __('Time Slots', Ssmptms_Constants::DOMAIN) . '"
+                                        text: "' . __('Time Slots', Constants::DOMAIN) . '"
                                     },
                                     grid: { color: "#f3f4f6" }
                                 }
@@ -119,7 +120,7 @@ if (!class_exists('Simple_SMTP_Mail_Queue_Status_Bar_Chart')) {
                                 legend: { display: false },
                                 title: {
                                     display: true,
-                                    text: "' . sprintf(__('Queue Projection: %s queued (Limit: %s %s)', Ssmptms_Constants::DOMAIN), $count, $capacity, $unitText) .'"
+                                    text: "' . sprintf(__('Queue Projection: %s queued (Limit: %s %s)', Constants::DOMAIN), $count, $capacity, $unitText) .'"
                                 },
                                 tooltip: {
                                     callbacks: {

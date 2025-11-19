@@ -1,4 +1,6 @@
 <?php
+namespace Ssmptms;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
@@ -23,7 +25,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Statistics' ) ) {
         public function render_tab(): void {
             ?>
             <div class="wrap">
-                <h2><?php esc_html_e('Statistics', Ssmptms_Constants::DOMAIN); ?></h2>
+                <h2><?php esc_html_e('Statistics', Constants::DOMAIN); ?></h2>
                 <div class="ssmptms-mail-charts_container">
                     <div class="ssmptms-mail-charts">
                         <?php

@@ -1,4 +1,5 @@
 <?php
+namespace Ssmptms;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
@@ -13,8 +14,8 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
         private $chart_id;
 
         public static function initialize_assets() {
-            add_action('admin_enqueue_scripts', ['Simple_SMTP_Mail_Hour_Stats_Bar_Chart', 'enqueue_scripts']);
-            add_action('wp_ajax_' . self::$action, ['Simple_SMTP_Mail_Hour_Stats_Bar_Chart', 'get_data']);
+            add_action('admin_enqueue_scripts', ['Ssmptms\Simple_SMTP_Mail_Hour_Stats_Bar_Chart', 'enqueue_scripts']);
+            add_action('wp_ajax_' . self::$action, ['Ssmptms\Simple_SMTP_Mail_Hour_Stats_Bar_Chart', 'get_data']);
         }
 
         public static function enqueue_scripts() {
@@ -22,7 +23,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
 		    	self::$script_handle,
 		    	plugins_url('js/hour_stats_chart.js', __FILE__),
 		    	array('jquery'),
-				Ssmptms_Constants::PLUGIN_VERSION
+				Constants::PLUGIN_VERSION
 		    );
         }
 
@@ -35,7 +36,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
 
             $date_raw = sanitize_text_field($_POST['date'] ?? '');
 
-            $date_obj = DateTime::createFromFormat('d.m.Y', $date_raw);
+            $date_obj = \DateTime::createFromFormat('d.m.Y', $date_raw);
 
             if (!$date_obj) {
                 wp_send_json_error(['message' => 'Invalid date']);
@@ -62,10 +63,10 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
                 'values' => [],
             ];
 
-            $utcTimezone = new DateTimeZone('UTC');
+            $utcTimezone = new \DateTimeZone('UTC');
 
             foreach ($results as $row) {
-                $dateTimeObject = new DateTime($row->time_slot, $utcTimezone);
+                $dateTimeObject = new \DateTime($row->time_slot, $utcTimezone);
                 $data['labels'][] = $dateTimeObject->format('c');
                 $data['values'][] = (int)$row->count;
             }
@@ -79,7 +80,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
             ?>
             <div class="ssmptms-mail-chart ssmptms-bar-chart">
                 <div class="ssmptms-mail-chart-header">
-                    <h4><?php echo __('Emails Sent per Hour', Ssmptms_Constants::DOMAIN)?></h4>
+                    <h4><?php echo __('Emails Sent per Hour', Constants::DOMAIN)?></h4>
                     <input 
                         id="<?php echo esc_attr($this->date_picker_id()) ?>" 
                         class="ssmptms-date-picker"
@@ -110,7 +111,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
                         create_chart: ssmptmsCreateHourStatsChart,
                         ajax_action: "' . self::$action . '",
                         ajax_nonce:  "' . wp_create_nonce( self::$action ) . '",
-                        text_no_data: "'.__('No data to display.', Ssmptms_Constants::DOMAIN).'"
+                        text_no_data: "'.__('No data to display.', Constants::DOMAIN).'"
                     }
                     ssmptmsCreateChartWithDatePicker(options);
                 });

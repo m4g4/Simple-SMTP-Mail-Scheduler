@@ -39,18 +39,18 @@ register_deactivation_hook( __FILE__, 'ssmptms_deactivation' );
 
 add_action('plugins_loaded', 'ssmptms_textdomain');
 function ssmptms_textdomain() {
-    load_plugin_textdomain(Ssmptms_Constants::DOMAIN, false, basename(dirname(__FILE__)) . '/languages/' );
+    load_plugin_textdomain(Ssmptms\Constants::DOMAIN, false, basename(dirname(__FILE__)) . '/languages/' );
 }
 
 function ssmptms_deactivation() {
-    simple_smtp_unschedule_cron_event();
+    Ssmptms\simple_smtp_unschedule_cron_event();
 }
 
 add_filter('cron_schedules', 'ssmptms_add_cron_interval');
 function ssmptms_add_cron_interval() {
     $schedules['minute'] = array(
     	'interval' => 60,
-    	'display'  => __('Every Minute', Ssmptms_Constants::DOMAIN),
+    	'display'  => __('Every Minute', Ssmptms\Constants::DOMAIN),
 	);
 
 	return $schedules;

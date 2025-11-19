@@ -1,4 +1,6 @@
 <?php
+namespace Ssmptms;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -23,7 +25,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
 
             if ( isset( $_POST['simple_smtp_send_test_email'] ) ) {
                 check_admin_referer( 'simple_smtp_send_test_email_action', 'simple_smtp_send_test_email_nonce' );
-                simple_smtp_echo_message_styles();
+                echo_message_styles();
 
                 $to      = isset( $_POST['smtp_to'] ) ? sanitize_email( $_POST['smtp_to'] ) : '';
                 $subject = isset( $_POST['smtp_subject'] ) ? sanitize_text_field( $_POST['smtp_subject'] ) : '';
@@ -33,11 +35,11 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
                     $result  = wp_mail( $to, $subject, $body );
                     $class   = $result ? 'smtp-mail-message smtp-mail-success' : 'smtp-mail-message smtp-mail-error';
                     $message = $result
-                        ? esc_html__( 'Email sent (or queued) successfully!', Ssmptms_Constants::DOMAIN )
-                        : esc_html__( 'Failed to send email.', Ssmptms_Constants::DOMAIN );
+                        ? esc_html__( 'Email sent (or queued) successfully!', Constants::DOMAIN )
+                        : esc_html__( 'Failed to send email.', Constants::DOMAIN );
                 } else {
                     $class   = 'smtp-mail-message smtp-mail-error';
-                    $message = esc_html__( 'Invalid email address.', Ssmptms_Constants::DOMAIN );
+                    $message = esc_html__( 'Invalid email address.', Constants::DOMAIN );
                 }
 
                 $test_sent = true;
@@ -50,7 +52,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
             ?>
 
             <div class="wrap">
-                <h1><?php echo esc_html__( 'Send Test Email (via wp_mail)', Ssmptms_Constants::DOMAIN ); ?></h1>
+                <h1><?php echo esc_html__( 'Send Test Email (via wp_mail)', Constants::DOMAIN ); ?></h1>
 
                 <?php if ( $test_sent ) : ?>
                     <div class="<?php echo esc_attr( $class ); ?>">
@@ -63,7 +65,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="smtp_to"><?php echo esc_html__( 'To', Ssmptms_Constants::DOMAIN ); ?></label>
+                                <label for="smtp_to"><?php echo esc_html__( 'To', Constants::DOMAIN ); ?></label>
                             </th>
                             <td>
                                 <input name="smtp_to" type="email" required class="regular-text" 
@@ -72,7 +74,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="smtp_subject"><?php echo esc_html__( 'Subject', Ssmptms_Constants::DOMAIN ); ?></label>
+                                <label for="smtp_subject"><?php echo esc_html__( 'Subject', Constants::DOMAIN ); ?></label>
                             </th>
                             <td>
                                 <input name="smtp_subject" type="text" required class="regular-text"
@@ -81,14 +83,14 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Test_Settings' ) ) {
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="smtp_message"><?php echo esc_html__( 'Message', Ssmptms_Constants::DOMAIN ); ?></label>
+                                <label for="smtp_message"><?php echo esc_html__( 'Message', Constants::DOMAIN ); ?></label>
                             </th>
                             <td>
                                 <textarea name="smtp_message" rows="5" class="large-text code" required><?php echo $body_value; ?></textarea>
                             </td>
                         </tr>
                     </table>
-                    <?php submit_button( esc_html__( 'Send Test Email', Ssmptms_Constants::DOMAIN ), 'primary', 'simple_smtp_send_test_email' ); ?>
+                    <?php submit_button( esc_html__( 'Send Test Email', Constants::DOMAIN ), 'primary', 'simple_smtp_send_test_email' ); ?>
                 </form>
             </div>
             <?php

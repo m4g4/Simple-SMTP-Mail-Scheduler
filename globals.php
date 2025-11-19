@@ -1,9 +1,12 @@
 <?php
+
+namespace Ssmptms;
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-final class Ssmptms_Constants {
+final class Constants {
 
     public const PLUGIN_VERSION     = '1.6.0';
     public const VERSION     = '1.2';

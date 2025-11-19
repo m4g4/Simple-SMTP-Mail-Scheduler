@@ -1,4 +1,5 @@
 <?php
+namespace Ssmptms;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
@@ -25,14 +26,14 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
             }
 
             if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], $action . '_' . $email_id)) {
-                wp_die(__('Security check failed.', Ssmptms_Constants::DOMAIN));
+                wp_die(__('Security check failed.', Constants::DOMAIN));
             }
 
             $queue = Simple_SMTP_Email_Queue::get_instance();
 
             $email = $queue->get_email_by_id($email_id);
             if (!$email) {
-                wp_die(__('Email not found.', Ssmptms_Constants::DOMAIN));
+                wp_die(__('Email not found.', Constants::DOMAIN));
             }
 
             $status = $email->status ?? '';
@@ -124,9 +125,9 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
             $log_table->prepare_items();
 
             echo '<div class="wrap">';
-            echo '<h2>' . esc_html__('Mail Log', Ssmptms_Constants::DOMAIN) . '</h2>';
+            echo '<h2>' . esc_html__('Mail Log', Constants::DOMAIN) . '</h2>';
             echo '<form method="get">';
-            echo '<input type="hidden" name="page" value="' . Ssmptms_Constants::SETTINGS_PAGE . '" />';
+            echo '<input type="hidden" name="page" value="' . Constants::SETTINGS_PAGE . '" />';
             echo '<input type="hidden" name="tab" value="log" />';
             $log_table->display();
             echo '</form>';
