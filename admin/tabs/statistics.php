@@ -5,9 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'Simple_SMTP_Mail_Statistics' ) ) {
+if ( ! class_exists( 'Statistics' ) ) {
 
-    class Simple_SMTP_Mail_Statistics {
+    class Statistics {
 
         private static $instance;
 
@@ -29,18 +29,18 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Statistics' ) ) {
                 <div class="ssmptms-mail-charts_container">
                     <div class="ssmptms-mail-charts">
                         <?php
-                            $chart = new Simple_SMTP_Mail_Hour_Stats_Bar_Chart();
+                            $chart = new Hour_Stats_Bar_Chart();
                             $chart->display();
                         ?>
                         <?php
-                            $chart = new Simple_SMTP_Mail_Status_Donut_Chart();
+                            $chart = new Donut_Chart();
                             $chart->display();
                         ?>
                     </div>
                     <div class="ssmptms-mail-charts">
                         <div class="ssmptms-mail-chart ssmptms-bar-chart">
                             <?php
-                                $chart = new Simple_SMTP_Mail_Queue_Status_Bar_Chart();
+                                $chart = new Queue_Status_Bar_Chart();
                                 $chart->display();
                             ?>
                         </div>
@@ -53,4 +53,4 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Statistics' ) ) {
     }
 }
 
-Simple_SMTP_Mail_Statistics::get_instance();
+Statistics::get_instance();

@@ -5,12 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function ssmptms_activation() {
-    Ssmptms\Simple_SMTP_Email_Queue::get_instance()->create_table();
+    Ssmptms\Email_Queue::get_instance()->create_table();
 
     // bump version
     update_option( Ssmptms\Constants::DB_VERSION, Ssmptms\Constants::VERSION );
 
-    if (Ssmptms\Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+    if (Ssmptms\Email_Queue::get_instance()->has_email_entries_for_sending()) {
         Ssmptms\simple_smtp_schedule_cron_event();
     }
 }

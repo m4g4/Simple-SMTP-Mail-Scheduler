@@ -5,12 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Email_Queue')) {
+if (!class_exists('Email_Queue')) {
 
     /**
      * Handles database operations for the SMTP Mail Scheduler email queue.
      */
-    class Simple_SMTP_Email_Queue {
+    class Email_Queue {
         private static $instance;
         private $table_name;
 

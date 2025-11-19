@@ -147,7 +147,7 @@ function print_system_status() {
     }
 
     $next = wp_next_scheduled(Constants::SCHEDULER_EVENT_NAME);
-    $queued_emails = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
+    $queued_emails = Email_Queue::get_instance()->get_email_entry_count_for_sending();
 
     echo "<div class='ssmptms-status-bar'>";
 

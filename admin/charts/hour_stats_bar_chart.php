@@ -5,17 +5,17 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
+if (!class_exists('Hour_Stats_Bar_Chart')) {
 
-    class Simple_SMTP_Mail_Hour_Stats_Bar_Chart {
+    class Hour_Stats_Bar_Chart {
 
         private static $action = 'simple-smtp-mail-scheduler-get-hour-stats-data';
         private static $script_handle = 'simple-smtp-mail-scheduler-hour-stats-chart';
         private $chart_id;
 
         public static function initialize_assets() {
-            add_action('admin_enqueue_scripts', ['Ssmptms\Simple_SMTP_Mail_Hour_Stats_Bar_Chart', 'enqueue_scripts']);
-            add_action('wp_ajax_' . self::$action, ['Ssmptms\Simple_SMTP_Mail_Hour_Stats_Bar_Chart', 'get_data']);
+            add_action('admin_enqueue_scripts', ['Ssmptms\Hour_Stats_Bar_Chart', 'enqueue_scripts']);
+            add_action('wp_ajax_' . self::$action, ['Ssmptms\Hour_Stats_Bar_Chart', 'get_data']);
         }
 
         public static function enqueue_scripts() {
@@ -44,7 +44,7 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
 
             $date_mysql = $date_obj->format('Y-m-d H:i:s');
 
-            $results = Simple_SMTP_Email_Queue::get_instance()->get_day_emails_grouped_by_hour($date_mysql);
+            $results = Email_Queue::get_instance()->get_day_emails_grouped_by_hour($date_mysql);
 
             if (empty($results)) {
                 wp_send_json_success([
@@ -128,5 +128,5 @@ if (!class_exists('Simple_SMTP_Mail_Hour_Stats_Bar_Chart')) {
         }
     }
 
-    Simple_SMTP_Mail_Hour_Stats_Bar_Chart::initialize_assets();
+    Hour_Stats_Bar_Chart::initialize_assets();
 }

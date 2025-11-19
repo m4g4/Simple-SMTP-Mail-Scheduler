@@ -5,9 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
+if ( ! class_exists( 'Scheduler' ) ) {
 
-    class Simple_SMTP_Mail_Scheduler {
+    class Scheduler {
         private int $emailsPerUnit;
         private string $unit;   // "minute", "hour", "day"
         private float $rate;    // emails per minute
@@ -65,7 +65,7 @@ if ( ! class_exists( 'Simple_SMTP_Mail_Scheduler' ) ) {
             
             update_option( Constants::EMAILS_SCHEDULER_CARRY, $carry, false );
         
-            if (!Simple_SMTP_Email_Queue::get_instance()->has_email_entries_for_sending()) {
+            if (!Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 error_log('tick: Unschedule Cron event');
                 simple_smtp_unschedule_cron_event();
                 delete_option(Constants::CURRENT_QUEUE_COUNT);

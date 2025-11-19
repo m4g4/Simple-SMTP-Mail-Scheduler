@@ -5,9 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'Simple_SMTP_Mail_General_Settings' ) ) {
+if ( ! class_exists( 'General_Settings' ) ) {
 
-	class Simple_SMTP_Mail_General_Settings {
+	class General_Settings {
 
         private static $instance;
 

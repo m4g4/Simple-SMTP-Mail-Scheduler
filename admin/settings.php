@@ -6,9 +6,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Mail_Settings')) {
+if (!class_exists('Settings')) {
 
-    class Simple_SMTP_Mail_Settings {
+    class Settings {
 
         public function __construct() {
             add_action('admin_menu', [$this, 'register_menus']);
@@ -106,11 +106,11 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
                 if ($active_tab === 'general') {
                     $this->render_general_settings_tab();
                 } elseif ($active_tab === 'log') {
-                    Simple_SMTP_Mail_Log_Settings::get_instance()->render_tab();
+                    Log_Settings::get_instance()->render_tab();
                 } elseif ($active_tab === 'stats') {
-                    Simple_SMTP_Mail_Statistics::get_instance()->render_tab();
+                    Statistics::get_instance()->render_tab();
                 } elseif ($active_tab === 'test' && defined('SIMPLE_SMTP_TESTING_MODE')) {
-                    Simple_SMTP_Mail_Test_Settings::get_instance()->render_tab();
+                    Test_Settings::get_instance()->render_tab();
                 }
                 ?>
             </div>
@@ -118,16 +118,16 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
         }
 
         public function render_general_settings_tab() {
-            Simple_SMTP_Mail_General_Settings::get_instance()->render_tab();
+            General_Settings::get_instance()->render_tab();
         }
 
         public function register_settings() {
-            Simple_SMTP_Mail_General_Settings::get_instance()->register_settings();
+            General_Settings::get_instance()->register_settings();
         }
 
         public function edit_profiles() {
             $profile_id = isset($_GET['profile']) ? sanitize_text_field($_GET['profile']) : null;
-            Simple_SMTP_Mail_Profile_Page::get_instance()->display_profile($profile_id);
+            Profile_Page::get_instance()->display_profile($profile_id);
         }
 
         public function ajax_start_scheduler() {
@@ -150,5 +150,5 @@ if (!class_exists('Simple_SMTP_Mail_Settings')) {
     }
 }
 
-new Simple_SMTP_Mail_Settings();
+new Settings();
 ?>

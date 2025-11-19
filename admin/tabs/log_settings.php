@@ -5,9 +5,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
+if (!class_exists('Log_Settings')) {
 
-    class Simple_SMTP_Mail_Log_Settings {
+    class Log_Settings {
 
         private static $instance;
         public static function get_instance() {
@@ -29,7 +29,7 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                 wp_die(__('Security check failed.', Constants::DOMAIN));
             }
 
-            $queue = Simple_SMTP_Email_Queue::get_instance();
+            $queue = Email_Queue::get_instance();
 
             $email = $queue->get_email_by_id($email_id);
             if (!$email) {
@@ -58,7 +58,7 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                     break;
                 case 'simple_smtp_mail_send_now':
                     if ($status === 'queued') {
-                        Simple_SMTP_Mail_Scheduler_Mailer::get_instance()->send_email_by_id($email_id);
+                        Mailer::get_instance()->send_email_by_id($email_id);
                     }
                     break;
             }
@@ -80,7 +80,7 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                 return;
             }
 
-            $records = Simple_SMTP_Email_Queue::get_instance()->get_emails_by_ids($ids);
+            $records = Email_Queue::get_instance()->get_emails_by_ids($ids);
 
             if (empty($records)) {
                 return;
@@ -93,12 +93,12 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                         'email_id'
                     );
                     if ($failed_ids) {
-                        Simple_SMTP_Email_Queue::get_instance()->retry_sending_emails($ids);
+                        Email_Queue::get_instance()->retry_sending_emails($ids);
                     }
                     break;
 
                 case 'delete':
-                    Simple_SMTP_Email_Queue::get_instance()->delete_emails($ids);
+                    Email_Queue::get_instance()->delete_emails($ids);
                     break;
 
                 case 'front':
@@ -107,7 +107,7 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
                         'email_id'
                     );
                     if ($queued_ids) {
-                        Simple_SMTP_Email_Queue::get_instance()->prioritize_emails($ids);
+                        Email_Queue::get_instance()->prioritize_emails($ids);
                     }
                     break;
             }
@@ -121,7 +121,7 @@ if (!class_exists('Simple_SMTP_Mail_Log_Settings')) {
             $this->handle_log_actions();
             $this->handle_bulk_actions();
 
-            $log_table = new Simple_SMTP_Mail_Scheduler_Log_Table();
+            $log_table = new Log_Table();
             $log_table->prepare_items();
 
             echo '<div class="wrap">';

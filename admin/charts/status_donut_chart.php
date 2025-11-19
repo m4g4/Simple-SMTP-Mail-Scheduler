@@ -3,17 +3,17 @@ namespace Ssmptms;
 
 if (!defined('ABSPATH')) exit;
 
-if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
+if (!class_exists('Donut_Chart')) {
 
-    class Simple_SMTP_Mail_Status_Donut_Chart {
+    class Donut_Chart {
 
         private static $action = 'simple-smtp-mail-scheduler-get-status-donut-data';
         private static $script_handle = 'simple-smtp-mail-scheduler-status-donut-chart';
         private $chart_id;
 
         public static function initialize_assets() {
-            add_action('admin_enqueue_scripts', ['Ssmptms\Simple_SMTP_Mail_Status_Donut_Chart', 'enqueue_scripts']);
-            add_action('wp_ajax_' . self::$action, ['Ssmptms\Simple_SMTP_Mail_Status_Donut_Chart', 'get_data']);
+            add_action('admin_enqueue_scripts', ['Ssmptms\Donut_Chart', 'enqueue_scripts']);
+            add_action('wp_ajax_' . self::$action, ['Ssmptms\Donut_Chart', 'get_data']);
         }
 
         public static function enqueue_scripts() {
@@ -42,7 +42,7 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
 
             $date_mysql = $date_obj->format('Y-m-d H:i:s');
 
-            $results = Simple_SMTP_Email_Queue::get_instance()->get_status_data_by_date($date_mysql);
+            $results = Email_Queue::get_instance()->get_status_data_by_date($date_mysql);
 
             if (empty($results)) {
                 wp_send_json_success([
@@ -128,5 +128,5 @@ if (!class_exists('Simple_SMTP_Mail_Status_Donut_Chart')) {
         }
     }
 
-    Simple_SMTP_Mail_Status_Donut_Chart::initialize_assets();
+    Donut_Chart::initialize_assets();
 }

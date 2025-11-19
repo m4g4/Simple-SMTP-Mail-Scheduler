@@ -9,7 +9,7 @@ if (!class_exists('WP_List_Table')) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
-class Simple_SMTP_Mail_Scheduler_Log_Table extends \WP_List_Table {
+class Log_Table extends \WP_List_Table {
     private $per_page = 50;
 
     public function __construct() {
@@ -91,7 +91,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends \WP_List_Table {
         echo '</select>';
 
         // Profile filter dropdown
-        $profile_labels = Simple_SMTP_Email_Queue::get_instance()->get_profile_labels();
+        $profile_labels = Email_Queue::get_instance()->get_profile_labels();
         $profile_labels = array_unique(array_filter($profile_labels));
 
         echo '<select name="profile_filter" id="profile_filter">';
@@ -127,7 +127,7 @@ class Simple_SMTP_Mail_Scheduler_Log_Table extends \WP_List_Table {
         // Profile filter
         $profile_filter = isset($_GET['profile_filter']) ? sanitize_text_field($_GET['profile_filter']) : '';
 
-        $result = Simple_SMTP_Email_Queue::get_instance()->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter, $search_query);
+        $result = Email_Queue::get_instance()->get_emails($this->per_page, $offset, $orderby, $order, $status_filter, $profile_filter, $search_query);
 
         $total_items = $result[1];
 

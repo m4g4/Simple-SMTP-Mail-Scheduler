@@ -5,9 +5,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
+if (!class_exists('Profile_Page')) {
 
-    class Simple_SMTP_Mail_Profile_Page {
+    class Profile_Page {
         private static $instance;
 
         public function __construct() {
@@ -333,7 +333,7 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
                 return false;
             }
         
-            $mailer = Simple_SMTP_Mail_Scheduler_Mailer::get_instance()->prepare_mailer($profile);
+            $mailer = Mailer::get_instance()->prepare_mailer($profile);
             if ($mailer === null) {
                 return false;
             }
@@ -355,4 +355,4 @@ if (!class_exists('Simple_SMTP_Mail_Profile_Page')) {
     }
 }
 
-Simple_SMTP_Mail_Profile_Page::get_instance();
+Profile_Page::get_instance();

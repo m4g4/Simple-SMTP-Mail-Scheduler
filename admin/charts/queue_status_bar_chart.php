@@ -5,16 +5,16 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Mail_Queue_Status_Bar_Chart')) {
+if (!class_exists('Queue_Status_Bar_Chart')) {
 
-    class Simple_SMTP_Mail_Queue_Status_Bar_Chart {
+    class Queue_Status_Bar_Chart {
 
         public function display() {
             ?>
             <canvas id="smtpMailQueueStatusChart"></canvas>
             <?php
 
-            $count = Simple_SMTP_Email_Queue::get_instance()->get_email_entry_count_for_sending();
+            $count = Email_Queue::get_instance()->get_email_entry_count_for_sending();
             $capacity = get_option(Constants::EMAILS_PER_UNIT, 0);
             $unit = get_option(Constants::EMAILS_UNIT, 0);
 

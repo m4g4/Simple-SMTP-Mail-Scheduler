@@ -6,9 +6,9 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
+if (!class_exists('Mailer')) {
 
-    class Simple_SMTP_Mail_Scheduler_Mailer {
+    class Mailer {
         private static $instance;
         public function __construct() {
             add_filter('pre_wp_mail', array($this, 'queue_mail_instead_of_sending'), 10, 2);
@@ -32,7 +32,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             
             // The scheduler class is expected to call the provided callback
             // with a number (emails per run). Keep backward-compatible call.
-            $scheduler = new Simple_SMTP_Mail_Scheduler(array($this, 'cron_send_mails_tick'));
+            $scheduler = new Scheduler(array($this, 'cron_send_mails_tick'));
             $scheduler->tick();
         }
 
@@ -45,7 +45,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         public function cron_send_mails_tick($emails_per_minute) {
             $emails_per_minute = (int) max(1, $emails_per_minute);
 
-            $emails = Simple_SMTP_Email_Queue::get_instance()->get_emails_to_process($emails_per_minute);
+            $emails = Email_Queue::get_instance()->get_emails_to_process($emails_per_minute);
             if (empty($emails)) {
                 return;
             }
@@ -61,7 +61,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         }
 
         public function send_email_by_id($email_id) {
-            $email = Simple_SMTP_Email_Queue::get_instance()->get_email_by_id($email_id);
+            $email = Email_Queue::get_instance()->get_email_by_id($email_id);
             if (!$email) {
                 throw new \InvalidArgumentException( 'No such email ' . $email_id );
             }
@@ -80,7 +80,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
                 return false;
             }
 
-            $updated = Simple_SMTP_Email_Queue::get_instance()->update_email_status($email->email_id, $email->status);
+            $updated = Email_Queue::get_instance()->update_email_status($email->email_id, $email->status);
 
             if ($updated === false || $updated === 0) {
                 // Someone else processed it or update failed — skip
@@ -93,13 +93,13 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             $current_time = current_time('mysql');
 
             if ($send_result === true) {
-                Simple_SMTP_Email_Queue::get_instance()->update_email_sent($email->email_id, $current_time);
+                Email_Queue::get_instance()->update_email_sent($email->email_id, $current_time);
             } else {
                 // failure; increase retries
                 $retry_count = isset($email->retries) ? ((int)$email->retries + 1) : 1;
                 $error_msg = is_string($send_result) ? $send_result : 'Unknown error';
 
-                Simple_SMTP_Email_Queue::get_instance()->update_email_failed($email->email_id, $current_time, $retry_count, $error_msg);
+                Email_Queue::get_instance()->update_email_failed($email->email_id, $current_time, $retry_count, $error_msg);
 
                 return false;
             }
@@ -285,7 +285,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
             }
         
             // Queue the email
-            $inserted = Simple_SMTP_Email_Queue::get_instance()->queue_email(
+            $inserted = Email_Queue::get_instance()->queue_email(
                 $to,
                 $subject,
                 $message,
@@ -342,7 +342,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
         private function remove_exceeding_emails() {
             $limit = (int) Constants::EMAILS_LOG_MAX_ROWS;
 
-            $total = Simple_SMTP_Email_Queue::get_instance()->get_total_emails();
+            $total = Email_Queue::get_instance()->get_total_emails();
 
             if ($total <= $limit) {
                 return;
@@ -350,7 +350,7 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
 
             $to_delete = $total - $limit;
 
-            Simple_SMTP_Email_Queue::get_instance()->remove_exceeding_emails($to_delete);
+            Email_Queue::get_instance()->remove_exceeding_emails($to_delete);
         }
 
         private function process_headers($headers) {
@@ -663,4 +663,4 @@ if (!class_exists('Simple_SMTP_Mail_Scheduler_Mailer')) {
     }
 }
 
-Simple_SMTP_Mail_Scheduler_Mailer::get_instance();
+Mailer::get_instance();

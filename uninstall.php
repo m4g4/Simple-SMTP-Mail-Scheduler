@@ -8,7 +8,7 @@ require_once plugin_dir_path( __FILE__ ) . 'utils.php';
 require_once plugin_dir_path( __FILE__ ) . 'globals.php';
 require_once plugin_dir_path( __FILE__ ) . '/db/index.php';
 
-Ssmptms\Simple_SMTP_Email_Queue::get_instance()->drop_table();
+Ssmptms\Email_Queue::get_instance()->drop_table();
 
 delete_option(Ssmptms\Constants::DB_VERSION);
 delete_option(Ssmptms\Constants::PROFILES);
