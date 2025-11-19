@@ -67,7 +67,7 @@ if ( ! class_exists( 'Scheduler' ) ) {
         
             if (!Email_Queue::get_instance()->has_email_entries_for_sending()) {
                 error_log('tick: Unschedule Cron event');
-                simple_smtp_unschedule_cron_event();
+                unschedule_cron_event();
                 delete_option(Constants::CURRENT_QUEUE_COUNT);
                 delete_option(Constants::EMAILS_SCHEDULER_LAST_TICK);
                 delete_option(Constants::EMAILS_SCHEDULER_CARRY);
@@ -76,13 +76,13 @@ if ( ! class_exists( 'Scheduler' ) ) {
     }
 }
 
-function simple_smtp_schedule_cron_event() {
+function schedule_cron_event() {
     if (!wp_next_scheduled(Constants::SCHEDULER_EVENT_NAME)) {
         $return = wp_schedule_event(time(), 'minute', Constants::SCHEDULER_EVENT_NAME);
     }
 }
 
-function simple_smtp_unschedule_cron_event() {
+function unschedule_cron_event() {
     $timestamp = wp_next_scheduled(Constants::SCHEDULER_EVENT_NAME);
     if ($timestamp) {
         wp_unschedule_event($timestamp, Constants::SCHEDULER_EVENT_NAME);

@@ -43,7 +43,7 @@ function ssmptms_textdomain() {
 }
 
 function ssmptms_deactivation() {
-    Ssmptms\simple_smtp_unschedule_cron_event();
+    Ssmptms\unschedule_cron_event();
 }
 
 add_filter('cron_schedules', 'ssmptms_add_cron_interval');

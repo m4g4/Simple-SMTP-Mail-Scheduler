@@ -137,7 +137,7 @@ if (!class_exists('Settings')) {
                 wp_send_json_error(['message' => 'Permission denied']);
             }
         
-            simple_smtp_schedule_cron_event();
+            schedule_cron_event();
 
             wp_send_json_success(['message' => 'Scheduler started successfully!']);
         }

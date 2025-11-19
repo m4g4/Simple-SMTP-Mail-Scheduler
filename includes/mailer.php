@@ -270,7 +270,7 @@ if (!class_exists('Mailer')) {
                 $current_queue_count  = (int) get_option(Constants::CURRENT_QUEUE_COUNT, 0);
                 update_option(Constants::CURRENT_QUEUE_COUNT, $current_queue_count + 1);
 
-                simple_smtp_schedule_cron_event();
+                schedule_cron_event();
             }
 
             // If enqueue succeeded, short-circuit wp_mail (return true)
