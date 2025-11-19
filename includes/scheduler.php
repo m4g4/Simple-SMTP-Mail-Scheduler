@@ -5,9 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
-if ( ! class_exists( 'Scheduler' ) ) {
+if ( ! class_exists( 'Email_Scheduler' ) ) {
 
-    class Scheduler {
+    class Email_Scheduler {
         private int $emailsPerUnit;
         private string $unit;   // "minute", "hour", "day"
         private float $rate;    // emails per minute

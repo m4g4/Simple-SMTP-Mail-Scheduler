@@ -32,7 +32,7 @@ if (!class_exists('Mailer')) {
             
             // The scheduler class is expected to call the provided callback
             // with a number (emails per run). Keep backward-compatible call.
-            $scheduler = new Scheduler(array($this, 'cron_send_mails_tick'));
+            $scheduler = new Email_Scheduler(array($this, 'cron_send_mails_tick'));
             $scheduler->tick();
         }
 
