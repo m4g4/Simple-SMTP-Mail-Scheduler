@@ -214,7 +214,6 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
         public function get_day_emails_grouped_by_hour($date) {
             global $wpdb;
                 
-            // Convert dd.mm.yy or any string to a proper MySQL DAY start
             $dt = new \DateTime($date);
             $start = $dt->format('Y-m-d 00:00:00');
             $end   = $dt->format('Y-m-d 23:59:59');
@@ -236,16 +235,16 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
         public function get_status_data_by_date($date) {
             global $wpdb;
 
-            $start = $date . ' 00:00:00';
+            $dt = new \DateTime($date);
+            $start = $dt->format('Y-m-d 00:00:00');
+            $end   = $dt->format('Y-m-d 23:59:59');
 
             $sql = $wpdb->prepare(
                 "SELECT status, COUNT(*) as count
                  FROM {$this->table_name}
-                 WHERE created_at >= %s
-                   AND created_at < %s + INTERVAL 1 DAY
+                 WHERE created_at BETWEEN %s AND %s
                  GROUP BY status",
-                $start,
-                $start
+                $start, $end
             );
         
             return $wpdb->get_results($sql);
