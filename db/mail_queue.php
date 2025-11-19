@@ -22,6 +22,9 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
         public static function get_instance() {
 		    if ( null === self::$instance ) {
 			    self::$instance = new self();
+
+                // FIX
+                self::$instance->db_update_fix_created_at();
 		    }
 
 		    return self::$instance;
@@ -102,7 +105,6 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
                 'scheduled_at'    => $scheduled_at,
                 'profile_settings'=> wp_json_encode($active_profile),
                 'status'          => 'queued',
-                'created_at'      => current_time('mysql'),
                 'testing'         => (int) $testing,
             );
 
@@ -236,12 +238,11 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
 
             $start = $date . ' 00:00:00';
 
-            // But better: use proper date boundaries to include up to the very last microsecond
             $sql = $wpdb->prepare(
                 "SELECT status, COUNT(*) as count
                  FROM {$this->table_name}
-                 WHERE scheduled_at >= %s
-                   AND scheduled_at < %s + INTERVAL 1 DAY
+                 WHERE created_at >= %s
+                   AND created_at < %s + INTERVAL 1 DAY
                  GROUP BY status",
                 $start,
                 $start
@@ -366,6 +367,38 @@ if (!class_exists('Simple_SMTP_Email_Queue')) {
                 );
 
             $wpdb->query($sql);
+        }
+
+        public function db_update_fix_created_at() {
+            global $wpdb;
+
+            // Only run once – ever
+            if (get_option('ssmptms_created_at_fixed_v2') === 'yes') {
+                return;
+            }
+        
+            $updated = $wpdb->query("
+                UPDATE `{$this->table_name}`
+                SET created_at = CASE
+                    WHEN scheduled_at IS NOT NULL 
+                         AND scheduled_at != '0000-00-00 00:00:00' 
+                    THEN scheduled_at
+
+                    WHEN scheduled_at = '0000-00-00 00:00:00' 
+                         OR scheduled_at IS NULL 
+                    THEN '2025-01-01 00:00:00'   -- fallback date (or use NOW() if you prefer)
+
+                    ELSE created_at
+                END
+                WHERE created_at = '0000-00-00 00:00:00'
+                   OR created_at IS NULL
+            ");
+        
+            if ($updated !== false) {
+                error_log("Simple SMTP Mail Scheduler: Fixed {$updated} rows with broken created_at");
+            }
+        
+            update_option('ssmptms_created_at_fixed_v2', 'yes');
         }
     }
 }
