@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Simple SMTP Mail Scheduler\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-07 15:52+0200\n"
-"PO-Revision-Date: 2025-11-17 22:18+0100\n"
+"PO-Revision-Date: 2025-11-20 13:25+0100\n"
 "Last-Translator: m4g4\n"
 "Language-Team: \n"
 "Language: sk\n"
@@ -52,15 +52,16 @@ msgstr "Počet emailov za jednotku musí byť kladné číslo."
 msgid "Invalid time unit selected."
 msgstr "Vybraná jednotka času je neplatná."
 
-#: admin/tabs/general_settings.php:181
 msgid ""
-"When checked, the plugin will not filter emails sent through the WordPress wp_mail() function. When unchecked, "
-"all wp_mail() emails will be intercepted and processed by the plugin. Other email-sending methods in WordPress "
-"are not affected and bypass the plugin entirely."
+"This plugin intercepts all emails sent using WordPress’s wp_mail() function and processes them according to the configured rules (scheduling, sending, logging, status tracking, etc.).<br/>Other "
+"methods of sending emails in WordPress are not affected and bypass the plugin completely."
 msgstr ""
-"Keď je zaškrtnuté, plugin nebude filtrovať e-maily odoslané pomocou funkcie wp_mail() vo WordPresse. Keď nie "
-"je zaškrtnuté, všetky e-maily odoslané cez wp_mail() budú zachytené a spracované pluginom. Iné spôsoby "
-"odosielania e-mailov vo WordPresse nie sú ovplyvnené a úplne obchádzajú plugin."
+"Tento plugin zachytáva všetky e-maily odoslané pomocou funkcie wp_mail() vo WordPresse a spracúva ich podľa nastavených pravidiel (plánovanie, odosielanie, logovanie, sledovanie stavu a pod.).<br/"
+">Iné spôsoby odosielania e-mailov vo WordPresse nie sú ovplyvnené a plugin ich neinterceptuje."
+
+#: admin/tabs/general_settings.php:181
+msgid "When enabled, the plugin will stop processing emails sent through wp_mail()."
+msgstr "Ak je táto možnosť zapnutá, plugin prestane zasahovať do e-mailov odoslaných cez wp_mail()."
 
 #: admin/settings.php:17 admin/settings.php:18 admin/settings.php:40
 msgid "Simple SMTP Mail Scheduler"
@@ -118,8 +119,8 @@ msgid "Email processing is turned off. Emails sent through wp_mail() are not han
 msgstr "Spracovanie e-mailov je deaktivované. E-maily odoslané cez wp_mail() plugin neobsluhuje."
 
 #: admin/settings.php:53 admin/log_table.php:28
-msgid "Testing"
-msgstr "Testovanie"
+msgid "Email Test"
+msgstr "Test e-mailu"
 
 #: admin/settings.php:137
 msgid "When enabled, emails are logged but not sent to recipients."

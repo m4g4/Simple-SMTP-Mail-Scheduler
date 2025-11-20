@@ -175,12 +175,13 @@ msgstr ""
 msgid "Invalid time unit selected."
 msgstr ""
 
-#: admin/tabs/general_settings.php:181
 msgid ""
-"When checked, the plugin will not filter emails sent through the WordPress "
-"wp_mail() function. When unchecked, all wp_mail() emails will be intercepted "
-"and processed by the plugin. Other email-sending methods in WordPress are "
-"not affected and bypass the plugin entirely."
+"This plugin intercepts all emails sent using WordPress’s wp_mail() function and processes them according to the configured rules (scheduling, sending, logging, status tracking, etc.).<br/>"
+"Other methods of sending emails in WordPress are not affected and bypass the plugin completely."
+msgstr ""
+
+#: admin/tabs/general_settings.php:181
+msgid "When enabled, the plugin will stop processing emails sent through wp_mail()."
 msgstr ""
 
 #: admin/tabs/general_settings.php:191
@@ -357,7 +358,7 @@ msgid "Email Log"
 msgstr ""
 
 #: admin/settings.php:91
-msgid "Testing"
+msgid "Email Test"
 msgstr ""
 
 #: admin/settings.php:136

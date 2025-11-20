@@ -177,10 +177,8 @@ if ( ! class_exists( 'General_Settings' ) ) {
             <label>
                 <input type="checkbox" name="<?php echo esc_attr(Constants::DISABLE); ?>"
                        value="1" <?php checked($value, true); ?> />
+                <?php _e('When enabled, the plugin will stop processing emails sent through wp_mail().', Constants::DOMAIN); ?>
             </label>
-            <p class="description">
-                <?php esc_html_e('When checked, the plugin will not filter emails sent through the WordPress wp_mail() function. When unchecked, all wp_mail() emails will be intercepted and processed by the plugin. Other email-sending methods in WordPress are not affected and bypass the plugin entirely.', Constants::DOMAIN); ?>
-            </p>
             <?php
         }
         

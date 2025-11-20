@@ -79,26 +79,33 @@ if (!class_exists('Settings')) {
             ?>
             <div class="wrap">
                 <div class="ssmptms-headline-wrapper">
-                    <h1><?php echo esc_html__('Simple SMTP Mail Scheduler', Constants::DOMAIN); ?></h1>
+                    <div class="ssmptms-headline">
+                        <h1><?php echo __('Simple SMTP Mail Scheduler', Constants::DOMAIN); ?></h1>
+                        <span class="ssmptms-tooltip-icon">?</span>
+                        <span class="ssmptms-tooltip-text">
+                            <?php echo __('This plugin intercepts all emails sent using WordPress’s wp_mail() function and processes them according to the configured rules (scheduling, sending, logging, status tracking, etc.).<br/>Other methods of sending emails in WordPress are not affected and bypass the plugin completely.', Constants::DOMAIN); ?>
+                        </span>
+                    </div>
                     <?php print_system_status(); ?>
                 </div>
+
 
                 <h2 class="nav-tab-wrapper">
                     <a href="?page=<?php echo esc_attr(Constants::SETTINGS_PAGE); ?>&tab=general"
                        class="nav-tab <?php echo $active_tab === 'general' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('General Settings', Constants::DOMAIN); ?>
+                        <?php echo __('General Settings', Constants::DOMAIN); ?>
                     </a>
                     <a href="?page=<?php echo esc_attr(Constants::SETTINGS_PAGE); ?>&tab=log"
                        class="nav-tab <?php echo $active_tab === 'log' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Email Log', Constants::DOMAIN); ?>
+                        <?php echo __('Email Log', Constants::DOMAIN); ?>
                     </a>
                     <a href="?page=<?php echo esc_attr(Constants::SETTINGS_PAGE); ?>&tab=stats"
                        class="nav-tab <?php echo $active_tab === 'stats' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Statistics', Constants::DOMAIN); ?>
+                        <?php echo __('Statistics', Constants::DOMAIN); ?>
                     </a>
                     <a href="?page=<?php echo esc_attr(Constants::SETTINGS_PAGE); ?>&tab=test"
                         class="nav-tab <?php echo $active_tab === 'test' ? 'nav-tab-active' : ''; ?>">
-                        <?php echo esc_html__('Testing', Constants::DOMAIN); ?>
+                        <?php echo __('Email Test', Constants::DOMAIN); ?>
                     </a>
                 </h2>
 

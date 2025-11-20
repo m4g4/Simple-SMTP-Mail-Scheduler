@@ -4,6 +4,36 @@
     align-items: center;
 }
 
+.ssmptms-headline { position: relative; display: inline-flex; align-items: center; }
+.ssmptms-tooltip-icon { 
+    background:#6a6a6a;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:18px;
+    height:18px;
+    font-size:11px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin:9px 0 0 6px;
+    cursor:pointer; 
+}
+.ssmptms-tooltip-text { 
+    visibility:hidden;
+    opacity:0;
+    position:absolute;
+    right: -300px;
+    top: 0;
+    width:260px;
+    background:#6a6a6a;
+    color:#fff;
+    padding:10px;
+    border-radius:3px;
+    transition:0.2s;z-index:999;font-size:12px;
+}
+.ssmptms-headline:hover .ssmptms-tooltip-text { visibility:visible;opacity:1; }
+
 .ssmptms-profile-button-group { 
     display: flex; 
     gap: 12px; 
