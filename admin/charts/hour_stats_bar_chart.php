@@ -9,8 +9,8 @@ if (!class_exists('Hour_Stats_Bar_Chart')) {
 
     class Hour_Stats_Bar_Chart {
 
-        private static $action = 'simple-smtp-mail-scheduler-get-hour-stats-data';
-        private static $script_handle = 'simple-smtp-mail-scheduler-hour-stats-chart';
+        private static $action = 'ssmptms-get-hour-stats-data';
+        private static $script_handle = 'ssmptms-hour-stats-chart';
         private $chart_id;
 
         public static function initialize_assets() {

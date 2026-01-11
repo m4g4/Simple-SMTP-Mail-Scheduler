@@ -1,6 +1,6 @@
-# Simple-SMTP-Mail-Scheduler
+# WO-SMTP-Mail-Scheduler
 
-**Simple SMTP Mail Scheduler** is a WordPress plugin that allows you to queue and send emails using custom SMTP profiles. It intercepts `wp_mail` calls, stores emails in a database, and sends them asynchronously via a cron job, ensuring reliable email delivery with configurable SMTP settings.
+**WO SMTP Mail Scheduler** is a WordPress plugin that allows you to queue and send emails using custom SMTP profiles. It intercepts `wp_mail` calls, stores emails in a database, and sends them asynchronously via a cron job, ensuring reliable email delivery with configurable SMTP settings.
 
 ## Features
 

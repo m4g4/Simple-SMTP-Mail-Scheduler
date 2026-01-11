@@ -59,7 +59,7 @@ if ( ! class_exists( 'Email_Scheduler' ) ) {
                 try {
                     ($this->callback)($toSend);
                 } catch (\Throwable $e) {
-                    error_log('Simple SMTP tick() error: ' . $e->getMessage());
+                    error_log('WO SMTP Mail Scheduler tick() error: ' . $e->getMessage());
                 }
             }
             

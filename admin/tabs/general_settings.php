@@ -210,12 +210,12 @@ if ( ! class_exists( 'General_Settings' ) ) {
 
                         $edit_url = admin_url('admin.php?page=' . Constants::PROFILE_EDIT_PAGE . '&profile=' . urlencode($key));
                         $activate_url = wp_nonce_url(
-                            admin_url("admin-post.php?action=simple_smtp_mail_profile_activate&profile=$key"),
-                            'simple_smtp_mail_profile_activate'
+                            admin_url("admin-post.php?action=ssmptms_profile_activate&profile=$key"),
+                            'ssmptms_profile_activate'
                         );
                         $delete_url = wp_nonce_url(
-                            admin_url("admin-post.php?action=simple_smtp_mail_profile_delete&profile=$key"),
-                            'simple_smtp_mail_profile_delete'
+                            admin_url("admin-post.php?action=ssmptms_profile_delete&profile=$key"),
+                            'ssmptms_profile_delete'
                         );
 
                         $activate = !$is_active ? ' | <a href="' . esc_url($activate_url) . '">' . esc_html__('Set Active', Constants::DOMAIN) . '</a>' : '';

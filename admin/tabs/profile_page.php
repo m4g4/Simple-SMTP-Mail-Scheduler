@@ -11,9 +11,9 @@ if (!class_exists('Profile_Page')) {
         private static $instance;
 
         public function __construct() {
-            add_action('admin_post_simple_smtp_mail_profile_activate', [$this, 'handle_profile_activation']);
-            add_action('admin_post_simple_smtp_mail_profile_delete', [$this, 'handle_profile_delete']);
-            add_action('admin_post_simple_smtp_mail_profile_save', [$this, 'handle_profile_save']);
+            add_action('admin_post_ssmptms_profile_activate', [$this, 'handle_profile_activation']);
+            add_action('admin_post_ssmptms_profile_delete', [$this, 'handle_profile_delete']);
+            add_action('admin_post_ssmptms_profile_save', [$this, 'handle_profile_save']);
         }
         public static function get_instance() {
 		    if ( null === self::$instance ) {
@@ -43,7 +43,7 @@ if (!class_exists('Profile_Page')) {
             ];
 
             // Check for transient data if there was an error
-            $transient_data = get_transient('simple_smtp_mail_profile_form_data');
+            $transient_data = get_transient('ssmptms_profile_form_data');
             if ($transient_data && isset($_GET['error']) && $_GET['error'] == 1) {
                 $profile = array_merge($profile, $transient_data);
             } elseif (!$is_new) {
@@ -60,9 +60,9 @@ if (!class_exists('Profile_Page')) {
             echo_message_styles();
             $this->show_errors();
 
-            echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" class="simple-smtp-profile-form">';
-            wp_nonce_field('simple_smtp_mail_profile_save');
-            echo '<input type="hidden" name="action" value="simple_smtp_mail_profile_save">';
+            echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" class="ssmptms-profile-form">';
+            wp_nonce_field('ssmptms_profile_save');
+            echo '<input type="hidden" name="action" value="ssmptms_profile_save">';
             echo '<input type="hidden" name="profile_id" value="' . esc_attr($profile_id) . '">';
 
             echo '<table class="form-table">';
@@ -147,24 +147,24 @@ if (!class_exists('Profile_Page')) {
             echo '</div>';
 
             if ($transient_data) {
-                delete_transient('simple_smtp_mail_profile_form_data');
+                delete_transient('ssmptms_profile_form_data');
             }
         }
 
         private function show_errors(): void {
-            $errors = get_transient('simple_smtp_mail_profile_errors');
+            $errors = get_transient('ssmptms_profile_errors');
             if (!empty($errors)) {
                 echo '<div class="smtp-mail-message smtp-mail-error"><ul>';
                 foreach ($errors as $error) {
                     echo '<li>' . $error . '</li>';
                 }
                 echo '</ul></div>';
-                delete_transient('simple_smtp_mail_profile_errors');
+                delete_transient('ssmptms_profile_errors');
             }
         }
 
         public function handle_profile_save() {
-            if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'simple_smtp_mail_profile_save')) {
+            if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'ssmptms_profile_save')) {
                 wp_die('Security check failed');
             }
         
@@ -180,6 +180,7 @@ if (!class_exists('Profile_Page')) {
             $username   = sanitize_text_field($_POST['username']);
             $password   = $_POST['password'] ?? '';
             $sender     = isset($_POST['match_return_path']) ? $from_email : '';
+            $match_return_path = isset($_POST['match_return_path']) ? 1 : 0;
             $force_from_email = isset($_POST['force_from_email']) ? 1 : 0;
             $force_from_name = isset($_POST['force_from_name']) ? 1 : 0;
         
@@ -198,6 +199,7 @@ if (!class_exists('Profile_Page')) {
                 'autotls'    => $autotls,
                 'username'   => $username,
                 'force_from_email' => $force_from_email,
+                'match_return_path' => $match_return_path,
                 'force_from_name' => $force_from_name,
             ];
         
@@ -224,9 +226,9 @@ if (!class_exists('Profile_Page')) {
         
             // If validation failed
             if (!empty($errors)) {
-                set_transient('simple_smtp_mail_profile_errors', $errors, 30);
-                set_transient('simple_smtp_mail_profile_form_data', $form_data, 30);
-                wp_safe_redirect(admin_url("admin.php?page=simple_smtp_mail_profile_edit&profile=$profile_id&error=1"));
+                set_transient('ssmptms_profile_errors', $errors, 30);
+                set_transient('ssmptms_profile_form_data', $form_data, 30);
+                wp_safe_redirect(admin_url("admin.php?page=".Constants::PROFILE_EDIT_PAGE."&profile=$profile_id&error=1"));
                 exit;
             }
         
@@ -252,6 +254,7 @@ if (!class_exists('Profile_Page')) {
                 'autotls'   => $autotls,
                 'username'  => $username,
                 'password'  => $encrypted_password,
+                'match_return_path' => $match_return_path,
                 'force_from_email' => $force_from_email,
                 'force_from_name' => $force_from_name,
             ];
@@ -269,9 +272,9 @@ if (!class_exists('Profile_Page')) {
             }
         
             if (!empty($errors)) {
-                set_transient('simple_smtp_mail_profile_errors', $errors, 30);
-                set_transient('simple_smtp_mail_profile_form_data', $form_data, 30);
-                wp_safe_redirect(admin_url("admin.php?page=simple_smtp_mail_profile_edit&profile=$profile_id&error=1"));
+                set_transient('ssmptms_profile_errors', $errors, 30);
+                set_transient('ssmptms_profile_form_data', $form_data, 30);
+                wp_safe_redirect(admin_url("admin.php?page=".Constants::PROFILE_EDIT_PAGE."&profile=$profile_id&error=1"));
                 exit;
             }
         
@@ -287,7 +290,7 @@ if (!class_exists('Profile_Page')) {
                 wp_die('Unauthorized');
             }
         
-            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'simple_smtp_mail_profile_activate')) {
+            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ssmptms_profile_activate')) {
                 wp_die('Security check failed');
             }
         
@@ -309,7 +312,7 @@ if (!class_exists('Profile_Page')) {
                 wp_die('Unauthorized');
             }
         
-            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'simple_smtp_mail_profile_delete')) {
+            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'ssmptms_profile_delete')) {
                 wp_die('Security check failed');
             }
         

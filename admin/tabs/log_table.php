@@ -188,9 +188,9 @@ class Log_Table extends \WP_List_Table {
             $actions['retry'] = sprintf(
                 '<a href="%s">%s</a>',
                 esc_url(add_query_arg([
-                    'action'   => 'simple_smtp_mail_retry',
+                    'action'   => 'ssmptms_retry',
                     'email_id' => $item->email_id,
-                    '_wpnonce' => wp_create_nonce('simple_smtp_mail_retry_' . $item->email_id),
+                    '_wpnonce' => wp_create_nonce('ssmptms_retry_' . $item->email_id),
                 ])),
                 __('Retry', Constants::DOMAIN)
             );
@@ -200,9 +200,9 @@ class Log_Table extends \WP_List_Table {
         $actions['remove'] = sprintf(
             '<a href="%s" style="color:red;">%s</a>',
             esc_url(add_query_arg([
-                'action'   => 'simple_smtp_mail_remove',
+                'action'   => 'ssmptms_remove',
                 'email_id' => $item->email_id,
-                '_wpnonce' => wp_create_nonce('simple_smtp_mail_remove_' . $item->email_id),
+                '_wpnonce' => wp_create_nonce('ssmptms_remove_' . $item->email_id),
             ])),
             __('Remove', Constants::DOMAIN)
         );
@@ -212,9 +212,9 @@ class Log_Table extends \WP_List_Table {
             $actions['front'] = sprintf(
                 '<a href="%s">%s</a>',
                 esc_url(add_query_arg([
-                    'action'   => 'simple_smtp_mail_front',
+                    'action'   => 'ssmptms_front',
                     'email_id' => $item->email_id,
-                    '_wpnonce' => wp_create_nonce('simple_smtp_mail_front_' . $item->email_id),
+                    '_wpnonce' => wp_create_nonce('ssmptms_front_' . $item->email_id),
                 ])),
                 __('Put to Front', Constants::DOMAIN)
             );
@@ -225,9 +225,9 @@ class Log_Table extends \WP_List_Table {
             $actions['send-now'] = sprintf(
                 '<a href="%s">%s</a>',
                 esc_url(add_query_arg([
-                    'action'   => 'simple_smtp_mail_send_now',
+                    'action'   => 'ssmptms_send_now',
                     'email_id' => $item->email_id,
-                    '_wpnonce' => wp_create_nonce('simple_smtp_mail_send_now_' . $item->email_id),
+                    '_wpnonce' => wp_create_nonce('ssmptms_send_now_' . $item->email_id),
                 ])),
                 __('Send Now', Constants::DOMAIN)
             );

@@ -8,28 +8,46 @@ if (!defined('ABSPATH')) {
 
 final class Constants {
 
-    public const PLUGIN_VERSION     = '1.6.0';
+    public const PLUGIN_VERSION     = '1.7.0';
     public const VERSION     = '1.2';
 
-    // Database
-    public const QUEUE_DB_NAME     = 'simple_smtp_mail_scheduler_queue';
+    /** Queue table */
+    public const QUEUE_DB_NAME_OLD = 'simple_smtp_mail_scheduler_queue';
+    public const QUEUE_DB_NAME     = 'ssmptms_queue';
 
     // Plugin
-    public const DOMAIN      = 'simple-smtp-mail-scheduler';
+    public const DOMAIN      = 'wo-smtp-mail-scheduler';
     public const CIPHER      = 'aes-256-cbc';
 
-    // Option keys
-    public const DB_VERSION  = 'simple_smtp_mail_db_version';
-    public const PROFILES         = 'simple_smtp_mail_scheduler_profiles';
-    public const PROFILE_ACTIVE   = 'simple_smtp_mail_scheduler_profile_active';
-    public const EMAILS_PER_UNIT  = 'simple_smtp_mail_scheduler_emails_per_unit';
-    public const EMAILS_UNIT      = 'simple_smtp_mail_scheduler_emails_unit';
-    public const DISABLE      = 'simple_smtp_mail_scheduler_disable';
+    /** DB version for migration control */
+    public const DB_VERSION_OLD = 'simple_smtp_mail_db_version';
+    public const DB_VERSION     = 'ssmptms_db_version';
+
+    /** Option keys */
+    public const PROFILES_OLD        = 'simple_smtp_mail_scheduler_profiles';
+    public const PROFILES            = 'ssmptms_profiles';
+
+    public const PROFILE_ACTIVE_OLD  = 'simple_smtp_mail_scheduler_profile_active';
+    public const PROFILE_ACTIVE      = 'ssmptms_profile_active';
+
+    public const EMAILS_PER_UNIT_OLD = 'simple_smtp_mail_scheduler_emails_per_unit';
+    public const EMAILS_PER_UNIT     = 'ssmptms_emails_per_unit';
+
+    public const EMAILS_UNIT_OLD     = 'simple_smtp_mail_scheduler_emails_unit';
+    public const EMAILS_UNIT         = 'ssmptms_emails_unit';
+
+    public const DISABLE_OLD         = 'simple_smtp_mail_scheduler_disable';
+    public const DISABLE             = 'ssmptms_disable';
     
-    // Stored values
-    public const EMAILS_SCHEDULER_LAST_TICK = 'simple_smtp_mail_scheduler_last_tick';
-    public const EMAILS_SCHEDULER_CARRY = 'simple_smtp_mail_scheduler_carry';
-    public const CURRENT_QUEUE_COUNT   = 'simple_smtp_mail_scheduler_current_queue_count';
+    /** Stored values */
+    public const EMAILS_SCHEDULER_LAST_TICK_OLD = 'simple_smtp_mail_scheduler_last_tick';
+    public const EMAILS_SCHEDULER_LAST_TICK     = 'ssmptms_last_tick';
+
+    public const EMAILS_SCHEDULER_CARRY_OLD = 'simple_smtp_mail_scheduler_carry';
+    public const EMAILS_SCHEDULER_CARRY     = 'ssmptms_carry';
+
+    public const CURRENT_QUEUE_COUNT_OLD = 'simple_smtp_mail_scheduler_current_queue_count';
+    public const CURRENT_QUEUE_COUNT     = 'ssmptms_current_queue_count';
 
     // Limits
     public const EMAILS_LOG_MAX_ROWS = 100000;
@@ -37,21 +55,21 @@ final class Constants {
     public const MAX_EMAIL_RETRIES = 3;
 
     // Admin pages
-    public const SETTINGS_PAGE = 'simple_smtp_mail_scheduler_settings';
-    public const PROFILE_EDIT_PAGE = 'simple_smtp_mail_profile_edit';
+    public const SETTINGS_PAGE = 'ssmptms_settings';
+    public const PROFILE_EDIT_PAGE = 'ssmptms_profile_edit';
 
     // Admin page sections
     public const SECTION_BASIC = 'basic';
-    public const SETTINGS_SECTION_BASIC = 'simple_smtp_mail_scheduler_settings_' . self::SECTION_BASIC;
+    public const SETTINGS_SECTION_BASIC = 'ssmptms_settings_' . self::SECTION_BASIC;
 
     public const SECTION_SCHEDULER = 'scheduler';
-    public const SETTINGS_SECTION_SCHEDULER = 'simple_smtp_mail_scheduler_settings_' . self::SECTION_SCHEDULER;
+    public const SETTINGS_SECTION_SCHEDULER = 'ssmptms_settings_' . self::SECTION_SCHEDULER;
 
     // Option groups
-    public const GENERAL_OPTION_GROUP = 'simple_smtp_mail_option_group';
+    public const GENERAL_OPTION_GROUP = 'ssmptms_option_group';
 
     // Scheduler
-    public const SCHEDULER_EVENT_NAME = 'simple_smtp_mail_send_emails_event';
+    public const SCHEDULER_EVENT_NAME = 'ssmptms_send_emails_event';
 
     public const ALL_STATUSES = ['queued', 'processing', 'sent', 'failed'];
 

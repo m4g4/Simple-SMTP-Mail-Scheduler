@@ -14,51 +14,51 @@ if (!class_exists('Settings')) {
             add_action('admin_menu', [$this, 'register_menus']);
             add_action('admin_init', [$this, 'register_settings']);
             add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
-            add_action('wp_ajax_simple-smtp-mail-scheduler-start', [$this, 'ajax_start_scheduler']);
+            add_action('wp_ajax_ssmptms-start', [$this, 'ajax_start_scheduler']);
 
-            add_filter('plugin_action_links_' . SIMPLE_SMTP_MAIL_SCHEDULER_PLUGIN, [$this, 'add_settings_link']);
+            add_filter('plugin_action_links_' . SSMPTMS_PLUGIN, [$this, 'add_settings_link']);
         }
 
         public function enqueue_assets() {
             wp_enqueue_style(
-		    	'simple-smtp-mail-scheduler-admin-css',
+		    	'ssmptms-admin-css',
 		    	plugins_url('css/admin.css', __FILE__),
 		    	array(),
 				Constants::PLUGIN_VERSION
 		    );
 
             wp_enqueue_script(
-		    	'simple-smtp-mail-scheduler-admin-js',
+		    	'ssmptms-admin-js',
 		    	plugins_url('js/admin.js', __FILE__),
 		    	array('jquery'),
 				Constants::PLUGIN_VERSION
 		    );
 
             wp_enqueue_script(
-		    	'simple-smtp-mail-scheduler-profile-page-js',
+		    	'ssmptms-profile-page-js',
 		    	plugins_url('js/profile_page.js', __FILE__),
 		    	array('jquery'),
 				Constants::PLUGIN_VERSION
 		    );
 
             wp_localize_script( 
-                'simple-smtp-mail-scheduler-admin-js',
+                'ssmptms-admin-js',
                 'ssmptms_admin_ajax_params',
                 array(
                     'ajax_url'       => admin_url( 'admin-ajax.php' ),
-                    'start_action'   => 'simple-smtp-mail-scheduler-start',
+                    'start_action'   => 'ssmptms-start',
                     'start_text'     => __( 'Start', Constants::DOMAIN ),
                     'started_text'   => __( 'Started', Constants::DOMAIN ),
                     'starting_text'  => __( 'Starting', Constants::DOMAIN ),
-                    'ajax_nonce'     => wp_create_nonce( 'simple-smtp-mail-scheduler-start' ),
+                    'ajax_nonce'     => wp_create_nonce( 'ssmptms-start' ),
                 )
             );
         }
 
         public function register_menus() {
             add_options_page(
-                __('Simple SMTP Mail Scheduler', Constants::DOMAIN),
-                __('Simple SMTP Mail Scheduler', Constants::DOMAIN),
+                __('WO SMTP Mail Scheduler', Constants::DOMAIN),
+                __('WO SMTP Mail Scheduler', Constants::DOMAIN),
                 'manage_options',
                 Constants::SETTINGS_PAGE,
                 [$this, 'settings_page']
@@ -80,7 +80,7 @@ if (!class_exists('Settings')) {
             <div class="wrap">
                 <div class="ssmptms-headline-wrapper">
                     <div class="ssmptms-headline">
-                        <h1><?php echo __('Simple SMTP Mail Scheduler', Constants::DOMAIN); ?></h1>
+                        <h1><?php echo __('WO SMTP Mail Scheduler', Constants::DOMAIN); ?></h1>
                         <span class="ssmptms-tooltip-icon">?</span>
                         <span class="ssmptms-tooltip-text">
                             <?php echo __('This plugin intercepts all emails sent using WordPress’s wp_mail() function and processes them according to the configured rules (scheduling, sending, logging, status tracking, etc.).<br/>Other methods of sending emails in WordPress are not affected and bypass the plugin completely.', Constants::DOMAIN); ?>
@@ -116,7 +116,7 @@ if (!class_exists('Settings')) {
                     Log_Settings::get_instance()->render_tab();
                 } elseif ($active_tab === 'stats') {
                     Statistics::get_instance()->render_tab();
-                } elseif ($active_tab === 'test' && defined('SIMPLE_SMTP_TESTING_MODE')) {
+                } elseif ($active_tab === 'test' && defined('SSMPTMS_TESTING_MODE')) {
                     Test_Settings::get_instance()->render_tab();
                 }
                 ?>
@@ -138,7 +138,7 @@ if (!class_exists('Settings')) {
         }
 
         public function ajax_start_scheduler() {
-            check_ajax_referer('simple-smtp-mail-scheduler-start', 'ajax_nonce');
+            check_ajax_referer('ssmptms-start', 'ajax_nonce');
 
             if (!current_user_can('manage_options')) {
                 wp_send_json_error(['message' => 'Permission denied']);

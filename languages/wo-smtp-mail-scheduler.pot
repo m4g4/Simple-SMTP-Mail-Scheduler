@@ -342,7 +342,7 @@ msgid "Starting"
 msgstr ""
 
 #: admin/settings.php:50 admin/settings.php:51 admin/settings.php:72
-msgid "Simple SMTP Mail Scheduler"
+msgid "WO SMTP Mail Scheduler"
 msgstr ""
 
 #: admin/settings.php:60
@@ -430,7 +430,7 @@ msgstr ""
 msgid "No emails scheduled for sending."
 msgstr ""
 
-#: simple-smtp-mail-scheduler.php:53
+#: wo-mail-scheduler.php:53
 msgid "Every Minute"
 msgstr ""
 

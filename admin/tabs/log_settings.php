@@ -39,24 +39,24 @@ if (!class_exists('Log_Settings')) {
             $status = $email->status ?? '';
 
             switch ($action) {
-                case 'simple_smtp_mail_retry':
+                case 'ssmptms_retry':
                     if ($status === 'failed') {
                         $queue->retry_sending_email($email_id);
                     }
                     break;
 
-                case 'simple_smtp_mail_remove':
+                case 'ssmptms_remove':
                     if ($status !== 'processing') {
                         $queue->delete_email($email_id);
                     }
                     break;
 
-                case 'simple_smtp_mail_front':
+                case 'ssmptms_front':
                     if ($status === 'queued') {
                         $queue->prioritize_email($email_id);
                     }
                     break;
-                case 'simple_smtp_mail_send_now':
+                case 'ssmptms_send_now':
                     if ($status === 'queued') {
                         Mailer::get_instance()->send_email_by_id($email_id);
                     }

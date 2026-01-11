@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    const form = $('.simple-smtp-profile-form');
+    const form = $('.ssmptms-profile-form');
 
     if (!form.length) return; // Safe check if form doesn't exist
 

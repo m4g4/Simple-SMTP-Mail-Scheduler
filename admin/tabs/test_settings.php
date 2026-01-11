@@ -23,8 +23,8 @@ if ( ! class_exists( 'Test_Settings' ) ) {
             $class     = '';
             $message   = '';
 
-            if ( isset( $_POST['simple_smtp_send_test_email'] ) ) {
-                check_admin_referer( 'simple_smtp_send_test_email_action', 'simple_smtp_send_test_email_nonce' );
+            if ( isset( $_POST['ssmptms_send_test_email'] ) ) {
+                check_admin_referer( 'ssmptms_send_test_email_action', 'ssmptms_send_test_email_nonce' );
                 echo_message_styles();
 
                 $to      = isset( $_POST['smtp_to'] ) ? sanitize_email( $_POST['smtp_to'] ) : '';
@@ -61,7 +61,7 @@ if ( ! class_exists( 'Test_Settings' ) ) {
                 <?php endif; ?>
 
                 <form method="post">
-                    <?php wp_nonce_field( 'simple_smtp_send_test_email_action', 'simple_smtp_send_test_email_nonce' ); ?>
+                    <?php wp_nonce_field( 'ssmptms_send_test_email_action', 'ssmptms_send_test_email_nonce' ); ?>
                     <table class="form-table">
                         <tr>
                             <th scope="row">
@@ -90,7 +90,7 @@ if ( ! class_exists( 'Test_Settings' ) ) {
                             </td>
                         </tr>
                     </table>
-                    <?php submit_button( esc_html__( 'Send Test Email', Constants::DOMAIN ), 'primary', 'simple_smtp_send_test_email' ); ?>
+                    <?php submit_button( esc_html__( 'Send Test Email', Constants::DOMAIN ), 'primary', 'ssmptms_send_test_email' ); ?>
                 </form>
             </div>
             <?php

@@ -7,8 +7,8 @@ if (!class_exists('Donut_Chart')) {
 
     class Donut_Chart {
 
-        private static $action = 'simple-smtp-mail-scheduler-get-status-donut-data';
-        private static $script_handle = 'simple-smtp-mail-scheduler-status-donut-chart';
+        private static $action = 'ssmptms-get-status-donut-data';
+        private static $script_handle = 'ssmptms-status-donut-chart';
         private $chart_id;
 
         public static function initialize_assets() {

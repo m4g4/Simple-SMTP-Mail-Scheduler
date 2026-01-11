@@ -280,7 +280,7 @@ if (!class_exists('Mailer')) {
         public function mail_enqueue_email($to, $subject, $message, $headers, $attachments, $testing = 0) {        
             $profile = get_active_profile();
             if (empty($profile) || !is_array($profile)) {
-                error_log('Simple SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
+                error_log('WO SMTP Mail Scheduler: No valid SMTP profile available for email queuing.');
                 return false;
             }
         
@@ -326,15 +326,15 @@ if (!class_exists('Mailer')) {
 
                 // Optional: allow plugins to further configure mailer
                 /**
-                 * Filter: simple_smtp_mail_configure_mailer
+                 * Filter: ssmptms_configure_mailer
                  * @param \PHPMailer\PHPMailer\PHPMailer $mailer
                  * @param array $profile
                  */
-                $mailer = apply_filters('simple_smtp_mail_configure_mailer', $mailer, $profile);
+                $mailer = apply_filters('ssmptms_configure_mailer', $mailer, $profile);
 
                 return $mailer;
             } catch (\Exception $e) {
-                error_log('Simple SMTP Mail Scheduler: prepare_mailer exception: ' . $e->getMessage());
+                error_log('WO SMTP Mail Scheduler: prepare_mailer exception: ' . $e->getMessage());
                 return null;
             }
         }
