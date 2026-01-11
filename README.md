@@ -53,12 +53,6 @@
 - PHP 7.4 or higher
 - MySQL 5.7 or higher (for JSON support in `profile_settings`)
 
-## Development
-
-- **Repository**: [https://github.com/your-username/smtp-mail-scheduler](https://github.com/your-username/smtp-mail-scheduler)
-- **Contributing**: Fork the repository, make changes, and submit a pull request.
-- **Issues**: Report bugs or suggest features via the GitHub Issues page.
-
 ## License
 
 This plugin is licensed under the [GPLv3 or later](https://www.gnu.org/licenses/gpl-3.0.html).
