@@ -33,11 +33,22 @@ if ( ! class_exists( __NAMESPACE__ . '\\Email_Scheduler', false ) ) {
             }
         }
 
+        private function getDefaultLastTick( float $now ): float {
+            if ( $this->rate <= 0.0 ) {
+                return $now;
+            }
+
+            $secondsForOneEmail = 60.0 / max(0.0001, $this->rate);
+            $secondsNeeded      = min(3600.0, max(10.0, $secondsForOneEmail * 2.0));
+
+            return $now - $secondsNeeded;
+        }
+
         public function tick(): void {
             // Use microtime for sub-second accuracy
             $now = microtime(true);
 
-            $lastTime  = (float) get_option(Constants::EMAILS_SCHEDULER_LAST_TICK, $now);
+            $lastTime  = (float) get_option(Constants::EMAILS_SCHEDULER_LAST_TICK, $this->getDefaultLastTick($now));
             $carry     = (float) get_option( Constants::EMAILS_SCHEDULER_CARRY, 0.0);
             
             // How many seconds since last run
