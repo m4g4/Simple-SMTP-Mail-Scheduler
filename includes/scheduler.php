@@ -45,25 +45,17 @@ if ( ! class_exists( __NAMESPACE__ . '\\Email_Scheduler', false ) ) {
         }
 
         public function tick(): void {
-            // Use microtime for sub-second accuracy
             $now = microtime(true);
 
             $lastTime  = (float) get_option(Constants::EMAILS_SCHEDULER_LAST_TICK, $this->getDefaultLastTick($now));
             $carry     = (float) get_option( Constants::EMAILS_SCHEDULER_CARRY, 0.0);
             
-            // How many seconds since last run
-            $elapsed = max(0.1, $now - $lastTime); // never 0, avoid divide-by-zero
+            $elapsed = max(0.1, $now - $lastTime);
             update_option(Constants::EMAILS_SCHEDULER_LAST_TICK, $now, false);
-                
-            // Convert your rate (emails per minute) into per-second rate
+
             $emailsPerSecond = $this->rate / 60.0;
-                
-            // Total "ideal" emails to send since last tick
             $emailsExact = ($emailsPerSecond * $elapsed) + $carry;
-                
-            // Integer number of emails to send this tick
             $toSend = (int) floor($emailsExact);
-                
             $carry = $emailsExact - $toSend;
                 
             if ($toSend > 0 && is_callable($this->callback)) {
@@ -77,7 +69,7 @@ if ( ! class_exists( __NAMESPACE__ . '\\Email_Scheduler', false ) ) {
             update_option( Constants::EMAILS_SCHEDULER_CARRY, $carry, false );
         
             if (!Email_Queue::get_instance()->has_email_entries_for_sending()) {
-                error_log('tick: Unschedule Cron event');
+                error_log('M4W SMTP Scheduler tick: unschedule (queue empty)');
                 unschedule_cron_event();
                 delete_option(Constants::CURRENT_QUEUE_COUNT);
                 delete_option(Constants::EMAILS_SCHEDULER_LAST_TICK);
