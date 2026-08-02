@@ -246,6 +246,8 @@ if (!class_exists(__NAMESPACE__ . '\\Mailer', false)) {
             $headers = isset($atts['headers']) ? $atts['headers'] : array();
             $attachments = isset($atts['attachments']) ? $atts['attachments'] : array();
 
+            $headers = $this->capture_from_header($headers);
+
             $parsed_recipients = $this->parse_recipients($to);
 
             if (empty($parsed_recipients)) {
@@ -510,6 +512,61 @@ if (!class_exists(__NAMESPACE__ . '\\Mailer', false)) {
             }
         
             return $this->parseAddress($from_line);
+        }
+
+        /**
+         * Capture the sender resolved by the wp_mail_from / wp_mail_from_name
+         * filters (e.g. set by WooCommerce in WC_Email::send() just before
+         * wp_mail() runs) into a "From" header. The pre_wp_mail filter runs
+         * before those filters are applied inside wp_mail(), so without this the
+         * configured sender is lost and the profile's from_email/from_name is
+         * used instead.
+         *
+         * @param mixed $headers
+         * @return mixed
+         */
+        private function capture_from_header($headers) {
+            list($existing_email, ) = $this->parse_from_header($headers);
+            if (!empty($existing_email)) {
+                return $headers;
+            }
+
+            // Mirror wp_mail()'s default computation exactly
+            // (wp-includes/pluggable.php): network host without a leading "www.",
+            // prefixed with "wordpress@". The SITENAME constant is not used here.
+            $sitename = wp_parse_url(network_home_url(), PHP_URL_HOST);
+            if ('www.' === substr($sitename, 0, 4)) {
+                $sitename = substr($sitename, 4);
+            }
+
+            $default_email = 'wordpress@' . $sitename;
+            $from_email = (string) apply_filters('wp_mail_from', $default_email);
+            $from_name  = (string) apply_filters('wp_mail_from_name', 'WordPress');
+
+            // Only inject when a plugin actually overrode the sender email.
+            // A filtered name alone should not force WordPress's default
+            // wordpress@domain address over the profile's configured address.
+            if ($from_email === $default_email) {
+                return $headers;
+            }
+
+            if (empty($from_email)) {
+                return $headers;
+            }
+
+            $from_line = empty($from_name)
+                ? $from_email
+                : $from_name . ' <' . $from_email . '>';
+
+            if ($this->is_assoc_array($headers)) {
+                $headers['From'] = $from_line;
+            } elseif (is_array($headers)) {
+                array_unshift($headers, 'From: ' . $from_line);
+            } elseif (is_string($headers)) {
+                $headers = 'From: ' . $from_line . "\r\n" . $headers;
+            }
+
+            return $headers;
         }
 
 

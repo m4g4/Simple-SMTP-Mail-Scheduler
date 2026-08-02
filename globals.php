@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) {
 final class Constants {
 
     // Do not forget to change the header in m4w-smtp-mail-scheduler as well when changing the plugin version.
-    public const PLUGIN_VERSION     = '1.11.1';
+    public const PLUGIN_VERSION     = '1.12.0';
     public const VERSION     = '1.2';
 
     /** Queue table */

@@ -1,3 +1,8 @@
+## [1.12.0] - 2026-08-02
+
+- Fixed sender override: the plugin now captures the sender resolved by the `wp_mail_from` / `wp_mail_from_name` filters (e.g. configured in WooCommerce email settings) at queue time and stores it as a "From" header. Previously the profile's "From" address/name always won because the filters run after the `pre_wp_mail` interception.
+- A "From" header is only injected when the sender email was actually overridden, so generic emails without a custom sender still fall back to the profile's configured "From" address.
+
 ## [1.11.1] - 2026-07-08
 
 - Improved first-tick scheduling: `getDefaultLastTick` now dynamically calculates the default elapsed time based on the configured rate, ensuring at least 2 email slots on the first tick regardless of rate or unit setting.
